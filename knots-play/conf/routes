@@ -1,0 +1,15 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET         /                            @controllers.ApplicationController.index
+GET         /user/auth/signin            @controllers.ApplicationController.signin
+GET         /user/auth/signup            @controllers.ApplicationController.signup
+GET         /user/auth/signout           @controllers.ApplicationController.signout
+GET         /user/auth/:provider         @controllers.SocialAuthController.authenticate(provider)
+POST        /user/auth/credentials       @controllers.CredentialsAuthController.authenticate
+POST        /user/auth/signup            @controllers.SignupController.signup
+
+# Map static resources from the /public folder to the /assets URL path
+GET        /assets/*file                 controllers.Assets.versioned(path="/public", file: Asset)
