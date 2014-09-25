@@ -32,7 +32,7 @@ object Masseurs extends Dao[models.db.TableDefinitions.Masseurs, Masseur] {
     import MassageTypeEnum._
     q.map({ case (m, u) => new MasseurProfile(m.id, u.id, u.firstName, u.lastName, u.email, m.sex, m.isActive,
       Some(MassageTypeEnum.convertFromDbList((for {mmt <- masseurMassageTypes
-        if mmt.masseurId == m.id
+        if mmt.masseurId === m.id
           mt <- massageTypes
         } yield mt) list))
     )})
