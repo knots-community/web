@@ -14,8 +14,6 @@ libraryDependencies ++= Seq(
     "org.webjars" % "requirejs" % "2.1.11-1",
   "com.typesafe.play" %% "play-slick" % "0.8.0",
     "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-    "joda-time" % "joda-time" % "2.4",
-    "org.joda" % "joda-convert" % "1.6",
     "org.slf4j" % "slf4j-nop" % "1.6.4",
     "com.mohiva" %% "play-silhouette" % "1.0",
     "net.codingwell" %% "scala-guice" % "4.0.0-beta4",

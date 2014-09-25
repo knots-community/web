@@ -46,4 +46,10 @@ trait Dao[T <: RichTable[A], A] {
     }
   }
 
+  def getAll() = {
+    DB withSession { implicit session =>
+      tableQuery.list
+    }
+  }
+
 }

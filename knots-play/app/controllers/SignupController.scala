@@ -13,6 +13,7 @@ import models.auth.User
 import models.services.UserService
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
+import models.RoleType._
 
 import scala.concurrent.Future
 
@@ -50,7 +51,7 @@ class SignupController @Inject() (
           firstName = Some(data.firstName),
           lastName = Some(data.lastName),
           email = Some(data.email),
-          RegularUserRole
+          Some(RegularUserRole)
         )
         for {
           user <- userService.save(user.copy())

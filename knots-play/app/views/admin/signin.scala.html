@@ -1,0 +1,92 @@
+@(signInForm: Form[com.mohiva.play.silhouette.core.providers.Credentials])(implicit env: com.mohiva.play.silhouette.core.Environment[models.AdminUser, _], request: RequestHeader)
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Admin Dashboard</title>
+
+            <!-- bootstrap -->
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap/bootstrap.min.css")">
+
+            <!-- libraries -->
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/font-awesome.css")">
+
+            <!-- global styles -->
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/layout.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/elements.css")">
+
+            <!-- this page specific styles -->
+
+            <!-- google font libraries -->
+        <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700,300|Titillium+Web:200,300,400' rel='stylesheet' type='text/css'>
+
+            <!-- Favicon -->
+        <link type="image/x-icon" href="@routes.Assets.versioned("img/favicon.png")" rel="shortcut icon"/>
+
+            <!--[if lt IE 9]>
+		<script src="js/html5shiv.js"></script>
+		<script src="js/respond.min.js"></script>
+	<![endif]-->
+    </head>
+    <body id="login-page">
+        <div class="container">
+            @request.flash.get("error").map { msg =>
+                <div class="col-md-6 col-md-offset-3 alert alert-danger alert-error">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <strong>Error!</strong> @msg
+                </div>
+            }
+            <div class="row">
+                <div class="col-xs-12">
+                    <div id="login-box">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <header id="login-header">
+                                    <div id="login-logo">
+                                        <img src="@routes.Assets.versioned("img/logo.png")" alt=""/>
+                                    </div>
+                                </header>
+                                <div id="login-box-inner">
+                                @helper.form(action = routes.AdminCredentialsAuthController.authenticate()) {
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input name="identifier" class="form-control" type="text" placeholder="Email address">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                        <input type="password" name="password" class="form-control" placeholder="Password">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <button type="submit" class="btn btn-success col-xs-12">Login</button>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="@routes.Assets.versioned("js/libs/jquery.js")"/>
+        <script src="@routes.Assets.versioned("js/libs/bootstrap.js")"/>
+
+
+            <!-- global scripts -->
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.js"></script>
+
+            <!-- this page specific scripts -->
+
+
+            <!-- theme scripts -->
+        <script src="@routes.Assets.versioned("js/libs/scripts.js")"/>
+
+            <!-- this page specific inline scripts -->
+
+    </body>
+</html>

@@ -1,19 +1,17 @@
-import com.google.inject.Injector
+import com.google.inject.{Guice, Injector}
 import com.kenshoo.play.metrics.MetricsFilter
-import com.mohiva.play.silhouette.core.{Logger, SecuredSettings}
+import com.mohiva.play.silhouette.core.SecuredSettings
 import controllers.routes
-import play.api.GlobalSettings
+import models._
+import auth.Users
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Results._
-import play.api.Play.current
-import play.api.db.slick.Config.driver.simple._
-import com.google.inject.Guice
+import play.api.mvc._
 import utils.LoggingFilter
 import utils.di.SilhouetteModule
-import scala.concurrent.Future
-import play.api.db.slick._
-import play.api.mvc._
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
  * The global configuration.
@@ -30,16 +28,10 @@ object Global extends WithFilters(LoggingFilter, MetricsFilter) with SecuredSett
     // Now the configuration is read and we can create our Injector.
     injector = Guice.createInjector(new SilhouetteModule())
     Future {
-      DB withSession {
-        import models.db.TableDefinitions.DbRole
-        implicit session =>
-        import models._
-          Roles.insert(RegularUserRole)
-        Some(Roles.insert(AdminRole))
-        Roles.insert(ProviderRole)
-        Roles.insert(MasseurRole)
-//        Admins.insert(AdminUser(None, ))
-      }
+      Roles.initialize
+      MassageTypeEnum.initialize
+      ReservationTypeEnum.initialize
+      Users.initialize
     }
   }
 

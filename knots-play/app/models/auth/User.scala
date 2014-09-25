@@ -8,10 +8,9 @@ import models.db.TableDefinitions._
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
+import models.RoleType._
 
 import scala.concurrent.Future
-
-
 
 /**
  * The user object.
@@ -22,18 +21,20 @@ import scala.concurrent.Future
  * @param lastName Maybe the last name of the authenticated user.
  * @param email Maybe the email of the authenticated provider.
  */
-case class User(
-  id: Option[Long],
-  loginInfo: LoginInfo,
-  firstName: Option[String],
-  lastName: Option[String],
-  email: Option[String],
-  role: List[DbRole]
-) extends Identity
+case class User(id: Option[Long], loginInfo: LoginInfo, firstName: Option[String], lastName: Option[String],
+                email: Option[String], role: Option[List[DbRole]]) extends Identity
 
 object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
 
+  import models.RoleType
+
   tableQuery = users
+
+  implicit def user2DbUser(u: User): DbUser = DbUser(u.id, u.firstName, u.lastName, u.email)
+
+  override def getAll = DB withSession { implicit session =>
+    users.drop(1) list
+  }
 
   /**
    * Finds a user by its login info.
@@ -52,9 +53,10 @@ object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
               case Some(userLoginInfo) =>
                 findById(userLoginInfo.userID) match {
                   case Some(user) =>
-                    import models.RegularUserRole
-//                    val roles: List[DbRole] = Roles.getUserRoles(user.id)
-                    Some(User(user.id, loginInfo, user.firstName, user.lastName, user.email, RegularUserRole))
+                    import models.{Roles, RegularUserRole}
+                    val roles = Roles.getUserRoles(user.id.get)
+                    import models.RoleType._
+                    Some(User(user.id, loginInfo, user.firstName, user.lastName, user.email, Some(roles)))
                   case None => None
                 }
               case None => None
@@ -80,9 +82,9 @@ object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
               case Some(info) =>
                 loginInfos.filter(_.id === info.loginInfoId).firstOption match {
                   case Some(loginInfo) =>
-                    import models.RegularUserRole
-//                    val roles: List[DbRole] = Roles.getUserRoles(user.id)
-                    Some(User(user.id, LoginInfo(loginInfo.providerID, loginInfo.providerKey), user.firstName, user.lastName, user.email, RegularUserRole))
+                    import models.{Roles, RegularUserRole}
+                    val roles = Roles.getUserRoles(user.id.get)
+                    Some(User(user.id, LoginInfo(loginInfo.providerID, loginInfo.providerKey), user.firstName, user.lastName, user.email, Some(RoleType.fromDbList(roles))))
                   case None => None
                 }
               case None => None
@@ -101,18 +103,18 @@ object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
    */
   def save(user: User) = {
     DB withSession { implicit session =>
+      Future.successful {
         var userId = Some(0l)
         users.filter(u => u.email === user.email || u.id === user.id).firstOption match {
           case Some(u) =>
             throw new AuthenticationException("User already exists!")
           case None =>
-            userId = Some(((users returning users.map(_.id)).insert(
-              DbUser(user.id, user.firstName, user.lastName, user.email))))
+            userId = Some(((users returning users.map(_.id)).insert(DbUser(user.id, user.firstName, user.lastName, user.email))))
             userId
         }
 
 
-        userRoles += DbUserRole(None, userId, Some(1))
+        userRoles += DbUserRole(None, userId, user.role.get(0).id)
 
         var dbLoginInfo = DbLoginInfo(None, user.loginInfo.providerID, user.loginInfo.providerKey)
         // Insert if it does not exist yet
@@ -125,14 +127,32 @@ object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
         dbLoginInfo = loginInfos.filter(
           info => info.providerID === dbLoginInfo.providerID && info.providerKey === dbLoginInfo.providerKey).first
         // Now make sure they are connected
-        userLoginInfos.filter(info => info.userID === userId.get && info.loginInfoId === dbLoginInfo.id).firstOption match {
+        userLoginInfos.filter(
+          info => info.userID === userId.get && info.loginInfoId === dbLoginInfo.id).firstOption match {
           case Some(info) =>
           // They are connected already, we could as well omit this case ;)
           case None =>
             userLoginInfos += DbUserLoginInfo(Some(0), userId.get, dbLoginInfo.id.get)
         }
-        Future.successful {user} // We do not change the user => return it
-      }
 
+        val newUser = user.copy(id = userId)
+        newUser
+      }
+    }
+  }
+
+  def saveWithRole(user: User, rr: List[RoleType]) = DB withSession { implicit session => {
+    val userWithId = save(user)
+    userWithId match {
+      case u: User => {
+        val rr212 = rr map (r => DbUserRole(None, u.id, Some(r)))
+        rr212.foreach(userRoles.insert(_))
+      }
+    }
+  }
+  }
+
+  def initialize = DB withSession { implicit session =>
+      if(users.list.length == 0) users += DbUser(None, None, None, None)
   }
 }

@@ -45,6 +45,7 @@ class UserService extends IdentityService[User]{
           email = profile.email
         ))
       case None => // Insert a new user
+        import models.RegularUserRole
         import models.db.TableDefinitions.DbRole
         Users.save(User(
           id = None,
@@ -52,7 +53,7 @@ class UserService extends IdentityService[User]{
           firstName = profile.firstName,
           lastName = profile.lastName,
           email = profile.email,
-          List(DbRole(Some(0), "regular", Some("")))
+          Some(RegularUserRole)
         ))
     }
   }

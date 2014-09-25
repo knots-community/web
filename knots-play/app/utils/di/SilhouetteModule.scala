@@ -21,6 +21,9 @@ import play.api.Play.current
  */
 class SilhouetteModule extends AbstractModule with ScalaModule {
 
+  import models.AdminUser
+  import models.services.AdminService
+
   /**
    * Configures the module.
    */
@@ -62,6 +65,25 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
         facebookProvider.id -> facebookProvider,
         googleProvider.id -> googleProvider,
         twitterProvider.id -> twitterProvider
+      ),
+      eventBus
+    )
+  }
+
+  @Provides
+  def provideEnvironment(adminService: AdminService,
+                            authenticatorService: AuthenticatorService[CachedCookieAuthenticator],
+                            eventBus: EventBus,
+                            credentialsProvider: CredentialsProvider,
+                            facebookProvider: FacebookProvider,
+                            googleProvider: GoogleProvider,
+                            twitterProvider: TwitterProvider): Environment[AdminUser, CachedCookieAuthenticator] = {
+
+    Environment[AdminUser, CachedCookieAuthenticator](
+      adminService,
+      authenticatorService,
+      Map(
+        credentialsProvider.id -> credentialsProvider
       ),
       eventBus
     )

@@ -20,4 +20,7 @@ object Models {
   val masseurs = TableQuery[Masseurs]
   val reservations = TableQuery[MassageReservations]
   val admins = TableQuery[Admins]
+  val reservationTypes = TableQuery[ReservationTypes]
+  val masseurMassageTypes = TableQuery[MasseurMassageTypes]
+  val pastReservations = TableQuery[PastReservations]
 }
