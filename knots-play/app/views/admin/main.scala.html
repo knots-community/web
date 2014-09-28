@@ -1,4 +1,4 @@
-@(title: String, user: Option[models.AdminUser] = None)(content: Html)
+@(title: String, user: Option[models.AdminUser] = None, styles: Html = Html(""), scripts: Html = Html(""))(content: Html)
 
 <!DOCTYPE html>
 <html>
@@ -20,12 +20,14 @@
         <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/elements.css")">
 
             <!-- this page specific styles -->
-
+        @styles
             <!-- Favicon -->
         <link type="image/x-icon" href="@routes.Assets.versioned("img/favicon.png")" rel="shortcut icon"/>
 
             <!-- google font libraries -->
         <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700,300|Titillium+Web:200,300,400' rel='stylesheet' type='text/css'>
+
+
 
             <!--[if lt IE 9]>
 		<script src="js/libs/html5shiv.js"></script>
@@ -183,9 +185,10 @@
         <script src="@routes.Assets.versioned("js/libs/jquery.nanoscroller.min.js")"></script>
 
         <!-- this page specific scripts -->
-
+        @scripts
         <!-- theme scripts -->
         <script src="@routes.Assets.versioned("js/libs/scripts.js")"></script>
+
 
             <!-- this page specific inline scripts -->
 

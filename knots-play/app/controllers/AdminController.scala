@@ -138,7 +138,7 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
   }
 
   def calendar = UserAwareAction.async { implicit request =>
-    Future.successful(Ok(views.html.admin.index(request.identity)))
+    Future.successful(Ok(views.html.admin.calendar(request.identity)))
   }
 
 }
