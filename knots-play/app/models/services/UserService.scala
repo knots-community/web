@@ -40,9 +40,9 @@ class UserService extends IdentityService[User]{
     Users.find(profile.loginInfo).flatMap {
       case Some(user) => // Update user with profile
         Users.save(user.copy(
-          firstName = profile.firstName,
-          lastName = profile.lastName,
-          email = profile.email
+          firstName = profile.firstName.getOrElse(""),
+          lastName = profile.lastName.getOrElse(""),
+          email = profile.email.getOrElse("")
         ))
       case None => // Insert a new user
         import models.RegularUserRole
@@ -50,9 +50,9 @@ class UserService extends IdentityService[User]{
         Users.save(User(
           id = None,
           loginInfo = profile.loginInfo,
-          firstName = profile.firstName,
-          lastName = profile.lastName,
-          email = profile.email,
+          firstName = profile.firstName.getOrElse(""),
+          lastName = profile.lastName.getOrElse(""),
+          email = profile.email.getOrElse(""),
           Some(RegularUserRole)
         ))
     }

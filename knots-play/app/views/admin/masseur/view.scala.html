@@ -1,0 +1,52 @@
+@(user: Option[models.AdminUser], masseur: models.MasseurProfile)
+@admin.main("Masseur Profile", user) {
+
+    <div class="row" id="user-profile">
+        <div class="col-lg-3 col-md-4 col-sm-4">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>@{masseur.firstName + " " + masseur.lastName}</h2>
+                </header>
+
+                <div class="main-box-body clearfix">
+                    <div class="profile-status">
+                        <i class="fa fa-circle"></i> Online
+                    </div>
+
+                    <img src="@routes.Assets.versioned("img/samples/scarlet-159.png")" alt="" class="profile-img img-responsive center-block" />
+
+                    <div class="profile-label">
+                        <span class="label label-warning">Masseur</span>
+                    </div>
+
+                    <div class="profile-stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-o"></i>
+                        <span>Average review</span>
+                    </div>
+
+                    <div class="profile-since">
+                        Member since: Jan 2012
+                    </div>
+
+                    <div class="profile-details">
+                        <ul class="fa-ul">
+                            <li><i class="fa-li fa fa-tasks"></i>Massages: <span>1024</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="profile-message-btn center-block text-center">
+                        <a href="@routes.AdminController.editMasseur(masseur.id.get)" class="btn btn-success">
+                            <i class="fa fa-envelope"></i>
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

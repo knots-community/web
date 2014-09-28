@@ -3,24 +3,31 @@
 # ~~~~
 
 # Home page
-GET         /                              @controllers.ApplicationController.index
-GET         /user/auth/signin              @controllers.ApplicationController.signin
-GET         /user/auth/signup              @controllers.ApplicationController.signup
-GET         /user/auth/signout             @controllers.ApplicationController.signout
-GET         /user/auth/:provider           @controllers.SocialAuthController.authenticate(provider)
-POST        /user/auth/credentials         @controllers.CredentialsAuthController.authenticate
-POST        /user/auth/signup              @controllers.SignupController.signup
+GET         /                               @controllers.AdminController.index
+#GET         /user/auth/signin              @controllers.ApplicationController.signin
+#GET         /user/auth/signup              @controllers.ApplicationController.signup
+#GET         /user/auth/signout             @controllers.ApplicationController.signout
+#GET         /user/auth/:provider           @controllers.SocialAuthController.authenticate(provider)
+#POST        /user/auth/credentials         @controllers.CredentialsAuthController.authenticate
+#POST        /user/auth/signup              @controllers.SignupController.signup
 
 #Admin panel
-GET         /admin                         @controllers.AdminController.index
-GET         /admin/users                   @controllers.AdminController.listUsers
-GET         /admin/masseurs                @controllers.AdminController.listMasseurs
-POST        /admin/masseurs/add            @controllers.AdminController.addMasseur
-GET         /admin/calendar                @controllers.AdminController.calendar
-GET         /admin/auth/login              @controllers.AdminController.signin
-POST        /admin/auth/signup             @controllers.AdminSignupController.signup
-GET        /admin/auth/signup              @controllers.AdminSignupController.signup
-POST        /admin/auth/credentials        @controllers.AdminCredentialsAuthController.authenticate
+GET         /admin                          @controllers.AdminController.index
+GET         /admin/calendar                 @controllers.AdminController.calendar
+GET         /admin/users                    @controllers.AdminController.listUsers
+GET         /admin/masseurs                 @controllers.AdminController.listMasseurs
+POST        /admin/masseurs                 @controllers.AdminController.saveMasseur
+POST        /admin/masseurs/:id             @controllers.AdminController.updateMasseur(id: Long)
+GET         /admin/masseurs/add             @controllers.AdminController.addMasseur
+GET         /admin/masseurs/:id             @controllers.AdminController.showMasseur(id: Long)
+GET         /admin/masseurs/:id/edit        @controllers.AdminController.editMasseur(id: Long)
+GET        /admin/masseurs/:id/delete       @controllers.AdminController.deleteMasseur(id: Long)
+
+#Admin auth
+GET         /admin/auth/login               @controllers.AdminController.signin
+POST        /admin/auth/signup              @controllers.AdminSignupController.signup
+GET         /admin/auth/signup              @controllers.AdminSignupController.signup
+POST        /admin/auth/credentials         @controllers.AdminCredentialsAuthController.authenticate
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)

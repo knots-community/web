@@ -55,7 +55,7 @@ object Global extends WithFilters(LoggingFilter, MetricsFilter) with SecuredSett
    * @return The result to send to the client.
    */
   override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    Some(Future.successful(Redirect(routes.ApplicationController.signin)))
+    Some(Future.successful(Redirect(routes.AdminController.signin)))
   }
 
   /**
@@ -68,6 +68,6 @@ object Global extends WithFilters(LoggingFilter, MetricsFilter) with SecuredSett
    * @return The result to send to the client.
    */
   override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    Some(Future.successful(Redirect(routes.ApplicationController.signin).flashing("error" -> Messages("access.denied"))))
+    Some(Future.successful(Redirect(routes.AdminController.signin).flashing("error" -> Messages("access.denied"))))
   }
 }

@@ -48,9 +48,9 @@ class SignupController @Inject() (
         val user = User(
           id = None,
           loginInfo = loginInfo,
-          firstName = Some(data.firstName),
-          lastName = Some(data.lastName),
-          email = Some(data.email),
+          firstName = data.firstName,
+          lastName = data.lastName,
+          email = data.email,
           Some(RegularUserRole)
         )
         for {
@@ -62,7 +62,7 @@ class SignupController @Inject() (
             case Some(authenticator) =>
               env.eventBus.publish(SignUpEvent(user, request, request2lang))
               env.eventBus.publish(LoginEvent(user, request, request2lang))
-              env.authenticatorService.send(authenticator, Redirect(routes.ApplicationController.index))
+              env.authenticatorService.send(authenticator, Redirect(routes.AdminController.index))
             case None => throw new AuthenticationException("Couldn't create an authenticator")
           }
         }

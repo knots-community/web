@@ -1,0 +1,6 @@
+@(field: Field, placeholder: String, inputType: String = "text")
+
+<div class="form-group @if(field.hasErrors) {error}">
+    <label for="@field.id">@placeholder</label>
+    <input type="@inputType" name="@field.name" class="form-control" id="@field.id" placeholder="@placeholder" value="@field.value.getOrElse("")">
+</div>

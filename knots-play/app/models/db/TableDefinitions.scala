@@ -19,13 +19,13 @@ object TableDefinitions {
     def users = TableQuery[UserRoles].filter(_.roleId === id).flatMap(_.userFK)
   }
 
-  case class DbUser(id: Option[Long], firstName: Option[String], lastName: Option[String], email: Option[String])
+  case class DbUser(id: Option[Long], firstName: String, lastName: String, email: String)
 
   class Users(tag: Tag) extends RichTable[DbUser](tag, "user") {
-    def firstName = column[Option[String]]("firstName")
-    def lastName = column[Option[String]]("lastName")
-    def email = column[Option[String]]("email")
-    def * = (id.?, firstName, lastName, email) <>(DbUser.tupled, DbUser.unapply)
+    def firstName = column[String]("firstName", O.NotNull)
+    def lastName = column[String]("lastName", O.NotNull)
+    def email = column[String]("email", O.NotNull)
+    def * = (id.?, firstName, lastName, email) <> (DbUser.tupled, DbUser.unapply)
     def roles = TableQuery[UserRoles].filter(_.userId === id)
   }
 
@@ -35,8 +35,8 @@ object TableDefinitions {
     def userId = column[Long]("userId")
     def roleId = column[Long]("roleId")
 
-    def userFK = foreignKey("user_fk", userId, TableQuery[Users])(_.id /*, onUpdate = ForeignKeyAction.Cascade*/)
-    def roleFK = foreignKey("role_fk", roleId, TableQuery[Roles])(_.id /*, onUpdate = ForeignKeyAction.Restrict*/)
+    def userFK = foreignKey("user_fk", userId, TableQuery[Users])(_.id , onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+    def roleFK = foreignKey("role_fk", roleId, TableQuery[Roles])(_.id , onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
 
     def * = (id.?, userId.?, roleId.?) <>(DbUserRole.tupled, DbUserRole.unapply)
   }
@@ -54,7 +54,7 @@ object TableDefinitions {
   class UserLoginInfos(tag: Tag) extends RichTable[DbUserLoginInfo](tag, "userlogininfo") {
     def userID = column[Long]("userID", O.NotNull)
     def loginInfoId = column[Long]("loginInfoId", O.NotNull)
-    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
     def * = (id.?, userID, loginInfoId) <>(DbUserLoginInfo.tupled, DbUserLoginInfo.unapply)
   }
 
@@ -65,7 +65,7 @@ object TableDefinitions {
     def password = column[String]("password")
     def salt = column[Option[String]]("salt")
     def loginInfoId = column[Long]("loginInfoId")
-    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
     def * = (id.?, hasher, password, salt, loginInfoId) <>(DbPasswordInfo.tupled, DbPasswordInfo.unapply)
   }
 
@@ -75,7 +75,7 @@ object TableDefinitions {
     def token = column[String]("token")
     def secret = column[String]("secret")
     def loginInfoId = column[Long]("loginInfoId")
-    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
     def * = (id.?, token, secret, loginInfoId) <>(DbOAuth1Info.tupled, DbOAuth1Info.unapply)
   }
 
@@ -88,7 +88,7 @@ object TableDefinitions {
     def expiresIn = column[Option[Int]]("expiresin")
     def refreshToken = column[Option[String]]("refreshtoken")
     def loginInfoId = column[Long]("logininfoid")
-    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def loginInfoFk = foreignKey("login_info_fk", loginInfoId, TableQuery[LoginInfos])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
     def * = (id.?, accessToken, tokenType, expiresIn, refreshToken, loginInfoId) <>(DbOAuth2Info.tupled, DbOAuth2Info.unapply)
   }
 
@@ -96,7 +96,7 @@ object TableDefinitions {
 
   class Admins(tag: Tag) extends RichTable[Admin](tag, "admins") {
     def userId = column[Long]("userId", O.NotNull)
-    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
     def * = (id.?, userId.?) <>(Admin.tupled, Admin.unapply)
   }
 
@@ -106,7 +106,7 @@ object TableDefinitions {
     def userId = column[Long]("userId", O.NotNull)
     def sex = column[String]("sex", O.NotNull)
     def isActive = column[Boolean]("isActive", O.NotNull)
-    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
 
     def * = (id.?, userId, sex, isActive) <>(Masseur.tupled, Masseur.unapply)
   }
@@ -117,7 +117,7 @@ object TableDefinitions {
     def masseurId = column[Long]("masseur_id", O.NotNull)
     def massageTypeId = column[Long]("massage_type_id", O.NotNull)
     def * = (id.?, masseurId, massageTypeId) <>(MasseurMassageType.tupled, MasseurMassageType.unapply)
-    def masseurFk = foreignKey("masseur_fk", masseurId, TableQuery[Masseurs])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def masseurFk = foreignKey("masseur_fk", masseurId, TableQuery[Masseurs])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
     def massageTypeFk = foreignKey("massage_type_fk", massageTypeId, TableQuery[MassageTypes])(_.id, onUpdate = ForeignKeyAction.Cascade)
 
   }

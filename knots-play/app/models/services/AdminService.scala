@@ -38,9 +38,9 @@ class AdminService extends IdentityService[AdminUser] {
    */
   def save[A <: AuthInfo](profile: CommonSocialProfile[A]) = {
     AdminUsers.find(profile.loginInfo).map { case Some(user) =>
-      AdminUsers.save(user.copy(firstName = profile.firstName, lastName = profile.lastName, email = profile.email))
+      AdminUsers.save(user.copy(firstName = profile.firstName.getOrElse(""), lastName = profile.lastName.getOrElse(""), email = profile.email.getOrElse("")))
     case None => // Insert a new user
-      AdminUsers.save(AdminUser(id = None, loginInfo = profile.loginInfo, firstName = profile.firstName, lastName = profile.lastName, email = profile.email, userId = None))
+      AdminUsers.save(AdminUser(id = None, loginInfo = profile.loginInfo, firstName = profile.firstName.getOrElse(""), lastName = profile.lastName.getOrElse(""), email = profile.email.getOrElse(""), userId = None))
     }
 
   }

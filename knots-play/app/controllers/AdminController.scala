@@ -4,8 +4,11 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Environment, Silhouette}
-import models.{AdminUser, Masseurs}
-import models.auth.{User, Users}
+import models.auth.Users
+import models.{AdminUser, MasseurProfile, Masseurs}
+import play.api.data.Form
+import play.api.data.Forms._
+import models.{Shiatsu, Swedish, MassageTypeEnum, Chair}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -15,6 +18,32 @@ import scala.concurrent.Future
  */
 class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedCookieAuthenticator])
     extends Silhouette[AdminUser, CachedCookieAuthenticator] {
+
+
+    /**
+     * A play framework form.
+     */
+    val addMasseurForm = Form(
+      mapping(
+        "id" -> optional(longNumber),
+        "userId" -> optional(longNumber),
+        "firstName" -> nonEmptyText(1),
+        "lastName" -> nonEmptyText(1),
+        "email" -> email,
+        "sex" -> nonEmptyText()
+//       "chair" -> boolean,
+//      "swedish" -> boolean,
+//      "shiatsu" -> boolean
+      )((id, userId, firstName, lastName, email, sex) => {
+        import collection.mutable.ListBuffer
+        val mt = Chair ::: Swedish ::: Shiatsu
+//        if(chair) mt ++ Chair
+//        if(swedish) mt ++ Swedish
+//        if(shiatsu) mt ++ Shiatsu
+        MasseurProfile(id, userId, firstName, lastName, email, sex, massageTypes = Some(mt.toList))
+      })
+      ((mp: MasseurProfile) => Some(mp.id, mp.userId, mp.firstName, mp.lastName, mp.email, mp.sex))
+    )
 
   /**
    * Handles the Sign Up action.
@@ -56,8 +85,56 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
     futureMasseurs.map { masseurList => Ok(views.html.admin.masseur.list(request.identity, masseurList))}
   }
 
-  def addMasseur = UserAwareAction.async { implicit request =>
-    Future.successful(Ok(views.html.admin.index(request.identity)))
+  def addMasseur = SecuredAction.async { implicit request =>
+      val form = if(request.flash.get("error").isDefined) addMasseurForm.bind(request.flash.data) else addMasseurForm
+    Future.successful(Ok(views.html.admin.masseur.add(Some(request.identity), form)))
+  }
+
+  def saveMasseur = SecuredAction { implicit request =>
+    val masseurForm = addMasseurForm.bindFromRequest()
+    if (masseurForm.hasErrors) {
+      import play.Logger
+      Logger.error(masseurForm.data.toString());
+      Logger.error(masseurForm.errors.toString());
+    }
+    masseurForm.fold(
+      hasErrors = { form =>
+        import play.api.mvc.Flash
+        Redirect(routes.AdminController.addMasseur()).flashing(Flash(form.data))
+      },
+      success = { newMasseur =>
+        Masseurs.addMasseur(newMasseur)
+        Redirect(routes.AdminController.listMasseurs())
+      }
+    )
+  }
+
+  def updateMasseur(id: Long) = SecuredAction { implicit request =>
+    addMasseurForm.bindFromRequest().fold(
+      hasErrors = { form => import play.api.mvc.Flash
+        Redirect(routes.AdminController.editMasseur(id)).flashing(Flash(form.data))
+      },
+    success = { updatedMasseur =>
+      Masseurs.addMasseur(updatedMasseur.copy(id=Some(id)))
+      Redirect(routes.AdminController.listMasseurs())
+    }
+    )
+  }
+
+  def editMasseur(masseurId: Long) = SecuredAction { implicit request =>
+    val m: MasseurProfile = Masseurs.find(masseurId)
+    val form = addMasseurForm.fill(m)
+    Ok(views.html.admin.masseur.edit(Some(request.identity), form, masseurId))
+  }
+
+  def deleteMasseur(masseurId: Long) = SecuredAction { implicit request =>
+    Masseurs.delete(masseurId)
+    Redirect(routes.AdminController.listMasseurs())
+  }
+
+  def showMasseur(masseurId: Long) = SecuredAction { implicit request =>
+    val masseur = Masseurs.find(masseurId)
+    Ok(views.html.admin.masseur.view(Some(request.identity), masseur))
   }
 
   def calendar = UserAwareAction.async { implicit request =>

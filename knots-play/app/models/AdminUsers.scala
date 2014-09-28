@@ -16,8 +16,8 @@ import auth.Users._
 /*
  * Created by anton on 9/21/14.
  */
-case class AdminUser(id: Option[Long], loginInfo: LoginInfo, firstName: Option[String], lastName: Option[String],
-                     email: Option[String], userId: Option[Long]) extends Identity {
+case class AdminUser(id: Option[Long], loginInfo: LoginInfo, firstName: String, lastName: String,
+                     email: String, userId: Option[Long]) extends Identity {
 
   implicit def admin2DbUser(admin: AdminUser): DbUser = {
     return DbUser(admin.id, admin.firstName, admin.lastName, admin.email)

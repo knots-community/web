@@ -62,7 +62,7 @@
                             <li class="dropdown profile-dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="@routes.Assets.versioned("img/samples/scarlet-159.png")"  alt=""/>
-                                    <span class="hidden-xs">@{if(user.isDefined) user.get.firstName.get + " " + user.get.lastName.get}</span> <b class="caret"></b>
+                                    <span class="hidden-xs">@{if(user.isDefined) user.get.firstName + " " + user.get.lastName}</span> <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="user-profile.html"><i class="fa fa-user"></i>Profile</a></li>
@@ -85,7 +85,7 @@
                                 <img alt="" src="@routes.Assets.versioned("img/samples/scarlet-159.png")"/>
                                 <div class="user-box">
                                     <span class="name">
-									Welcome<br/>@{if(user.isDefined) {user.get.firstName.get }}
+									Welcome<br/>@{if(user.isDefined) {user.get.firstName }}
 								</span>
                                     <span class="status">
                                         <i class="fa fa-circle"></i> Online

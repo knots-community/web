@@ -1,11 +1,13 @@
 package controllers
 
-import com.mohiva.play.silhouette.core.{LogoutEvent, Environment, Silhouette}
-import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
-import models.auth.User
-import scala.concurrent.Future
 import javax.inject.Inject
+
+import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
+import com.mohiva.play.silhouette.core.{Environment, Silhouette}
 import forms._
+import models.auth.User
+
+import scala.concurrent.Future
 
 /**
  * The basic application controller.
@@ -31,7 +33,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
    */
   def signin = UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
+//      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
       case None => Future.successful(Ok(views.html.signin(SignInForm.form)))
     }
   }
@@ -43,7 +45,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
    */
   def signup = UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
+//      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
       case None => Future.successful(Ok(views.html.signup(SignUpForm.form)))
     }
   }
@@ -53,8 +55,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
    *
    * @return The result to display.
    */
-  def signout = SecuredAction.async { implicit request =>
-    env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
-    Future.successful(env.authenticatorService.discard(Redirect(routes.ApplicationController.index)))
-  }
+//  def signout = SecuredAction.async { implicit request =>
+//    env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
+//    Future.successful(env.authenticatorService.discard(Redirect(routes.ApplicationController.index)))
+//  }
 }

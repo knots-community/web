@@ -38,7 +38,7 @@ class AdminSignupController @Inject()(implicit val env: Environment[AdminUser, C
     SignUpForm.form.bindFromRequest.fold(form => Future.successful(BadRequest(views.html.admin.signup(form))), data => {
       val loginInfo = LoginInfo(CredentialsProvider.Credentials, data.email)
       val authInfo = passwordHasher.hash(data.password)
-      val admin = AdminUser(id = None, loginInfo = loginInfo, firstName = Some(data.firstName), lastName = Some(data.lastName), email = Some(data.email), userId = None)
+      val admin = AdminUser(id = None, loginInfo = loginInfo, firstName = data.firstName, lastName = data.lastName, email = data.email, userId = None)
       for {admin <- adminService.save(admin.copy())
            authInfo <- authInfoService.save(loginInfo, authInfo)
            maybeAuthenticator <- env.authenticatorService.create(admin)} yield {

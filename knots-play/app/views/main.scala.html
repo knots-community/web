@@ -27,7 +27,7 @@
                         <li><a href="#benefits" class="nav-link">Benefits</a></li>
                         <li><a href="#about" class="nav-link">About</a></li>
                         <li><a href="#contact">Contact Us</a></li>
-                        <li><a class="btn btn-warning btn-sm navbar-btn" type="button" href="@{if(user.isEmpty) routes.ApplicationController.signin() else routes.ApplicationController.signout()}">@{if(user.isEmpty) "Sign In" else "Log Out"}</a></li>
+                        @*<li><a class="btn btn-warning btn-sm navbar-btn" type="button" href="@{if(user.isEmpty) routes.AdminController.signin() else routes.AdminSignupController.signout()}">@{if(user.isEmpty) "Sign In" else "Log Out"}</a></li>*@
                     </ul>
                 </div> <!-- /.navbar-collapse -->
             </div> <!-- /.container -->

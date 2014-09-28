@@ -1,0 +1,8 @@
+@(field: Field, label: String)
+
+<div class="checkbox-nice @if(field.hasErrors) {error}">
+    <input type="checkbox" id="@field.id" name="@field.name" checked="checked" />
+    <label for="@field.id">
+        @label
+    </label>
+</div>

@@ -4,11 +4,11 @@ import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
 import com.mohiva.play.silhouette.core.{Identity, LoginInfo}
 import models.Dao
 import models.Models._
+import models.RoleType._
 import models.db.TableDefinitions._
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
-import models.RoleType._
 
 import scala.concurrent.Future
 
@@ -21,8 +21,8 @@ import scala.concurrent.Future
  * @param lastName Maybe the last name of the authenticated user.
  * @param email Maybe the email of the authenticated provider.
  */
-case class User(id: Option[Long], loginInfo: LoginInfo, firstName: Option[String], lastName: Option[String],
-                email: Option[String], role: Option[List[DbRole]]) extends Identity
+case class User(id: Option[Long], loginInfo: LoginInfo, firstName: String, lastName: String,
+                email: String, role: Option[List[DbRole]]) extends Identity
 
 object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
 
@@ -53,9 +53,8 @@ object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
               case Some(userLoginInfo) =>
                 findById(userLoginInfo.userID) match {
                   case Some(user) =>
-                    import models.{Roles, RegularUserRole}
+                    import models.Roles
                     val roles = Roles.getUserRoles(user.id.get)
-                    import models.RoleType._
                     Some(User(user.id, loginInfo, user.firstName, user.lastName, user.email, Some(roles)))
                   case None => None
                 }
@@ -82,7 +81,7 @@ object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
               case Some(info) =>
                 loginInfos.filter(_.id === info.loginInfoId).firstOption match {
                   case Some(loginInfo) =>
-                    import models.{Roles, RegularUserRole}
+                    import models.Roles
                     val roles = Roles.getUserRoles(user.id.get)
                     Some(User(user.id, LoginInfo(loginInfo.providerID, loginInfo.providerKey), user.firstName, user.lastName, user.email, Some(RoleType.fromDbList(roles))))
                   case None => None
@@ -153,6 +152,6 @@ object Users extends Dao[models.db.TableDefinitions.Users, DbUser] {
   }
 
   def initialize = DB withSession { implicit session =>
-      if(users.list.length == 0) users += DbUser(None, None, None, None)
+    if(users.list.length == 0) users += DbUser(None, "", "", "")
   }
 }
