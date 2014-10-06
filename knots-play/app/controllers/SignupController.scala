@@ -39,7 +39,7 @@ class SignupController @Inject() (
    */
   def signup = Action.async { implicit request =>
     SignUpForm.form.bindFromRequest.fold (
-      form => Future.successful(BadRequest(views.html.signup(form))),
+      form => Future.successful(BadRequest(views.html.landing(None, None))),
       data => {
         import models.RegularUserRole
         import models.RoleType._
@@ -62,7 +62,7 @@ class SignupController @Inject() (
             case Some(authenticator) =>
               env.eventBus.publish(SignUpEvent(user, request, request2lang))
               env.eventBus.publish(LoginEvent(user, request, request2lang))
-              env.authenticatorService.send(authenticator, Redirect(routes.AdminController.index))
+              env.authenticatorService.send(authenticator, Redirect(routes.ApplicationController.index))
             case None => throw new AuthenticationException("Couldn't create an authenticator")
           }
         }

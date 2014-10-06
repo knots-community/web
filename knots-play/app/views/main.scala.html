@@ -1,37 +1,82 @@
 @(title: String, user: Option[models.auth.User] = None)(content: Html)
-
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
     <head>
-        <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.css")">
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/strapped.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("img/favicon.png")">
-        <script src="@routes.Assets.versioned("lib/jquery/jquery.js")" type="text/javascript"></script>
-    </head>
-    <body>
-        <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand nav-link" href="#top">Knots</a>
-                </div> <!-- /.navbar-header -->
+        <meta charset="utf-8">
+            <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-                <div class="collapse navbar-collapse navbar-ex1-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#benefits" class="nav-link">Benefits</a></li>
-                        <li><a href="#about" class="nav-link">About</a></li>
-                        <li><a href="#contact">Contact Us</a></li>
-                        @*<li><a class="btn btn-warning btn-sm navbar-btn" type="button" href="@{if(user.isEmpty) routes.AdminController.signin() else routes.AdminSignupController.signout()}">@{if(user.isEmpty) "Sign In" else "Log Out"}</a></li>*@
-                    </ul>
-                </div> <!-- /.navbar-collapse -->
-            </div> <!-- /.container -->
-        </nav> <!-- /.navbar -->
-    @content
+        <title>Knots - Get Energized!</title>
+
+            <!-- Stylesheets -->
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap/bootstrap.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/font-awesome.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/styles.css")">
+
+            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+            <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+            <!-- Favicons -->
+        @*<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png">*@
+        @*<link rel="shortcut icon" href="img/ico/favicon.png">*@
+    </head>
+
+    <body>
+        <header id="site-header" class="site-header">
+            <div class="container">
+                <h1><a class="site-title pull-left" href="@routes.ApplicationController.index()"><i class=""></i>
+                    Knots</a>
+                </h1>
+                <div class="@{if(user.isDefined) "hidden" else "btn-users text-right"}">
+                    <a class="btn" data-toggle="modal" data-target="#loginModal" href="#">Login</a> |
+                    <a class="btn" data-toggle="modal" data-target="#registerModal" href="#">Register</a>
+                </div>
+            </div> <!-- /container -->
+        </header>
+        <div class="container">
+
+            <div class="header-description">
+                <h2>Get Awesome Massage!</h2>
+                <a class="btn btn-lg btn-header" href="#">Book Now</a>
+            </div> <!-- /.header-description -->
+
+            <div class="header-features">
+                <div class="row">
+                    <div class="col-sm-6 header-feature">
+                        <h3><i class="fa fa-random"></i> &nbsp; Relax </h3>
+                        <p>Proin ut iaculis nisl. Nulla dignissim neque magna, id hendrerit metus. Mauris non turpis eu arcu volutpat cursus. Etiam hendrerit erat ac eros auctor at eleifend lacus tincidunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eu dignissim risus.</p>
+                    </div>
+                    <div class="col-sm-6 header-feature">
+                        <h3> <i class="fa fa-dollar"></i> &nbsp; Very cheap</h3>
+                        <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst. Nulla et porta nunc. Duis volutpat tristique nisl ac adipiscing. Sed eget nibh sit amet enim faucibus porta.</p>
+                    </div>
+                </div>
+            </div> <!-- /.header-features -->
+
+
+        </div> <!-- /.container -->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <p class="pull-right copyright">&copy; All Right Reserved.</p>
+                </div>
+            </div>
+        </div>
+
+
+            @content
+
+
+
+            <!-- Le javascript
+    ================================================== -->
+            <!-- Placed at the end of the document so the pages load faster -->
+        <script src="@routes.Assets.versioned("js/libs/jquery.js")"></script>
+        <script src="@routes.Assets.versioned("js/libs/bootstrap.js")"></script>
     </body>
 </html>

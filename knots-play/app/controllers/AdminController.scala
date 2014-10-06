@@ -55,7 +55,7 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
       case Some(user) => import concurrent.Future
         Future.successful(Redirect(routes.AdminController.index()))
       case None => import forms.SignUpForm
-        Future.successful(Ok(views.html.signup(SignUpForm.form)))
+        Future.successful(Ok(views.html.admin.signup(SignUpForm.form)))
     }
   }
 
