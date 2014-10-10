@@ -5,8 +5,20 @@
 # Home page
 GET         /                                 @controllers.ApplicationController.index
 #GET         /user/auth/signout             @controllers.ApplicationController.signout
-POST        /users/auth                       @controllers.CredentialsAuthController.authenticate
-POST        /users/signup                     @controllers.SignupController.signup
+#POST        /users/auth                       @controllers.CredentialsAuthController.authenticate
+#POST        /users/signup                     @controllers.SignupController.signup
+
+
+GET         /assets/jsroutes.js        @controllers.ApplicationController.jsRoutes()
+
+# Routes used by Angular
+# ~~~~
+
+# Authentication
+POST        /login                            @controllers.ApplicationController.signin
+#POST        /logout                           @controllers.Application.logout()
+
+GET         /authuser                         @controllers.UsersController.authUser
 
 #Admin panel
 GET         /admin                            @controllers.AdminController.index

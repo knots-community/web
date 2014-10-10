@@ -1,44 +1,5 @@
-@(user: Option[models.auth.User] = None, signInForm: Option[Form[com.mohiva.play.silhouette.core.providers.Credentials]])
+@()
 
-@main("Welcome!", user) {
 
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-        <div class="modal-dialog contact-form">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                    <h4 class="modal-title" id="myModalLabel">Sign In to Knots</h4>
-                </div>
-                <div class="modal-body">
-                @helper.form(action = routes.CredentialsAuthController.authenticate()) {
-                    <p><input type="email" class="form-control input-lg" name="eid" id="email" placeholder="Email"></p>
-                    <p><input type="password" class="form-control input-lg" name="passwd" placeholder="Password"></p>
-                    <p><button type="submit" class="btn btn-success btn-block btn-lg">Sign in</button></p>
-                    <a href="#">Forgot Password?</a>
-                }
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-        <div class="modal-dialog contact-form">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                    <h4 class="modal-title" id="myModalLabel">Sign Up for new Knots account</h4>
-                </div>
-                <div class="modal-body">
-                @helper.form(action = routes.SignupController.signup()) {
-                    <p><input type="text" class="form-control input-lg" name="firstName" placeholder="First Name"></p>
-                    <p><input type="text" class="form-control input-lg" name="lastName" placeholder="Last Name"></p>
-                    <p><input type="email" class="form-control input-lg" name="email" id="email" placeholder="Email"></p>
-                    <p><input type="password" class="form-control input-lg" name="password" placeholder="Password"></p>
-                    <p><button type="submit" class="btn btn-success btn-block btn-lg">Create Account</button></p>
-                }
-                </div>
-            </div>
-        </div>
-    </div>
 
-}

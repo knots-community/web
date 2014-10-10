@@ -9,8 +9,7 @@ import com.mohiva.play.silhouette.core.providers._
 import com.mohiva.play.silhouette.core.services.AuthInfoService
 import forms.SignInForm
 import models.AdminUser
-import models.auth.User
-import models.services.{AdminService, UserService}
+import models.services.{AdminService}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 

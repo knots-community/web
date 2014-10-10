@@ -1,11 +1,11 @@
 package models
 
-import db.TableDefinitions.{ReservationTypes, MassageReservation, MassageReservations, ReservationType}
-import models.Models._
+import java.sql.Timestamp
+
+import models.db.TableDefinitions.{MassageReservation, ReservationType}
+import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
-import play.api.Play.current
-import java.sql.Timestamp
 
 /**
  * Created by anton on 9/20/14.
@@ -17,9 +17,7 @@ case object NoShow extends ReservationTypeEnum
 case object Completed extends ReservationTypeEnum
 case object Unavailable extends ReservationTypeEnum
 
-object ReservationTypeEnum extends Dao[ReservationTypes, ReservationType] {
-  tableQuery = reservationTypes
-
+object ReservationTypeEnum extends Dao {
   implicit def typeToDbType(rt: ReservationTypeEnum): ReservationType = {
     rt match {
       case Regular => ReservationType(Some(0), "regular", Some("booking in advance"))
@@ -60,9 +58,8 @@ object ReservationTypeEnum extends Dao[ReservationTypes, ReservationType] {
 
 }
 
-object Reservations extends Dao[MassageReservations, MassageReservation] {
+object Reservations extends Dao {
 
-  tableQuery = reservations
   val minDateTime = new Timestamp(0)
   val maxDateTime = new Timestamp(Long.MaxValue)
 

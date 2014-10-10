@@ -1,6 +1,6 @@
-@(title: String, user: Option[models.auth.User] = None)(content: Html)
+@()
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"ng-app='Knots'>
     <head>
         <meta charset="utf-8">
             <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
@@ -15,6 +15,16 @@
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap/bootstrap.min.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/font-awesome.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/styles.css")">
+        <script type="text/javascript" src="@routes.Assets.versioned("jsroutes.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libs/angular.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libs/angular-route.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libs/angular-cookies.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libs/angular-cookies.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libs/ui-bootstrap-tpls-0.11.2.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/modules.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/services.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/controllers.js")"></script>
+        <script type="text/javascript" src="@routes.ApplicationController.jsRoutes()"></script>
 
             <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!--[if lt IE 9]>
@@ -27,56 +37,50 @@
     </head>
 
     <body>
-        <header id="site-header" class="site-header">
-            <div class="container">
+        <header id="site-header" class="site-header" ng-controller='HeaderCtrl' ng-cloak>
+            <div class="container" data-ng-switch="!!user" data-ng-cloak>
                 <h1><a class="site-title pull-left" href="@routes.ApplicationController.index()"><i class=""></i>
                     Knots</a>
                 </h1>
-                <div class="@{if(user.isDefined) "hidden" else "btn-users text-right"}">
-                    <a class="btn" data-toggle="modal" data-target="#loginModal" href="#">Login</a> |
-                    <a class="btn" data-toggle="modal" data-target="#registerModal" href="#">Register</a>
-                </div>
-            </div> <!-- /container -->
-        </header>
-        <div class="container">
-
-            <div class="header-description">
-                <h2>Get Awesome Massage!</h2>
-                <a class="btn btn-lg btn-header" href="#">Book Now</a>
-            </div> <!-- /.header-description -->
-
-            <div class="header-features">
-                <div class="row">
-                    <div class="col-sm-6 header-feature">
-                        <h3><i class="fa fa-random"></i> &nbsp; Relax </h3>
-                        <p>Proin ut iaculis nisl. Nulla dignissim neque magna, id hendrerit metus. Mauris non turpis eu arcu volutpat cursus. Etiam hendrerit erat ac eros auctor at eleifend lacus tincidunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eu dignissim risus.</p>
-                    </div>
-                    <div class="col-sm-6 header-feature">
-                        <h3> <i class="fa fa-dollar"></i> &nbsp; Very cheap</h3>
-                        <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst. Nulla et porta nunc. Duis volutpat tristique nisl ac adipiscing. Sed eget nibh sit amet enim faucibus porta.</p>
+                <div data-ng-switch-when="false">
+                    <div class="btn-users text-right" ng-controller="LoginCtrl">
+                        <a class="btn" href="" ng-click="openLogin()">Login</a> |
+                        <a class="btn" href="#/register">Register</a>
                     </div>
                 </div>
-            </div> <!-- /.header-features -->
-
-
-        </div> <!-- /.container -->
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <p class="pull-right copyright">&copy; All Right Reserved.</p>
+                <div data-ng-switch-when="true">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-user"></span> {{user.name}}
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                                <li>
+                                    <a href="" data-ng-click="logout()">
+                                        <span class="glyphicon glyphicon-off"></span> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
+        </header>
+
+        <div class="container" data-ng-cloak>
+            <div data-ng-view></div>
         </div>
 
-
-            @content
-
-
-
-            <!-- Le javascript
-    ================================================== -->
-            <!-- Placed at the end of the document so the pages load faster -->
-        <script src="@routes.Assets.versioned("js/libs/jquery.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/bootstrap.js")"></script>
+        <footer>
+            <div class="container" data-ng-controller='FooterCtrl'>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="pull-right copyright">&copy; All Right Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </body>
 </html>

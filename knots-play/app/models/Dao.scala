@@ -1,55 +1,28 @@
 package models
 
-import play.api.Play.current
+import models.db.TableDefinitions._
 import play.api.db.slick.Config.driver.simple._
-import play.api.db.slick._
-import utils.db.RichTable
 
 /**
  * Created by anton on 9/18/14.
  */
-trait Dao[T <: RichTable[A], A] {
+private[models] trait Dao {
 
-  var tableQuery: TableQuery[T] = _
-
-  /*
-    * Find a specific entity by id.
-    */
-  def findById(id: Long)(implicit session: Session): Option[A] = {
-    DB withSession { implicit session =>
-      tableQuery.filter(_.id === id).firstOption
-    }
-  }
-
-  /**
-   * Delete a specific entity by id. If successfully completed return true, else false
-   */
-  def delete(id: Long)(implicit session: Session) = {
-    DB withSession { implicit session =>
-
-      tableQuery.filter(_.id === id).delete > 0
-    }
-  }
-
-  /**
-   * Update a specific entity by id. If successfully completed return true, else false
-   */
-  def update(id: Int, entity: A) = {
-    DB withSession { implicit session =>
-      tableQuery.update(entity) > 0
-    }
-  }
-
-  def insert(entity: A) = {
-    DB withSession { implicit session =>
-      tableQuery += entity
-    }
-  }
-
-  def getAll() = {
-    DB withSession { implicit session =>
-      tableQuery.list
-    }
-  }
+val users = TableQuery[Users]
+val roles = TableQuery[Roles]
+val userRoles = TableQuery[UserRoles]
+val loginInfos = TableQuery[LoginInfos]
+val userLoginInfos = TableQuery[UserLoginInfos]
+val passwordInfos = TableQuery[PasswordInfos]
+val oAuth1Infos = TableQuery[OAuth1Infos]
+val oAuth2Infos = TableQuery[OAuth2Infos]
+val massageTypes = TableQuery[MassageTypes]
+val masseurs = TableQuery[Masseurs]
+val reservations = TableQuery[MassageReservations]
+val admins = TableQuery[Admins]
+val reservationTypes = TableQuery[ReservationTypes]
+val masseurMassageTypes = TableQuery[MasseurMassageTypes]
+val pastReservations = TableQuery[PastReservations]
+val tokenPasswords = TableQuery[TokenPasswords]
 
 }

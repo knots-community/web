@@ -4,11 +4,9 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Environment, Silhouette}
-import models.auth.Users
-import models.{AdminUser, MasseurProfile, Masseurs}
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
-import models.{Shiatsu, Swedish, MassageTypeEnum, Chair}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

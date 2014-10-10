@@ -1,10 +1,8 @@
-package models.auth
+package models
 
 import com.mohiva.play.silhouette.contrib.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.providers.PasswordInfo
-import models.Dao
-import models.Models._
 import models.db.TableDefinitions.DbPasswordInfo
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
@@ -16,11 +14,9 @@ import scala.concurrent.Future
 /**
  * The DAO to store the password information.
  */
-class PasswordInfoDao extends DelegableAuthInfoDAO[PasswordInfo] with Dao[models.db.TableDefinitions.PasswordInfos, DbPasswordInfo]  {
+class PasswordInfoDao extends DelegableAuthInfoDAO[PasswordInfo] with Dao {
 
-  tableQuery = passwordInfos
-
-  /**
+  /*
    * Saves the password info.
    *
    * @param loginInfo The login info for which the auth info should be saved.

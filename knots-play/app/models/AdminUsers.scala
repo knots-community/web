@@ -1,17 +1,12 @@
 package models
 
-import auth.User
 import com.mohiva.play.silhouette.core.{Identity, LoginInfo}
-import db.TableDefinitions.{DbRole, Admin}
-import Models._
-import db.TableDefinitions.DbUser
-import auth.Users
+import models.db.TableDefinitions.{Admin, User}
+import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
-import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.Play.current
-import concurrent.Future
-import auth.Users._
+
+import scala.concurrent.Future
 
 /*
  * Created by anton on 9/21/14.
@@ -19,14 +14,13 @@ import auth.Users._
 case class AdminUser(id: Option[Long], loginInfo: LoginInfo, firstName: String, lastName: String,
                      email: String, userId: Option[Long]) extends Identity {
 
-  implicit def admin2DbUser(admin: AdminUser): DbUser = {
-    return DbUser(admin.id, admin.firstName, admin.lastName, admin.email)
+  implicit def admin2User(admin: AdminUser): User = {
+    return User(admin.id, admin.firstName, admin.lastName, admin.email)
   }
 
 }
 
-object AdminUsers extends Dao[db.TableDefinitions.Admins, Admin] {
-  tableQuery = admins
+object AdminUsers extends Dao {
 
   implicit def admin2AdminUser(admin: AdminUser): Admin = {
     return Admin(admin.id, admin.userId)
@@ -34,18 +28,18 @@ object AdminUsers extends Dao[db.TableDefinitions.Admins, Admin] {
 
   def save(admin: AdminUser) = DB.withSession { implicit session =>
     Future.successful {
-      import db.TableDefinitions.{DbLoginInfo, DbUserRole}
+      import models.db.TableDefinitions.{DbLoginInfo, DbUserRole}
       var newUserId = Some(0l)
       users.filter(u => u.email === admin.email || u.id === admin.id).firstOption match {
         case Some(u) =>
           import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
           throw new AuthenticationException("User already exists!")
         case None =>
-          newUserId = Some(((users returning users.map(_.id)).insert(DbUser(admin.id, admin.firstName, admin.lastName, admin.email))))
+          newUserId = Some(((users returning users.map(_.id)).insert(User(admin.id, admin.firstName, admin.lastName, admin.email))))
           newUserId
       }
 
-      import RoleType._
+      import models.RoleType._
       userRoles += DbUserRole(None, newUserId, Some(AdminRole))
 
       var dbLoginInfo = DbLoginInfo(None, admin.loginInfo.providerID, admin.loginInfo.providerKey)
@@ -64,7 +58,7 @@ object AdminUsers extends Dao[db.TableDefinitions.Admins, Admin] {
         case Some(info) =>
         // They are connected already, we could as well omit this case ;)
         case None =>
-          import db.TableDefinitions.DbUserLoginInfo
+          import models.db.TableDefinitions.DbUserLoginInfo
           userLoginInfos += DbUserLoginInfo(Some(0), newUserId.get, dbLoginInfo.id.get)
       }
 
@@ -86,12 +80,12 @@ object AdminUsers extends Dao[db.TableDefinitions.Admins, Admin] {
                   admins.filter(_.userId === user.id).firstOption match {
                     case Some(admin) => Some(AdminUser(admin.id, loginInfo, user.firstName, user.lastName, user.email, user.id))
                     case None => None
-                    case None => None
                   }
                 case None => None
               }
             case None => None
           }
+        case None => None
       }
     }
   }

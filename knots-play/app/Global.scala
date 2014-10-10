@@ -3,14 +3,12 @@ import com.kenshoo.play.metrics.MetricsFilter
 import com.mohiva.play.silhouette.core.SecuredSettings
 import controllers.routes
 import models._
-import auth.Users
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Results._
 import play.api.mvc._
 import utils.LoggingFilter
 import utils.di.SilhouetteModule
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
@@ -27,12 +25,10 @@ object Global extends WithFilters(LoggingFilter, MetricsFilter) with SecuredSett
     super.onStart(app)
     // Now the configuration is read and we can create our Injector.
     injector = Guice.createInjector(new SilhouetteModule())
-    Future {
-      Roles.initialize
-      MassageTypeEnum.initialize
-      ReservationTypeEnum.initialize
-      Users.initialize
-    }
+    Roles.initialize
+    MassageTypeEnum.initialize
+    ReservationTypeEnum.initialize
+    Users.initialize
   }
 
   /**

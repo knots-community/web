@@ -1,10 +1,8 @@
-package models.auth
+package models
 
 import com.mohiva.play.silhouette.contrib.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.providers.OAuth2Info
-import models.Dao
-import models.Models._
 import models.db.TableDefinitions.DbOAuth2Info
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
@@ -15,9 +13,7 @@ import scala.concurrent.Future
 /**
  * The DAO to store the OAuth2 information.
  */
-class OAuth2InfoDao extends DelegableAuthInfoDAO[OAuth2Info] with Dao[models.db.TableDefinitions.OAuth2Infos, DbOAuth2Info]  {
-
-  tableQuery = oAuth2Infos
+class OAuth2InfoDao extends DelegableAuthInfoDAO[OAuth2Info] with Dao {
 
   /**
    * Saves the OAuth2 info.

@@ -10,8 +10,7 @@ import com.mohiva.play.silhouette.core.providers.oauth2._
 import com.mohiva.play.silhouette.core.services._
 import com.mohiva.play.silhouette.core.utils._
 import com.mohiva.play.silhouette.core.{Environment, EventBus}
-import models.auth.User
-import models.services.UserService
+import models.{PasswordInfoDao, OAuth2InfoDao, OAuth1InfoDao}
 import net.codingwell.scalaguice.ScalaModule
 import play.api.Play
 import play.api.Play.current
@@ -28,7 +27,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    * Configures the module.
    */
   def configure() {
-    import models.auth.{PasswordInfoDao, OAuth2InfoDao, OAuth1InfoDao}
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDao]
     bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDao]
     bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDao]
@@ -37,37 +35,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
     bind[EventBus].toInstance(EventBus())
-  }
-
-  /**
-   * Provides the Silhouette environment.
-   *
-   * @param userService The user service implementation.
-   * @param authenticatorService The authentication service implementation.
-   * @param eventBus The event bus instance.
-   * @return The Silhouette environment.
-   */
-  @Provides
-  def provideEnvironment(
-    userService: UserService,
-    authenticatorService: AuthenticatorService[CachedCookieAuthenticator],
-    eventBus: EventBus,
-    credentialsProvider: CredentialsProvider,
-    facebookProvider: FacebookProvider,
-    googleProvider: GoogleProvider,
-    twitterProvider: TwitterProvider): Environment[User, CachedCookieAuthenticator] = {
-
-    Environment[User, CachedCookieAuthenticator](
-      userService,
-      authenticatorService,
-      Map(
-        credentialsProvider.id -> credentialsProvider,
-        facebookProvider.id -> facebookProvider,
-        googleProvider.id -> googleProvider,
-        twitterProvider.id -> twitterProvider
-      ),
-      eventBus
-    )
   }
 
   @Provides

@@ -1,7 +1,6 @@
 package models
 
-import db.TableDefinitions.{MassageTypes, MassageType}
-import models.Models._
+import models.db.TableDefinitions.MassageType
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
@@ -17,8 +16,7 @@ case object DeepTissue extends MassageTypeEnum
 case object Thai extends MassageTypeEnum
 case object Shiatsu extends MassageTypeEnum
 
-object MassageTypeEnum extends Dao[MassageTypes, MassageType] {
-  tableQuery = massageTypes
+object MassageTypeEnum extends Dao {
 
   implicit def convertFromDb(value: MassageType) : MassageTypeEnum =  value match {
     case MassageType(Some(1), _, _) => Swedish

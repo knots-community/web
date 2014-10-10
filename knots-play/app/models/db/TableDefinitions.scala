@@ -19,13 +19,13 @@ object TableDefinitions {
     def users = TableQuery[UserRoles].filter(_.roleId === id).flatMap(_.userFK)
   }
 
-  case class DbUser(id: Option[Long], firstName: String, lastName: String, email: String)
+  case class User(id: Option[Long], firstName: String, lastName: String, email: String)
 
-  class Users(tag: Tag) extends RichTable[DbUser](tag, "user") {
+  class Users(tag: Tag) extends RichTable[User](tag, "user") {
     def firstName = column[String]("firstName", O.NotNull)
     def lastName = column[String]("lastName", O.NotNull)
     def email = column[String]("email", O.NotNull)
-    def * = (id.?, firstName, lastName, email) <> (DbUser.tupled, DbUser.unapply)
+    def * = (id.?, firstName, lastName, email) <> (User.tupled, User.unapply)
     def roles = TableQuery[UserRoles].filter(_.userId === id)
   }
 
@@ -59,6 +59,15 @@ object TableDefinitions {
   }
 
   case class DbPasswordInfo(id: Option[Long], hasher: String, password: String, salt: Option[String], loginInfoId: Long)
+
+  case class TokenPassword(id: Option[Long], token: String, userId: Long)
+  class TokenPasswords(tag: Tag) extends RichTable[TokenPassword](tag, "tokenpassword") {
+    def token = column[String]("token")
+    def userId = column[Long]("userId")
+    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+
+    def * = (id.?, token, userId) <> (TokenPassword.tupled, TokenPassword.unapply)
+  }
 
   class PasswordInfos(tag: Tag) extends RichTable[DbPasswordInfo](tag, "passwordinfo") {
     def hasher = column[String]("hasher")
