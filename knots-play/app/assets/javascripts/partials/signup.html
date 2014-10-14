@@ -1,21 +1,27 @@
-<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog contact-form">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                <h4 class="modal-title" id="myModalLabel">Sign Up for new Knots account</h4>
-            </div>
-            <div class="modal-body">
-                <form name="form">
-                    <fieldset>
-                <p><input type="text" class="form-control input-lg" data-ng-model="credentials.firstName" placeholder="First Name" required></p>
-                <p><input type="text" class="form-control input-lg" data-ng-model="credentials.lastName" placeholder="Last Name" required></p>
-                <p><input type="email" class="form-control input-lg" data-ng-model="credentials.email" placeholder="Email" required></p>
-                <p><input type="password" class="form-control input-lg" data-ng-model="credentials.password" placeholder="Password" required></p>
-                <p><button class="btn btn-success btn-block btn-lg" data-ng-disabled="form.$invalid" data-ng-click="signup(credentials)">Create Account</button></p>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+    <h4 class="modal-title" id="myModalLabel">Sign Up for new Knots account</h4>
+</div>
+<div class="modal-body">
+    <form name="form">
+        <fieldset>
+            <p><input type="text" class="form-control input-lg" data-ng-model="credentials.firstName" value="AAAA"
+                      placeholder="First Name" required></p>
+
+            <p><input type="text" class="form-control input-lg" data-ng-model="credentials.lastName" value="NBBB"
+                      placeholder="Last Name" required></p>
+
+            <p><input type="email" class="form-control input-lg" data-ng-model="credentials.email" placeholder="Email" value="fsfd@asdad.com"
+                      required></p>
+
+            <p><input type="password" class="form-control input-lg" data-ng-model="credentials.password" value="afafw"
+                      placeholder="Password" required></p>
+
+            <p>
+                <button class="btn btn-success btn-block btn-lg" data-ng-disabled="form.$invalid"
+                        data-ng-click="signUp(credentials)">Create Account
+                </button>
+            </p>
+        </fieldset>
+    </form>
 </div>

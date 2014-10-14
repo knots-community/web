@@ -2,7 +2,7 @@
  * Created by anton on 10/9/14.
  */
 angular.module('Knots')
-    .factory('userService', ['$http', '$q', '$cookies', '$log', function ($http, $q, playRoutes, $cookies, $log) {
+    .factory('userService', ['$http', '$q', '$cookies', '$log', 'playRoutes', function ($http, $q, $cookies, $log, playRoutes) {
         var user, token = $cookies['XSRF-TOKEN'];
 
         /* If the token is assigned, check that the token is still valid on the server */
@@ -23,7 +23,7 @@ angular.module('Knots')
 
         return {
             loginUser: function (credentials) {
-                return playRoutes.controllers.ApplicationController.login().post(credentials).then(function (response) {
+                return playRoutes.controllers.ApplicationController.signin().post(credentials).then(function (response) {
                     // return promise so we can chain easily
                     token = response.data.token;
                     return playRoutes.controllers.UsersController.authUser().get();
@@ -70,5 +70,9 @@ angular.module('Knots')
             }
             return deferred.promise;
         }]
-    });
+    })
 
+
+    .factory('bookingService', function($http, $q, $cookies, $log, playRoutes) {
+        return {};
+    });

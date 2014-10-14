@@ -44,25 +44,10 @@ object AuthUtils {
 
 
   def parseUserFromHeader(implicit request: RequestHeader): Option[Long] = {
-    request.cookies.get(AuthTokenCookieKey) map {
-      xsrfTokenCookie => {
-        val maybeToken = request.headers.get(AuthTokenHeader)
-        maybeToken map {
-          token : String => {
-            Cache.getAs[Long](token) map { userId: Long =>
-              if (xsrfTokenCookie.value.equals(token)) {
-                if(TokenService.validate(token)) {
-                  Some(userId)
-                } else {
-                  None
-                }
-              } else {
-                None
-              }
-            } getOrElse (None)
-          }
-        } getOrElse None
-      }
-    } getOrElse None
+    for {
+      maybeToken <- request.headers.get(AuthTokenHeader)
+      authInfo <- TokenService.deserialize(maybeToken)
+      userId <- Cache.getAs[Long](maybeToken)
+    } yield userId
   }
 }

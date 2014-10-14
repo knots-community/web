@@ -37,12 +37,12 @@ object Users extends Dao {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User, pwd: String) = {
+  def save(user: User, pwd: String) : Option[User] = {
     DB withTransaction { implicit session =>
       users.filter(_.email === user.email).firstOption.map(_ => None) getOrElse {
         val pid = Some(((users returning users.map(_.id)).insert(user)))
         tokenPasswords += TokenPassword(None, PasswordHasher.hash(pwd), pid.get)
-        user.copy(id = pid)
+        Some(user.copy(id = pid))
       }
     }
   }

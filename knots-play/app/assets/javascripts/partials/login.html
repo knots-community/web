@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header" ng-controller="LoginCtrl">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
     <h4 class="modal-title" id="myModalLabel">Sign In to Knots</h4>
 </div>
@@ -13,7 +13,7 @@
 
             <p>
                 <button class="btn btn-success btn-block btn-lg" data-ng-disabled="form.$invalid"
-                        data-ng-click="login(credentials)">Sign in
+                        data-ng-click="ok()">Sign in
                 </button>
             </p>
             <a href="#">Forgot Password?</a>

@@ -22,6 +22,7 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/libs/angular-cookies.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libs/ui-bootstrap-tpls-0.11.2.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("javascripts/modules.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/playRoutes.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("javascripts/services.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("javascripts/controllers.js")"></script>
         <script type="text/javascript" src="@routes.ApplicationController.jsRoutes()"></script>
@@ -45,7 +46,7 @@
                 <div data-ng-switch-when="false">
                     <div class="btn-users text-right" ng-controller="LoginCtrl">
                         <a class="btn" href="" ng-click="openLogin()">Login</a> |
-                        <a class="btn" href="#/register">Register</a>
+                        <a class="btn" href="" ng-click="register()">Register</a>
                     </div>
                 </div>
                 <div data-ng-switch-when="true">

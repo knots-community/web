@@ -22,7 +22,8 @@ libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % "4.0.0-beta4",
   "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.0",
   "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.6",
-  "com.nimbusds" % "nimbus-jose-jwt" % "3.1.2",
+  "com.atlassian.jwt" % "jwt-core" % "1.2.1",
+  "com.atlassian.jwt" % "jwt-api" % "1.2.1",
   cache,
   // Test dependencies
   "org.webjars" % "rjs" % "2.1.11-1-trireme" % "test",

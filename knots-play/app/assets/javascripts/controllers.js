@@ -4,46 +4,42 @@
 
 angular.module('Knots')
 
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(function ($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'LoginCtrl'})
             .when('/login', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
-            .when('/signup', {templateUrl: '/assets/javascripts/partials/signup.html', controller: 'SignUpCtrl'})
-            .otherwise({templateUrl: '/assets/javascripts/partials/notFound.html'});
+            .when('/signup', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'LoginCtrl'})
+            .when('/dashboard', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'DashboardCtrl'})
+            .otherwise({templateUrl: '/assets/javascripts/partials/home.html'});
         //.when('/users', {templateUrl:'/assets/templates/user/users.html', controller:controllers.UserCtrl})
         //.when('/users/:id', {templateUrl:'/assets/templates/user/editUser.html', controller:controllers.UserCtrl});
-    }])
+    })
 
-    .controller('LoginCtrl', ['$scope', '$location', '$modal', '$log', function ($scope, $location, $modal, $log) {
+    .controller('LoginCtrl', function ($scope, $location, $modal, $log, userService) {
         $scope.$log = $log;
-        $scope.message = 'Hello World!';
-        $log.log("Inside LoginCtrl");
-        $scope.credentials = {};
+
         $scope.login = function (credentials) {
             userService.loginUser(credentials).then(function (/*user*/) {
+                $log.log("Login success");
                 $location.path('/dashboard');
             });
         };
 
-        $scope.openLogin = function() {
-            $log.log("⁄!!!!!!!!!!!");
-            $modal.open({
+        $scope.openLogin = function () {
+            $scope.authDialog = $modal.open({
                 templateUrl: '/assets/javascripts/partials/login.html',
                 controller: 'LoginCtrl'
             });
+            $log.log($scope.authDialog);
         };
 
-    }])
-
-    .controller('SignUpCtrl', ['$scope', '$location', '$userService', function ($scope, $location, userService) {
-        $scope.credentials = {};
-
-        $scope.signUp = function (credentials) {
-            userService.signUp(credentials).then(function (/*user*/) {
-                $location.path('/dashboard');
+        $scope.register = function () {
+            $modal.open({
+                templateUrl: '/assets/javascripts/partials/signup.html',
+                controller: 'RegistrationDialogCtrl'
             });
         };
-    }])
+    })
 
 /** Controls the index page */
     .controller('HomeCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
@@ -52,6 +48,7 @@ angular.module('Knots')
 
 /** Controls the header */
     .controller('HeaderCtrl', ['$scope', 'userService', '$location', function ($scope, userService, $location) {
+        $scope.credentials = {};
         $scope.$watch(function () {
             var user = userService.getUser();
             return user;
@@ -65,6 +62,26 @@ angular.module('Knots')
             $location.path('/');
         };
     }])
+
+    .controller('RegistrationDialogCtrl', function($scope, $modalInstance, userService) {
+        $scope.signUp = function(credentials) {
+            $modalInstance.close();
+            userService.signup(credentials).then(function (/*user*/) {
+                $log.log("Registration success");
+                $location.path('/dashboard');
+            });
+
+        };
+    })
+
+
+    .controller('DashboardCtrl', function ($scope, $location, userService) {
+
+    })
+
+    .controller('BookingCtrl', function($scope, $location, bookingService) {
+
+    })
 
 /** Controls the footer */
     .controller('FooterCtrl', [function (/*$scope*/) {

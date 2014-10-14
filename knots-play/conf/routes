@@ -9,13 +9,14 @@ GET         /                                 @controllers.ApplicationController
 #POST        /users/signup                     @controllers.SignupController.signup
 
 
-GET         /assets/jsroutes.js        @controllers.ApplicationController.jsRoutes()
+GET         /assets/jsroutes.js               @controllers.ApplicationController.jsRoutes()
 
 # Routes used by Angular
 # ~~~~
 
 # Authentication
 POST        /login                            @controllers.ApplicationController.signin
+POST        /signup                           @controllers.ApplicationController.signup
 #POST        /logout                           @controllers.Application.logout()
 
 GET         /authuser                         @controllers.UsersController.authUser
@@ -40,3 +41,4 @@ POST        /admin/auth/credentials           @controllers.AdminCredentialsAuthC
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
+GET        /admin/metrics                    com.kenshoo.play.metrics.MetricsController.metrics
