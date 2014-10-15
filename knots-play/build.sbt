@@ -49,7 +49,7 @@ scalacOptions in ThisBuild ++= Seq(
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 // Apply RequireJS optimization, digest calculation and gzip compression to assets
-pipelineStages := Seq(digest, gzip)
+//pipelineStages := Seq(digest, gzip)
 
 //RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
 
