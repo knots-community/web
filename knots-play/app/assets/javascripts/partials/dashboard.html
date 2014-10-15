@@ -1,4 +1,52 @@
-<div class="page-header">
-  <h1>Dashboard</h1>
-</div>
-Welcome, {{user.name}}!
+<section class="dashboard">
+    <div class="container">
+        <div class="booking-title">
+            <h3>Book Your Massage!</h3>
+        </div>
+
+        <div class="booking-info">
+            <p>Provided by: {{company.name}}</p>
+
+            <p>Location: {{company.location}}</p>
+        </div>
+
+        <form name="form">
+            <fieldset>
+                Preferred therapist:
+                <!-- Single button -->
+                <div class="btn-group" dropdown is-open="status.isopen">
+                    <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+                        {{selectedMasseur.name || 'Select One'}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-repeat="masseur in masseurs" ng-click="$parent.reservation.selectedMasseur = masseur"
+                            >
+                            <button>{{masseur.name}}</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <p>Preferred Time:
+
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Left'">Morning</label>
+                    <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Middle'">Afternoon</label>
+                    <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Right'">Late</label>
+                </div>
+                </p>
+
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="reservation.time" btn-radio="time"
+                           ng-repeat="time in timeSlotsAvailable | availableTimeSlots:reservation.selectedMasseur">{{time}}</label>
+                </div>
+
+                <p>
+                    <button class="btn btn-success btn-lg" data-ng-disabled="form.$invalid"
+                            data-ng-click="makeReservation(reservation)">Looks Good!
+                    </button>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+
+</section>

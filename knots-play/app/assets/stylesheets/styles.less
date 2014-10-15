@@ -11,6 +11,7 @@
 @import "variables.less";
 @import "variables-custom.less";
 @import "mixins.less";
+@import "custom.less";
 
 /* Global
 / -------------------------------------------------- */
@@ -19,6 +20,11 @@ body {
   font-size: 15px;
   font-weight: 300;
   color: @body-color;
+  background-image: url(../img/landing.jpg);
+  background-repeat: no-repeat;
+  -webkit-background-size:cover;
+  -moz-background-size:cover;
+  background-size:cover;
 }
 
 a {
@@ -77,11 +83,6 @@ h1, h2, h3, h4, h5, h6 {
 /* Header
 / -------------------------------------------------- */
 .site-header {
-  background-image: url(../img/landing.jpg);
-  background-repeat: no-repeat;
-  -webkit-background-size:cover;
-  -moz-background-size:cover;
-  background-size:cover;
   width: 100%;
 }
 
@@ -296,6 +297,19 @@ h1, h2, h3, h4, h5, h6 {
   } //.plan
 
 } //.prices
+
+/* Dashboard
+/ -------------------------------------------------- */
+
+.dashboard {
+  background: rgb(255, 255, 255);
+  width: 100%;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+//.Dashboard
+
 
 /* Contact
 / -------------------------------------------------- */

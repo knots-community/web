@@ -52,3 +52,7 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 pipelineStages := Seq(rjs, digest, gzip)
 
 RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
+
+includeFilter in (Assets, LessKeys.less) := "*.less"
+
+excludeFilter in (Assets, LessKeys.less) := "_*.less"

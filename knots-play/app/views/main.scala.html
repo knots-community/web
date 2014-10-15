@@ -14,7 +14,7 @@
             <!-- Stylesheets -->
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap/bootstrap.min.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/font-awesome.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/styles.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/styles.css")">
         <script type="text/javascript" src="@routes.Assets.versioned("jsroutes.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libs/angular.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libs/angular-route.js")"></script>
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="@routes.Assets.versioned("javascripts/playRoutes.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("javascripts/services.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("javascripts/controllers.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("javascripts/filters.js")"></script>
         <script type="text/javascript" src="@routes.ApplicationController.jsRoutes()"></script>
 
             <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -70,7 +71,7 @@
             </div>
         </header>
 
-        <div class="container" data-ng-cloak>
+        <div data-ng-cloak>
             <div data-ng-view></div>
         </div>
 

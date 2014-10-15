@@ -2,7 +2,7 @@
  * Created by anton on 10/9/14.
  */
 angular.module('Knots')
-    .factory('userService', ['$http', '$q', '$cookies', '$log', 'playRoutes', function ($http, $q, $cookies, $log, playRoutes) {
+    .factory('userService', function ($http, $q, $cookies, $log, playRoutes, $location) {
         var user, token = $cookies['XSRF-TOKEN'];
 
         /* If the token is assigned, check that the token is still valid on the server */
@@ -12,6 +12,8 @@ angular.module('Knots')
                 .success(function (data) {
                     $log.info('Welcome back, ' + data.name);
                     user = data;
+                    $log.log(data);
+                    $location.path('/dashboard');
                 })
                 .error(function () {
                     $log.info('Token no longer valid, please log in.');
@@ -48,13 +50,14 @@ angular.module('Knots')
                 user = undefined;
                 return playRoutes.controllers.ApplicationController.logout().post().then(function () {
                     $log.info("Good bye ");
+                    $location.path('/');
                 });
             },
             getUser: function () {
                 return user;
             }
         };
-    }])
+    })
     /**
      * Add this object to a route definition to only allow resolving the route if the user is
      * logged in. This also adds the contents of the objects as a dependency of the controller.
@@ -73,6 +76,15 @@ angular.module('Knots')
     })
 
 
-    .factory('bookingService', function($http, $q, $cookies, $log, playRoutes) {
-        return {};
+    .factory('bookingService', function($http, $q, $cookies, $log, playRoutes, userService, $location) {
+        return {
+            bookingInfo: {},
+
+            makeReservation: function(reservation) {
+                this.bookingInfo = reservation;
+                return playRoutes.controllers.BookingController.performBooking().post(reservation).then(function(response) {
+                  $location.path('/confirmation');
+                });
+            }
+        };
     });

@@ -3,6 +3,7 @@ package models
 import java.sql.Timestamp
 
 import models.db.TableDefinitions.{MassageReservation, ReservationType}
+import org.joda.time.DateTime
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
@@ -83,6 +84,18 @@ object Reservations extends Dao {
       } update((start, ReservationTypeEnum.typeToLong(Regular))) run
       case _ => None
     }
+  }
+
+  def makeReservation(userId: Long, masseurId: Long, start: Timestamp, end: Timestamp) : Option[Long] = DB withTransaction { implicit session =>
+    val now = DateTime.now.getMillis
+
+    val reservation = (MassageReservation(None, userId, masseurId, new Timestamp(now), start, end, 0, None, Regular, Chair))
+    val pid = Some(((reservations returning reservations.map(_.id)).insert(reservation)))
+    pid
+  }
+
+  def findAvailableTimes(start: Timestamp, end: Timestamp) = DB withTransaction { implicit session =>
+
   }
 
 //  def makeReservation(masseurId: Long, userId: Long,)

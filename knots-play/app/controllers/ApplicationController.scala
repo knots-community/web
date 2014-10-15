@@ -10,11 +10,11 @@ import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller, Cookie}
 import play.api.cache._
-import utils.auth.{AuthUtils, Authentication, TokenService}
+import utils.auth.{Auth, AuthUtils, TokenService}
 import play.api.Play.current
 
 
-class ApplicationController extends Controller with Authentication {
+class ApplicationController extends Controller with Auth {
 
   /** JSON reader for [[LoginCredentials]]. */
   implicit val LoginCredentialsFromJson = (
