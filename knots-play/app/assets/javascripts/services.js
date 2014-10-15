@@ -30,7 +30,7 @@ angular.module('Knots')
                     token = response.data.token;
                     return playRoutes.controllers.UsersController.authUser().get();
                 }).then(function (response) {
-                    user = response.data;
+                    user = response.datwa;
                     return user;
                 });
             },
