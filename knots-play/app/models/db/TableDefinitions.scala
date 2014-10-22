@@ -1,12 +1,19 @@
 package models.db
 
-import org.joda.time.DateTime
+import java.sql.Timestamp
+
+import org.joda.time.{LocalTime, DateTime}
+import org.joda.time.DateTimeZone._
 import play.api.db.slick.Config.driver.simple._
 import utils.db.RichTable
+import com.github.tototoshi.slick.PostgresJodaSupport
 
 object TableDefinitions {
 
-  import java.sql.Timestamp
+  implicit val dateType = MappedColumnType.base[DateTime, Timestamp](
+  {d => new Timestamp(d.getMillis)} ,
+  {d => new DateTime(d.getTime, UTC)}
+  )
 
   case class DbRole(id: Option[Long], name: String, description: Option[String])
 
@@ -21,12 +28,20 @@ object TableDefinitions {
 
   case class User(id: Option[Long], firstName: String, lastName: String, email: String)
 
-  class Users(tag: Tag) extends RichTable[User](tag, "user") {
+  class Users(tag: Tag) extends RichTable[User](tag, "users") {
     def firstName = column[String]("firstName", O.NotNull)
     def lastName = column[String]("lastName", O.NotNull)
     def email = column[String]("email", O.NotNull)
     def * = (id.?, firstName, lastName, email) <> (User.tupled, User.unapply)
     def roles = TableQuery[UserRoles].filter(_.userId === id)
+  }
+
+  case class Admin(id: Option[Long], userId: Option[Long])
+
+  class Admins(tag: Tag) extends RichTable[Admin](tag, "admins") {
+    def userId = column[Long]("userId", O.NotNull)
+    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+    def * = (id.?, userId.?) <>(Admin.tupled, Admin.unapply)
   }
 
   case class DbUserRole(id: Option[Long], userId: Option[Long], roleId: Option[Long])
@@ -101,14 +116,6 @@ object TableDefinitions {
     def * = (id.?, accessToken, tokenType, expiresIn, refreshToken, loginInfoId) <>(DbOAuth2Info.tupled, DbOAuth2Info.unapply)
   }
 
-  case class Admin(id: Option[Long], userId: Option[Long])
-
-  class Admins(tag: Tag) extends RichTable[Admin](tag, "admins") {
-    def userId = column[Long]("userId", O.NotNull)
-    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
-    def * = (id.?, userId.?) <>(Admin.tupled, Admin.unapply)
-  }
-
   case class Masseur(id: Option[Long], userId: Long, sex: String, isActive: Boolean)
 
   class Masseurs(tag: Tag) extends RichTable[Masseur](tag, "masseurs") {
@@ -140,36 +147,19 @@ object TableDefinitions {
     def * = (id.?, name, description.?) <>(MassageType.tupled, MassageType.unapply)
   }
 
-  case class MassageReservation(id: Option[Long], userId: Long, masseurId: Long, reservationTime: Timestamp,
-                                starTime: Timestamp, endTime: Timestamp, paymentDue: Int, comments: Option[String],
-                                reservationType: Long, massageType: Long)
+  case class TimeSlot(id: Option[Long], masseurId: Long, startTime: DateTime, status: Int)
 
-  class MassageReservations(tag: Tag) extends RichTable[MassageReservation](tag, "massage_reservations") {
-
-    import java.sql.Timestamp
-
-    implicit def dateTime =
-      MappedColumnType.base[DateTime, Timestamp](dt => new Timestamp(dt.getMillis), ts => new DateTime(ts.getTime))
-
-    def userId = column[Long]("user_id", O.NotNull)
+  case class TimeSlots(tag: Tag) extends RichTable[TimeSlot](tag, "time_slots") {
     def masseurId = column[Long]("masseur_id", O.NotNull)
-    def reservationTime = column[Timestamp]("reservation_time", O.NotNull)
-    def startTime = column[Timestamp]("start_time", O.NotNull)
-    def endTime = column[Timestamp]("end_time", O.NotNull)
-    def paymentDue = column[Int]("payment_due", O.NotNull)
-    def comments = column[String]("comments")
-    def typeId = column[Long]("reservation_type_id", O.NotNull)
-    def massageTypeId = column[Long]("massage_type_id", O.NotNull)
-    def * = (id.?, userId, masseurId, reservationTime, startTime, endTime, paymentDue, comments.?, typeId, massageTypeId) <>(
-        MassageReservation.tupled, MassageReservation.unapply)
-    def res_idx = index("res_idx", (startTime, userId), unique = true)
-    def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def startTime = column[DateTime]("startTime", O.NotNull)
+    def status = column[Int]("status")
+
     def masseurFk = foreignKey("masseur_fk", masseurId, TableQuery[Masseurs])(_.id, onUpdate = ForeignKeyAction.Cascade)
-    def typeFk = foreignKey("type_fk", typeId, TableQuery[ReservationTypes])(_.id, onUpdate = ForeignKeyAction.Cascade)
-    def massageTypeFk = foreignKey("massage_type_fk", massageTypeId, TableQuery[MassageTypes])(_.id, onUpdate = ForeignKeyAction.Cascade)
+//    def idx = index("idx", (masseurId, startTime), unique = true)
+    def * = (id.?, masseurId, startTime, status) <> (TimeSlot.tupled, TimeSlot.unapply)
   }
 
-  case class ReservationType(id: Option[Long], name: String, description: Option[String]);
+  case class ReservationType(id: Option[Long], name: String, description: Option[String])
 
   class ReservationTypes(tag: Tag) extends RichTable[ReservationType](tag, "reservation_types") {
     def name = column[String]("name", O.NotNull)
@@ -178,29 +168,26 @@ object TableDefinitions {
     def * = (id.?, name, description.?) <>(ReservationType.tupled, ReservationType.unapply)
   }
 
-  class PastReservations(tag: Tag) extends RichTable[MassageReservation](tag, "past_reservations") {
+  case class MassageReservation(id: Option[Long], userId: Long, masseurId: Long, reservationTime: DateTime,
+                                slotId: Long, paymentDue: Int, comments: Option[String],
+                                reservationType: Long, massageType: Long, timeSlotId: Long)
 
-    import java.sql.Timestamp
-
-    implicit def dateTime =
-      MappedColumnType.base[DateTime, Timestamp](dt => new Timestamp(dt.getMillis), ts => new DateTime(ts.getTime))
-
+  class MassageReservations(tag: Tag) extends RichTable[MassageReservation](tag, "massage_reservations") {
     def userId = column[Long]("user_id", O.NotNull)
     def masseurId = column[Long]("masseur_id", O.NotNull)
-    def reservationTime = column[Timestamp]("reservation_time", O.NotNull)
-    def startTime = column[Timestamp]("start_time", O.NotNull)
-    def endTime = column[Timestamp]("end_time", O.NotNull)
+    def reservationTime = column[DateTime]("reservation_time", O.NotNull)
     def paymentDue = column[Int]("payment_due", O.NotNull)
     def comments = column[String]("comments")
     def typeId = column[Long]("reservation_type_id", O.NotNull)
     def massageTypeId = column[Long]("massage_type_id", O.NotNull)
-    def * = (id.?, userId, masseurId, reservationTime, startTime, endTime, paymentDue, comments.?, typeId, massageTypeId) <>(
+    def timeSlotId = column[Long]("time_slot_id", O.NotNull)
+    def * = (id.?, userId, masseurId, reservationTime, timeSlotId, paymentDue, comments.?, typeId, massageTypeId, timeSlotId) <>(
         MassageReservation.tupled, MassageReservation.unapply)
-    def past_res_idx = index("past_res_idx", (startTime, userId), unique = true)
+    def res_idx = index("res_idx", (timeSlotId, userId), unique = true)
     def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade)
     def masseurFk = foreignKey("masseur_fk", masseurId, TableQuery[Masseurs])(_.id, onUpdate = ForeignKeyAction.Cascade)
     def typeFk = foreignKey("type_fk", typeId, TableQuery[ReservationTypes])(_.id, onUpdate = ForeignKeyAction.Cascade)
     def massageTypeFk = foreignKey("massage_type_fk", massageTypeId, TableQuery[MassageTypes])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def timeSlotFk = foreignKey("time_slot_fk", timeSlotId, TableQuery[TimeSlots])(_.id, onUpdate = ForeignKeyAction.Cascade)
   }
-
 }

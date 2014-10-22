@@ -4,13 +4,22 @@
  * All Right Reserved.
  * Recommendation: It is recommended to edit the styles using LESS.
  */
-
 // Load core variables and mixins
 // --------------------------------------------------
-
 @import "variables.less";
 @import "variables-custom.less";
-@import "mixins.less";
+@import "lesshat";
+
+*, {
+  &:after {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  &:before {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+}
 
 /* header-description */
 .booking-title {
@@ -25,4 +34,111 @@
     padding: 0px 0 40px 0;
   }
 
-} //.header-descirption
+}
+
+//.booking-title
+
+.modal-dialog {
+  width: 340px;
+  margin: 60px auto;
+}
+
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-radius: 6px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+  background-clip: padding-box;
+  outline: 0;
+}
+
+.modal-header {
+  padding: 15px;
+  border-bottom: 1px solid @modal-light-grey;
+  min-height: 16.428571429px;
+}
+
+.modal-body {
+  position: relative;
+  padding: 20px;
+  .page-signin {
+    .p {
+      margin-bottom: 0;
+      margin-top: 10px;
+    }
+
+  }
+
+  .form-container {
+    margin-top: 0;
+  }
+}
+
+.modal-footer {
+  margin-top: 15px;
+  text-align: right;
+  border-top: 1px solid @modal-light-grey;
+  padding: 19px 20px 20px;
+}
+
+.signup, .signin-header {
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.signup, .signin-header {
+  h1 {
+    color: #32353b;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+  p {
+    text-transform: none;
+    font-size: 14px;
+    color: #32353b;
+  }
+}
+
+.page-signin, .page-forgot {
+  .info {
+    max-width: 420px;
+    margin: 0 auto 20px;
+    padding: 20px 0 0;
+
+    h2 {
+      font-size: 18px;
+      color: #242633;
+    }
+  }
+}
+
+.signin-body {
+  .input-group {
+    margin: 10px !important;
+  }
+
+}
+
+input.input-success, input.input-success:focus, .form-validation .ng-valid.ng-dirty {
+  border-color: #94b758;
+}
+
+input.input-danger, input.input-danger:focus, .form-validation .ng-invalid.ng-dirty {
+  border-color: #fa7b58;
+}
+
+.input-group {
+  border: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.input-round {
+  border-radius: 10px;
+}
+
+.form-control {
+  .placeholder(#999);
+}

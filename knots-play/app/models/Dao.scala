@@ -22,7 +22,6 @@ val reservations = TableQuery[MassageReservations]
 val admins = TableQuery[Admins]
 val reservationTypes = TableQuery[ReservationTypes]
 val masseurMassageTypes = TableQuery[MasseurMassageTypes]
-val pastReservations = TableQuery[PastReservations]
 val tokenPasswords = TableQuery[TokenPasswords]
-
+val timeSlots = TableQuery[TimeSlots]
 }

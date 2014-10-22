@@ -2,20 +2,30 @@ package models
 
 import java.sql.Timestamp
 
-import models.db.TableDefinitions.{MassageReservation, ReservationType}
-import org.joda.time.DateTime
+import org.joda.time.DateTimeZone._
+import org.joda.time._
+import models.db.TableDefinitions.{TimeSlot, MassageReservation, ReservationType}
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
+import org.joda.time.{DateTime, DateTimeComparator, DateTimeZone}
+import com.github.tototoshi.slick.PostgresJodaSupport._
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import Q.interpolation
 
 /**
  * Created by anton on 9/20/14.
  */
 sealed trait ReservationTypeEnum
+
 case object Regular extends ReservationTypeEnum
+
 case object Cancelled extends ReservationTypeEnum
+
 case object NoShow extends ReservationTypeEnum
+
 case object Completed extends ReservationTypeEnum
+
 case object Unavailable extends ReservationTypeEnum
 
 object ReservationTypeEnum extends Dao {
@@ -29,7 +39,7 @@ object ReservationTypeEnum extends Dao {
     }
   }
 
-  implicit def convertFromDb(rt: ReservationType) : ReservationTypeEnum = {
+  implicit def convertFromDb(rt: ReservationType): ReservationTypeEnum = {
     rt match {
       case ReservationType(Some(1), _, _) => Regular
       case ReservationType(Some(2), _, _) => Cancelled
@@ -61,43 +71,55 @@ object ReservationTypeEnum extends Dao {
 
 object Reservations extends Dao {
 
-  val minDateTime = new Timestamp(0)
-  val maxDateTime = new Timestamp(Long.MaxValue)
+  implicit val jodaType = MappedColumnType.base[DateTime, Timestamp](
+  { d => new Timestamp(d.getMillis)}, { d => new DateTime(d.getTime, UTC)}
+  )
+  private val dateComparator = DateTimeComparator.getInstance()
 
-  def markUnavailable(masseurId: Long, start: Timestamp, end: Timestamp) = DB.withSession { implicit session =>
-    reservations += MassageReservation(None, 0, masseurId, minDateTime, minDateTime, maxDateTime, 0, None, Unavailable, Swedish)
+  implicit def dateTimeToScalaWrapper(dt: DateTime): DateTimeWrapper = new DateTimeWrapper(dt)
+
+  def generateTimeSlots(start: DateTime, end: DateTime, masseurId: Long, timeSlotLength: Int = 20) = DB withTransaction { implicit sessison =>
+    var time = start
+    do {
+      timeSlots += TimeSlot(None, masseurId, time, 0)
+      time = time.plusMinutes(timeSlotLength)
+    } while (time <= end)
   }
 
-  def makeAvailable(masseurId: Long, start: Timestamp, end: Timestamp,
-                    rt: ReservationTypeEnum) = DB withSession { implicit session =>
-
-    reservations.filter(
-      r => r.masseurId === masseurId && r.startTime <= start && r.typeId === ReservationTypeEnum.typeToLong(Unavailable)).firstOption match {
-      case Some(leftSide) => reservations.filter(_.id === leftSide.id) map { x => (x.endTime, x.typeId)
-      } update((start, ReservationTypeEnum.typeToLong(Regular))) run
-      case _ => None
-    }
-
-    reservations.filter(
-      r => r.masseurId === masseurId && r.endTime <= end && r.typeId === ReservationTypeEnum.typeToLong(Unavailable)).firstOption match {
-      case Some(rightSide) => reservations.filter(_.id === rightSide.id) map { x => (x.endTime, x.typeId)
-      } update((start, ReservationTypeEnum.typeToLong(Regular))) run
-      case _ => None
-    }
+  def removeTimeSlots(start: DateTime, end: DateTime, masseurId: Long): Boolean = DB withTransaction { implicit session =>
+    (for {
+      tt <- timeSlots if tt.masseurId === masseurId && tt.startTime >= start && tt.startTime <= end
+    } yield (tt)).delete > 0
   }
 
-  def makeReservation(userId: Long, masseurId: Long, start: Timestamp, end: Timestamp) : Option[Long] = DB withTransaction { implicit session =>
-    val now = DateTime.now.getMillis
-
-    val reservation = (MassageReservation(None, userId, masseurId, new Timestamp(now), start, end, 0, None, Regular, Chair))
-    val pid = Some(((reservations returning reservations.map(_.id)).insert(reservation)))
-    pid
+  def makeReservation(userId: Long, masseurId: Long, massageType: Long, slotId: Long): Boolean = DB withTransaction { implicit session =>
+    timeSlots.filter(_.id === slotId).map(x => (x.status)).update((1))
+    (reservations += MassageReservation(None, userId, masseurId, DateTime.now, slotId, 0, None, Regular, massageType, slotId)) > 0
   }
 
-  def findAvailableTimes(start: Timestamp, end: Timestamp) = DB withTransaction { implicit session =>
-
+  def findTimeSlots(start: DateTime, end: DateTime) = DB withSession { implicit session =>
+    (for {
+      ts <- timeSlots if ts.startTime <= start && ts.startTime < end && ts.status === 0
+      mass <- masseurs if ts.masseurId === mass.id
+    } yield (ts, mass)).list
   }
 
-//  def makeReservation(masseurId: Long, userId: Long,)
+  case class ScheduleEntry(date: String, title: String, masseurId: Long, allDay: Boolean = true)
+  implicit val getSchdeduleResult = GetResult(r => ScheduleEntry(r.<<, r.<<, r.<<))
+
+  def findSchedule(start: DateTime, end: DateTime) : List[ScheduleEntry] = DB withSession { implicit session =>
+    val startString = start.toDateTimeISO.toString
+    val endString = end.toDateTimeISO.toString
+    val q = sql"""select DISTINCT (date_trunc('day', time_slots."startTime")), users."firstName"|| ' ' || users."lastName", masseurs."id" FROM time_slots, masseurs, users WHERE (time_slots."startTime" >= TIMESTAMP '#$startString') AND (time_slots."startTime" < TIMESTAMP '#$endString') AND (time_slots."masseur_id" = masseurs."id") and (masseurs."userId" = users."id")""".as[ScheduleEntry]
+    q.list
+  }
+
+
+  class DateTimeWrapper(dt: DateTime) extends Ordered[DateTime] with Ordering[DateTime] {
+    def compare(that: DateTime): Int = dateComparator.compare(dt, that)
+
+    def compare(a: DateTime, b: DateTime): Int = dateComparator.compare(a, b)
+  }
+
 
 }

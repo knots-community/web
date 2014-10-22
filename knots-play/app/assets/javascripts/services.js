@@ -30,7 +30,7 @@ angular.module('Knots')
                     token = response.data.token;
                     return playRoutes.controllers.UsersController.authUser().get();
                 }).then(function (response) {
-                    user = response.datwa;
+                    user = response.data;
                     return user;
                 });
             },
@@ -48,20 +48,20 @@ angular.module('Knots')
                 delete $cookies['XSRF-TOKEN'];
                 token = undefined;
                 user = undefined;
-                return playRoutes.controllers.ApplicationController.logout().post().then(function () {
+//                return playRoutes.controllers.ApplicationController.logout().post().then(function () {
                     $log.info("Good bye ");
                     $location.path('/');
-                });
+//                });
             },
             getUser: function () {
                 return user;
             }
         };
     })
-    /**
-     * Add this object to a route definition to only allow resolving the route if the user is
-     * logged in. This also adds the contents of the objects as a dependency of the controller.
-     */
+/**
+ * Add this object to a route definition to only allow resolving the route if the user is
+ * logged in. This also adds the contents of the objects as a dependency of the controller.
+ */
     .constant('userResolve', {
         user: ['$q', 'userService', function ($q, userService) {
             var deferred = $q.defer();
@@ -76,15 +76,27 @@ angular.module('Knots')
     })
 
 
-    .factory('bookingService', function($http, $q, $cookies, $log, playRoutes, userService, $location) {
-        return {
-            bookingInfo: {},
+    .factory('bookingService', function ($http, $q, $cookies, $log, playRoutes, userService, $location) {
+        var bookingInfo = {};
+        var timeSlots = {};
 
-            makeReservation: function(reservation) {
+        return {
+            makeReservation: function (reservation) {
                 this.bookingInfo = reservation;
-                return playRoutes.controllers.BookingController.performBooking().post(reservation).then(function(response) {
-                  $location.path('/confirmation');
+                return playRoutes.controllers.BookingController.performBooking().post(reservation).then(function (response) {
+                    $location.path('/confirmation');
                 });
+            },
+
+            queryTimeSlots: function () {
+                return playRoutes.controllers.BookingController.timeSlots().get().then(function (response) {
+                    timeSlots = response;
+                    $location.path('/dashboard');
+                });
+            },
+
+            getTimeSlots: function () {
+                return timeSlots;
             }
         };
     });

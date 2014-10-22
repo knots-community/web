@@ -4,15 +4,8 @@
 
 # Home page
 GET         /                                 @controllers.ApplicationController.index
-#GET         /user/auth/signout             @controllers.ApplicationController.signout
-#POST        /users/auth                       @controllers.CredentialsAuthController.authenticate
-#POST        /users/signup                     @controllers.SignupController.signup
-
 
 GET         /assets/jsroutes.js               @controllers.ApplicationController.jsRoutes()
-
-# Routes used by Angular
-# ~~~~
 
 # Authentication
 POST        /login                            @controllers.ApplicationController.signin
@@ -21,7 +14,12 @@ POST        /signup                           @controllers.ApplicationController
 
 GET         /authuser                         @controllers.UsersController.authUser
 
+GET         /timeslots                        @controllers.BookingController.timeSlots
 POST        /reservation                      @controllers.BookingController.performBooking
+
+GET         /admin/schedule                   @controllers.AdminController.schedule
+POST        /admin/work              @controllers.AdminController.markMasseurAvailable
+POST        /admin/nowork            @controllers.AdminController.markMasseurUnvailable
 
 #Admin panel
 GET         /admin                            @controllers.AdminController.index
@@ -44,3 +42,8 @@ POST        /admin/auth/credentials           @controllers.AdminCredentialsAuthC
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
 GET         /admin/metrics                    com.kenshoo.play.metrics.MetricsController.metrics
+
+
+#TODO:
+
+GET         /admin/masseurs/list/json         @controllers.AdminController.listMasseursJson

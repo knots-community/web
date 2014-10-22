@@ -3,11 +3,12 @@ package controllers
 import java.sql.Timestamp
 
 import models.Reservations
-import models.js.{Booking, LoginCredentials}
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
+import models.js.{TimeSlotsForDay, Booking, LoginCredentials}
+import org.joda.time.DateTime
 import play.api.libs.json._
+import play.api.mvc.Action
 import utils.auth.Auth
+import play.api.libs.functional.syntax._
 
 /**
  * Created by anton on 10/13/14.
@@ -18,11 +19,25 @@ class BookingController extends Auth {
   // 20 minutes
 
   /** JSON reader for [[LoginCredentials]]. */
-//  implicit val BookingFromJson = (
-//    (__ \ "masseurId").read[Long] ~
-//      (__ \ "time").read[String]
-//    )((masseurId, time) => Booking(masseurId, new Timestamp(time)))
+  implicit val BookingFromJson = (
+    (__ \ "masseurId").read[Long] ~
+      (__ \ "time").read[Long]
+    )((masseurId, time) => Booking(masseurId, new DateTime(time)))
 
+  implicit val dayReads: Reads[TimeSlotsForDay] = (JsPath \ "day").read[Long].map(x => TimeSlotsForDay(new DateTime(x)))
+
+//  def timeSlots = SecuredAction(parse.json) { implicit request =>
+  def timeSlots = Action { implicit request =>
+//    val req = request.body
+//    req.validate[TimeSlotsForDay].fold(
+//    (errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors)))
+//    ), (
+//      dayInfo => {
+//         val slots = Reservations.findTimeSlots(dayInfo.day.withTimeAtStartOfDay(), dayInfo.day.withTime(23, 0, 0, 0))
+        Ok(Json.obj("status" -> "OK", "timeSlots" -> ""))
+//      }
+//  ))
+  }
 
   def performBooking = SecuredAction(parse.json) { implicit request =>
     val req = request.body
@@ -38,6 +53,7 @@ class BookingController extends Auth {
 //    })
     Ok(Json.obj("status" -> "OK", "message" -> req))
   }
+
 }
 
 /*

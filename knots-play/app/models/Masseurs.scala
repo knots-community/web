@@ -10,7 +10,7 @@ import play.api.db.slick._
  * Created by anton on 9/20/14.
  */
 case class MasseurProfile(id: Option[Long], userId: Option[Long], firstName: String, lastName: String, email: String,
-                          sex: String, isActive: Boolean = true, massageTypes: Option[List[MassageTypeEnum]])
+                          sex: String, isActive: Boolean = true)
 
 object Masseurs extends Dao {
 
@@ -21,9 +21,7 @@ object Masseurs extends Dao {
     val q: List[(Masseur, User)] = (for {m <- masseurs
                                            u <- users
                                            if (u.id === m.userId)} yield (m, u)).list
-    q.map({ case (m, u) => new MasseurProfile(m.id, u.id, u.firstName, u.lastName, u.email, m.sex, m.isActive, Some(MassageTypeEnum.convertFromDbList((for {mmt <- masseurMassageTypes
-                                                                                                                                                            if mmt.masseurId === m.id
-                                                                                                                                                            mt <- massageTypes} yield mt) list)))
+    q.map({ case (m, u) => new MasseurProfile(m.id, u.id, u.firstName, u.lastName, u.email, m.sex, m.isActive)
     })
   }
 
@@ -40,8 +38,6 @@ object Masseurs extends Dao {
         val newId = (users returning users.map(_.id)).insert(p)
         masseurs += p.copy(userId = Some(newId))
         userRoles += DbUserRole(None, Some(newId), Some(MasseurRole))
-        p.massageTypes map { x: List[MassageTypeEnum] => x.map(y => MassageTypeEnum.convert2Db(y))
-        }
       }
     }
   }
@@ -64,9 +60,6 @@ object Masseurs extends Dao {
   def find(masseurId: Long) = DB.withSession { implicit session =>
       val x = masseurs.filter(_.id === masseurId).first
       val u = users.filter(_.id === x.userId).first
-      val roles = Some(MassageTypeEnum.convertFromDbList((for {mmt <- masseurMassageTypes
-                                                               if mmt.masseurId === x.id
-                                                               mt <- massageTypes} yield mt) list))
-     new MasseurProfile(x.id, u.id, u.firstName,u.lastName, u.email, x.sex, x.isActive, roles)
+     new MasseurProfile(x.id, u.id, u.firstName,u.lastName, u.email, x.sex, x.isActive)
   }
 }

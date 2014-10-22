@@ -24,6 +24,9 @@ libraryDependencies ++= Seq(
   "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.6",
   "com.atlassian.jwt" % "jwt-core" % "1.2.1",
   "com.atlassian.jwt" % "jwt-api" % "1.2.1",
+  "joda-time" % "joda-time" % "2.5",
+  "org.joda" % "joda-convert" % "1.7",
+  "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
   cache,
   // Test dependencies
   "org.webjars" % "rjs" % "2.1.11-1-trireme" % "test",

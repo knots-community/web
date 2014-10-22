@@ -1,22 +1,29 @@
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-    <h4 class="modal-title" id="myModalLabel">Sign In to Knots</h4>
-</div>
+<div class="modal-header">Sign In</div>
 <div class="modal-body">
-    <form name="form">
-        <fieldset>
-            <p><input type="email" class="form-control input-lg" data-ng-model="credentials.email"
-                      placeholder="Email" required></p>
+    <div class="page-signin text-center">
+        <div class="signin-body">
+            <div class="form-container">
+                <form name="form" class="form-validation" novalidate ng-submit="login(credentials)">
+                    <fieldset>
+                        <div class="input-group margin-bottom-sm">
+                            <span class="input-group-addon input-round"><i class="fa fa-envelope-o fa-fw"></i></span>
+                            <input class="form-control input-lg text-center input-round" type="text" placeholder="Email address" data-ng-model="credentials.email">
+                        </div>
 
-            <p><input type="password" class="form-control input-lg" data-ng-model="credentials.password"
-                      placeholder="Password" required></p>
+                        <div class="input-group">
+                            <span class="input-group-addon input-round"><i class="fa fa-key fa-fw"></i></span>
+                            <input class="form-control input-lg text-center input-round" type="password" placeholder="Password" data-ng-model="credentials.password">
+                        </div>
 
-            <p>
-                <button class="btn btn-success btn-block btn-lg" data-ng-disabled="form.$invalid"
-                        data-ng-click="login(credentials)">Sign in
-                </button>
-            </p>
-            <a href="#">Forgot Password?</a>
-        </fieldset>
-    </form>
+                        <p>
+                            <button class="btn btn-success btn-block btn-lg"
+                                    data-ng-click="login(credentials)">Sign in
+                            </button>
+                        </p>
+                        <a href="#">Forgot Password?</a>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

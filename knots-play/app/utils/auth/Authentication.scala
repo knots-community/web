@@ -1,5 +1,6 @@
 package utils.auth
 
+import models.Users
 import play.api.Play.current
 import play.api.cache._
 import play.api.libs.json.Json
@@ -57,6 +58,7 @@ object AuthUtils {
       maybeToken <- request.headers.get(AuthTokenHeader)
       authInfo <- TokenService.deserialize(maybeToken)
       userId <- Cache.getAs[Long](maybeToken)
+      u <- Users.findById(userId)
     } yield userId
   }
 }

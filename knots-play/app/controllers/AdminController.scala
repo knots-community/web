@@ -4,44 +4,49 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Environment, Silhouette}
+import models.Reservations.ScheduleEntry
 import models._
+import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.mvc.Action
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import play.api.libs.json.Json
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 /**
  * Created by anton on 9/21/14.
  */
 class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedCookieAuthenticator])
-    extends Silhouette[AdminUser, CachedCookieAuthenticator] {
+  extends Silhouette[AdminUser, CachedCookieAuthenticator] {
 
 
-    /**
-     * A play framework form.
-     */
-    val addMasseurForm = Form(
-      mapping(
-        "id" -> optional(longNumber),
-        "userId" -> optional(longNumber),
-        "firstName" -> nonEmptyText(1),
-        "lastName" -> nonEmptyText(1),
-        "email" -> email,
-        "sex" -> nonEmptyText()
-//       "chair" -> boolean,
-//      "swedish" -> boolean,
-//      "shiatsu" -> boolean
-      )((id, userId, firstName, lastName, email, sex) => {
-        import collection.mutable.ListBuffer
-        val mt = Chair ::: Swedish ::: Shiatsu
-//        if(chair) mt ++ Chair
-//        if(swedish) mt ++ Swedish
-//        if(shiatsu) mt ++ Shiatsu
-        MasseurProfile(id, userId, firstName, lastName, email, sex, massageTypes = Some(mt.toList))
-      })
+  /**
+   * A play framework form.
+   */
+  val addMasseurForm = Form(
+    mapping(
+      "id" -> optional(longNumber),
+      "userId" -> optional(longNumber),
+      "firstName" -> nonEmptyText(1),
+      "lastName" -> nonEmptyText(1),
+      "email" -> email,
+      "sex" -> nonEmptyText()
+      //       "chair" -> boolean,
+      //      "swedish" -> boolean,
+      //      "shiatsu" -> boolean
+    )((id, userId, firstName, lastName, email, sex) => {
+      MasseurProfile(id, userId, firstName, lastName, email, sex)
+    })
       ((mp: MasseurProfile) => Some(mp.id, mp.userId, mp.firstName, mp.lastName, mp.email, mp.sex))
-    )
+  )
+  implicit val scheduleFormat = Json.format[ScheduleEntry]
+  implicit val masseurOrderJson = Json.format[MasseurOrder]
+  implicit val masseurFormat = Json.format[MasseurProfile]
 
   /**
    * Handles the Sign Up action.
@@ -74,17 +79,21 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
   }
 
   def listUsers = UserAwareAction.async { implicit request =>
-    val futureUsers = Future {Users.getAll}
+    val futureUsers = Future {
+      Users.getAll
+    }
     futureUsers.map(users => Ok(views.html.admin.users.list(request.identity, users)))
   }
 
   def listMasseurs = UserAwareAction.async { implicit request =>
-    val futureMasseurs = Future {Masseurs.getAllMasseurs}
+    val futureMasseurs = Future {
+      Masseurs.getAllMasseurs
+    }
     futureMasseurs.map { masseurList => Ok(views.html.admin.masseur.list(request.identity, masseurList))}
   }
 
   def addMasseur = SecuredAction.async { implicit request =>
-      val form = if(request.flash.get("error").isDefined) addMasseurForm.bind(request.flash.data) else addMasseurForm
+    val form = if (request.flash.get("error").isDefined) addMasseurForm.bind(request.flash.data) else addMasseurForm
     Future.successful(Ok(views.html.admin.masseur.add(Some(request.identity), form)))
   }
 
@@ -112,10 +121,10 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
       hasErrors = { form => import play.api.mvc.Flash
         Redirect(routes.AdminController.editMasseur(id)).flashing(Flash(form.data))
       },
-    success = { updatedMasseur =>
-      Masseurs.addMasseur(updatedMasseur.copy(id=Some(id)))
-      Redirect(routes.AdminController.listMasseurs())
-    }
+      success = { updatedMasseur =>
+        Masseurs.addMasseur(updatedMasseur.copy(id = Some(id)))
+        Redirect(routes.AdminController.listMasseurs())
+      }
     )
   }
 
@@ -138,5 +147,50 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
   def calendar = UserAwareAction.async { implicit request =>
     Future.successful(Ok(views.html.admin.calendar(request.identity)))
   }
+
+  def schedule = Action { implicit request =>
+    val start = request.queryString.get("start").flatMap(_.headOption) getOrElse("invalid")
+    val end = request.queryString.get("end").flatMap(_.headOption) getOrElse("invalid")
+    val startDate = DateTime.parse(start)
+    val endDate = DateTime.parse(end)
+    val slots = Reservations.findSchedule(startDate, endDate)
+    val res = Json.toJson(slots)
+    Ok(res).as(JSON)
+  }
+
+  def markMasseurAvailable = Action(parse.json) { implicit request =>
+    request.body.validate[MasseurOrder].fold(
+      (errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors)))
+        ), (
+        mo => {
+          val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
+          val end = start.withTime(23, 0, 0, 0)
+          Reservations.generateTimeSlots(start, end, mo.masseurId)
+          Ok(Json.obj("status" -> "OK")).as(JSON)
+        }
+        ))
+  }
+
+  def markMasseurUnvailable = Action(parse.json) { implicit request =>
+    request.body.validate[MasseurOrder].fold(
+      (errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors)))
+        ), (
+        mo => {
+          val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
+          val end = start.withTime(23, 0, 0, 0)
+          Reservations.removeTimeSlots(start, end, mo.masseurId)
+          Ok(Json.obj("status" -> "OK")).as(JSON)
+        }
+        ))
+  }
+
+  def listMasseursJson = SecuredAction { implicit request =>
+    val res = Json.toJson(Masseurs.getAllMasseurs)
+    Ok(Json.obj("status" -> "OK", "masseurs" -> res))
+  }
+
+  case class MasseurOrder(date: String, masseurId: Long)
+  //    val slots = Reservations.findTimeSlots(start, end)
+  //    val slots2 = Reservations.findSchedule(start, end)
 
 }

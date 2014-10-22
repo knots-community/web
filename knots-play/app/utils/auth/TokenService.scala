@@ -13,7 +13,6 @@ import play.api.Play._
 import play.api.libs.Crypto
 import play.api.libs.json.Json
 
-import scala.util.Try
 
 /**
  * Created by anton on 10/7/14.
