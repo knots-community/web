@@ -1,0 +1,86 @@
+@(user: Option[models.AdminUser], companies: List[models.db.TableDefinitions.Company])
+@admin.main("Company List", user) {
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left">Companies</h2>
+
+                    <div class="filter-block pull-right">
+                        <div class="form-group pull-left">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <i class="fa fa-search search-icon"></i>
+                        </div>
+
+                        <a href="#" class="btn btn-primary pull-right">
+                            <i class="fa fa-plus-circle fa-lg"></i> Add company
+                        </a>
+                    </div>
+                </header>
+
+                <div class="main-box-body clearfix">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th><a href="#"><span>Company</span></a></th>
+                                    <th class="text-center"><span>Name</span></th>
+                                    <th class="text-center"><a href="#" class="desc"><span>Address</span></a></th>
+                                    <th class="text-center"><a href="#" class="desc"><span>Phone</span></a></th>
+                                    <th class="text-center"><a href="#" class="desc"><span>Email</span></a></th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @for(c <- companies) {
+                                <tr>
+                                    <td>
+                                    @c.name
+                                    </td>
+                                    <td class="text-center">
+                                    @c.address
+                                    </td>
+                                    <td class="text-center">
+                                    @c.phone
+                                    </td>
+                                    <td class="text-center">
+                                    @c.contactEmail
+                                    </td>
+                                    <td style="width : 15 % ;">
+                                        <a href="@routes.CompaniesController.find(c.id.get)" class="table-link">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                        <a href="@routes.CompaniesController.edit(c.id.get)" class="table-link">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                        <a href="@routes.CompaniesController.delete(c.id.get)" class="table-link danger">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <ul class="pagination pull-right">
+                        <li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}

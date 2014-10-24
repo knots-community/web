@@ -3,7 +3,6 @@ package models
 import java.sql.Timestamp
 
 import org.joda.time.DateTimeZone._
-import org.joda.time._
 import models.db.TableDefinitions.{TimeSlot, MassageReservation, ReservationType}
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
@@ -78,10 +77,10 @@ object Reservations extends Dao {
 
   implicit def dateTimeToScalaWrapper(dt: DateTime): DateTimeWrapper = new DateTimeWrapper(dt)
 
-  def generateTimeSlots(start: DateTime, end: DateTime, masseurId: Long, timeSlotLength: Int = 20) = DB withTransaction { implicit sessison =>
+  def generateTimeSlots(start: DateTime, end: DateTime, masseurId: Long, companyId: Long, timeSlotLength: Int = 20) = DB withTransaction { implicit sessison =>
     var time = start
     do {
-      timeSlots += TimeSlot(None, masseurId, time, 0)
+      timeSlots += TimeSlot(None, masseurId, time, 0, companyId)
       time = time.plusMinutes(timeSlotLength)
     } while (time <= end)
   }
@@ -97,9 +96,27 @@ object Reservations extends Dao {
     (reservations += MassageReservation(None, userId, masseurId, DateTime.now, slotId, 0, None, Regular, massageType, slotId)) > 0
   }
 
+//  def findTimeSlots(start: DateTime, end: DateTime) = DB withSession { implicit session =>
+//    (for {
+//      ts <- timeSlots
+//      mass <- masseurs if ts.masseurId === mass.id
+//      company <- companies if ts.companyId === company.id
+//    } yield (ts, mass, company)).list
+//  }
+
+
   def findTimeSlots(start: DateTime, end: DateTime) = DB withSession { implicit session =>
     (for {
-      ts <- timeSlots if ts.startTime <= start && ts.startTime < end && ts.status === 0
+      ts <- timeSlots
+      mass <- masseurs if ts.masseurId === mass.id
+      company <- companies if ts.companyId === company.id
+    } yield (ts, mass, company)).list
+  }
+
+
+  def findOpenTimeSlotsForCompany(company: Long) = DB withSession { implicit session =>
+    (for {
+      ts <- timeSlots if ts.companyId === company && ts.status === 0
       mass <- masseurs if ts.masseurId === mass.id
     } yield (ts, mass)).list
   }
@@ -110,10 +127,9 @@ object Reservations extends Dao {
   def findSchedule(start: DateTime, end: DateTime) : List[ScheduleEntry] = DB withSession { implicit session =>
     val startString = start.toDateTimeISO.toString
     val endString = end.toDateTimeISO.toString
-    val q = sql"""select DISTINCT (date_trunc('day', time_slots."startTime")), users."firstName"|| ' ' || users."lastName", masseurs."id" FROM time_slots, masseurs, users WHERE (time_slots."startTime" >= TIMESTAMP '#$startString') AND (time_slots."startTime" < TIMESTAMP '#$endString') AND (time_slots."masseur_id" = masseurs."id") and (masseurs."userId" = users."id")""".as[ScheduleEntry]
+    val q = sql"""select DISTINCT (date_trunc('day', time_slots."startTime")), users."firstName"|| ' ' || users."lastName", masseurs."id" FROM time_slots, masseurs, users WHERE (time_slots."startTime" >= TIMESTAMP '#$startString') AND (time_slots."startTime" < TIMESTAMP '#$endString') AND (time_slots."masseurId" = masseurs."id") and (masseurs."userId" = users."id")""".as[ScheduleEntry]
     q.list
   }
-
 
   class DateTimeWrapper(dt: DateTime) extends Ordered[DateTime] with Ordering[DateTime] {
     def compare(that: DateTime): Int = dateComparator.compare(dt, that)

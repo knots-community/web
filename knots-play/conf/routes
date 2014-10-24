@@ -3,47 +3,62 @@
 # ~~~~
 
 # Home page
-GET         /                                 @controllers.ApplicationController.index
+GET         /                                  @controllers.ApplicationController.index
 
-GET         /assets/jsroutes.js               @controllers.ApplicationController.jsRoutes()
+GET         /assets/jsroutes.js                @controllers.ApplicationController.jsRoutes()
 
 # Authentication
-POST        /login                            @controllers.ApplicationController.signin
-POST        /signup                           @controllers.ApplicationController.signup
+POST        /login                             @controllers.ApplicationController.signin
+POST        /signup                            @controllers.ApplicationController.signup
 #POST        /logout                           @controllers.Application.logout()
 
-GET         /authuser                         @controllers.UsersController.authUser
+GET         /authuser                          @controllers.UsersController.authUser
 
-GET         /timeslots                        @controllers.BookingController.timeSlots
-POST        /reservation                      @controllers.BookingController.performBooking
+GET         /timeslots                         @controllers.BookingController.timeSlots
+POST        /reservation                       @controllers.BookingController.performBooking
 
-GET         /admin/schedule                   @controllers.AdminController.schedule
-POST        /admin/work              @controllers.AdminController.markMasseurAvailable
-POST        /admin/nowork            @controllers.AdminController.markMasseurUnvailable
+GET         /admin/schedule                    @controllers.AdminController.schedule
+POST        /admin/work                        @controllers.AdminController.markMasseurAvailable
+POST        /admin/nowork                      @controllers.AdminController.markMasseurUnvailable
+
 
 #Admin panel
-GET         /admin                            @controllers.AdminController.index
-GET         /admin/calendar                   @controllers.AdminController.calendar
-GET         /admin/users                      @controllers.AdminController.listUsers
-GET         /admin/masseurs                   @controllers.AdminController.listMasseurs
-POST        /admin/masseurs                   @controllers.AdminController.saveMasseur
-POST        /admin/masseurs/:id               @controllers.AdminController.updateMasseur(id: Long)
-GET         /admin/masseurs/add               @controllers.AdminController.addMasseur
-GET         /admin/masseurs/:id               @controllers.AdminController.showMasseur(id: Long)
-GET         /admin/masseurs/:id/edit          @controllers.AdminController.editMasseur(id: Long)
-GET         /admin/masseurs/:id/delete        @controllers.AdminController.deleteMasseur(id: Long)
+GET         /admin                             @controllers.AdminController.index
+GET         /admin/calendar                    @controllers.AdminController.calendar
+GET         /admin/users                       @controllers.AdminController.listUsers
+GET         /admin/masseurs                    @controllers.AdminController.listMasseurs
+POST        /admin/masseurs                    @controllers.AdminController.saveMasseur
+POST        /admin/masseurs/:id                @controllers.AdminController.updateMasseur(id: Long)
+GET         /admin/masseurs/add                @controllers.AdminController.addMasseur
+GET         /admin/masseurs/:id                @controllers.AdminController.showMasseur(id: Long)
+GET         /admin/masseurs/:id/edit           @controllers.AdminController.editMasseur(id: Long)
+GET         /admin/masseurs/:id/delete         @controllers.AdminController.deleteMasseur(id: Long)
+
+#companies
+GET         /admin/companies                   @controllers.CompaniesController.list
+GET         /admin/companies/add               @controllers.CompaniesController.add
+GET         /admin/companies/:id               @controllers.CompaniesController.find(id: Long)
+POST        /admin/companies                   @controllers.CompaniesController.save
+POST        /admin/companies/:id               @controllers.CompaniesController.update(id: Long)
+POST        /admin/companies/:id/delete        @controllers.CompaniesController.delete(id: Long)
+GET         /admin/companies/:id/edit          @controllers.CompaniesController.edit(id: Long)
+
+#events
+GET         /admin/events                      @controllers.EventsController.list
+GET         /admin/events/add                  @controllers.EventsController.add
+POST        /admin/events                      @controllers.EventsController.save
 
 #Admin auth
-GET         /admin/auth/login                 @controllers.AdminController.signin
-POST        /admin/auth/signup                @controllers.AdminSignupController.signup
-GET         /admin/auth/signup                @controllers.AdminSignupController.signup
-POST        /admin/auth/credentials           @controllers.AdminCredentialsAuthController.authenticate
+GET         /admin/auth/login                  @controllers.AdminController.signin
+POST        /admin/auth/signup                 @controllers.AdminSignupController.signup
+GET         /admin/auth/signup                 @controllers.AdminSignupController.signup
+POST        /admin/auth/credentials            @controllers.AdminCredentialsAuthController.authenticate
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
-GET         /admin/metrics                    com.kenshoo.play.metrics.MetricsController.metrics
+GET         /assets/*file                      controllers.Assets.versioned(path="/public", file: Asset)
+GET         /admin/metrics                     com.kenshoo.play.metrics.MetricsController.metrics
 
 
 #TODO:
 
-GET         /admin/masseurs/list/json         @controllers.AdminController.listMasseursJson
+GET         /admin/masseurs/list/json          @controllers.AdminController.listMasseursJson

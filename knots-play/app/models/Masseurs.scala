@@ -14,7 +14,7 @@ case class MasseurProfile(id: Option[Long], userId: Option[Long], firstName: Str
 
 object Masseurs extends Dao {
 
-  implicit def masseurProfile2DbUser(p: MasseurProfile): User = User(p.userId, p.firstName, p.lastName, p.email)
+  implicit def masseurProfile2DbUser(p: MasseurProfile): User = User(p.userId, p.firstName, p.lastName, p.email, 1)
   implicit def masseurProfile2Masseur(p: MasseurProfile): Masseur = Masseur(p.id, p.userId.getOrElse(0), p.sex, p.isActive)
 
   def getAllMasseurs = DB withSession { implicit session =>

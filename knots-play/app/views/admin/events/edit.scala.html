@@ -1,0 +1,37 @@
+@(user: Option[models.AdminUser], form: Form[models.db.TableDefinitions.Company], id: Long)
+
+@import bootstrap._
+
+@admin.main("Edit Profile", user) {
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="main-box">
+
+                <header class="main-box-header clearfix">
+                    <h2 class="pull-left">Users</h2>
+
+                </header>
+
+                <div class="main-box-body clearfix">
+                @helper.form(action = routes.AdminController.updateMasseur(id)) {
+                    @form.globalError.map { error =>
+                        <div class="alert alert-danger fade in">
+                            <strong>@error.message</strong>
+                        </div>
+                    }
+
+                    @input(form("name"), "Name")
+                    @input(form("address"), "Address")
+                    @input(form("phone"), "Phone Number")
+                    @input(form("email"), "Contact Email")
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <button type="submit" class="btn btn-success col-xs-12">Save</button>
+                        </div>
+                    </div>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+}

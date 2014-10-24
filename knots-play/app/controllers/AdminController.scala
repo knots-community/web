@@ -165,7 +165,7 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
         mo => {
           val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
           val end = start.withTime(23, 0, 0, 0)
-          Reservations.generateTimeSlots(start, end, mo.masseurId)
+          Reservations.generateTimeSlots(start, end, mo.masseurId, 0)
           Ok(Json.obj("status" -> "OK")).as(JSON)
         }
         ))

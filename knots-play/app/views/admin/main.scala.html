@@ -14,6 +14,8 @@
             <!-- libraries -->
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/font-awesome.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/nanoscroller.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/select2.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap-timepicker.css")">
 
             <!-- global styles -->
         <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/layout.css")">
@@ -63,8 +65,10 @@
                         <ul class="nav navbar-nav pull-right">
                             <li class="dropdown profile-dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="@routes.Assets.versioned("img/samples/scarlet-159.png")"  alt=""/>
-                                    <span class="hidden-xs">@{if(user.isDefined) user.get.firstName + " " + user.get.lastName}</span> <b class="caret"></b>
+                                    <img src="@routes.Assets.versioned("img/samples/scarlet-159.png")" alt=""/>
+                                    <span class="hidden-xs">@{
+                                        if(user.isDefined) user.get.firstName + " " + user.get.lastName
+                                    }</span> <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="user-profile.html"><i class="fa fa-user"></i>Profile</a></li>
@@ -87,7 +91,11 @@
                                 <img alt="" src="@routes.Assets.versioned("img/samples/scarlet-159.png")"/>
                                 <div class="user-box">
                                     <span class="name">
-									Welcome<br/>@{if(user.isDefined) {user.get.firstName }}
+									Welcome<br/> @{
+                                        if(user.isDefined) {
+                                            user.get.firstName
+                                        }
+                                    }
 								</span>
                                     <span class="status">
                                         <i class="fa fa-circle"></i> Online
@@ -114,7 +122,7 @@
 												User list
                                                 </a>
                                             </li>
-                                           <!-- <li>
+                                                <!-- <li>
                                                 <a href="user-profile.html">
 												User profile
                                                 </a>
@@ -130,12 +138,50 @@
                                         <ul class="submenu">
                                             <li>
                                                 <a href=@routes.AdminController.listMasseurs>
-                                                    Masseur list
+                                                    Masseur List
                                                 </a>
                                             </li>
-                                                <li>
+                                            <li>
                                                 <a href=@routes.AdminController.addMasseur>
 												Add Masseur
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown-toggle">
+                                            <i class="fa fa-users"></i>
+                                            <span>Companies</span>
+                                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                                        </a>
+                                        <ul class="submenu">
+                                            <li>
+                                                <a href=@routes.CompaniesController.list>
+                                                    Companies List
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href=@routes.CompaniesController.add>
+												Add Company
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown-toggle">
+                                            <i class="fa fa-users"></i>
+                                            <span>Events</span>
+                                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                                        </a>
+                                        <ul class="submenu">
+                                            <li>
+                                                <a href=@routes.EventsController.list>
+                                                    Event List
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href=@routes.EventsController.add>
+												Add Event
                                                 </a>
                                             </li>
                                         </ul>
@@ -183,10 +229,15 @@
         <script src="@routes.Assets.versioned("js/libs/jquery.js")"></script>
         <script src="@routes.Assets.versioned("js/libs/bootstrap.js")"></script>
         <script src="@routes.Assets.versioned("js/libs/jquery.nanoscroller.min.js")"></script>
+        <script src="@routes.Assets.versioned("js/libs/jquery.maskedinput.min.js")"></script>
+        <script src="@routes.Assets.versioned("js/libs/moment.min.js")"></script>
+        <script src="@routes.Assets.versioned("js/libs/bootstrap-datepicker.js")"></script>
+        <script src="@routes.Assets.versioned("js/libs/bootstrap-timepicker.js")"></script>
+        <script src="@routes.Assets.versioned("js/libs/select2.js")"></script>
 
-        <!-- this page specific scripts -->
+            <!-- this page specific scripts -->
         @scripts
-        <!-- theme scripts -->
+            <!-- theme scripts -->
         <script src="@routes.Assets.versioned("js/libs/scripts.js")"></script>
 
 

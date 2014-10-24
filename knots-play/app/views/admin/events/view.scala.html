@@ -1,0 +1,23 @@
+@(user: Option[models.AdminUser], company: models.db.TableDefinitions.Company)
+@admin.main("Company Profile", user) {
+
+    <div class="row" id="user-profile">
+        <div class="col-lg-3 col-md-4 col-sm-4">
+            <div class="main-box clearfix">
+                <header class="main-box-header clearfix">
+                    <h2>@company.name</h2>
+                </header>
+
+                <div class="main-box-body clearfix">
+                    <div class="profile-message-btn center-block text-center">
+                        <a href="@routes.CompaniesController.edit(company.id.get)" class="btn btn-success">
+                            <i class="fa fa-envelope"></i>
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

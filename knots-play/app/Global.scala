@@ -25,6 +25,7 @@ object Global extends WithFilters(LoggingFilter, MetricsFilter) with SecuredSett
     super.onStart(app)
     // Now the configuration is read and we can create our Injector.
     injector = Guice.createInjector(new SilhouetteModule())
+    CompaniesDao.initialize
     Roles.initialize
     MassageTypeEnum.initialize
     ReservationTypeEnum.initialize

@@ -26,14 +26,17 @@ object TableDefinitions {
     def users = TableQuery[UserRoles].filter(_.roleId === id).flatMap(_.userFK)
   }
 
-  case class User(id: Option[Long], firstName: String, lastName: String, email: String)
+  case class User(id: Option[Long], firstName: String, lastName: String, email: String, companyId: Long)
 
   class Users(tag: Tag) extends RichTable[User](tag, "users") {
     def firstName = column[String]("firstName", O.NotNull)
     def lastName = column[String]("lastName", O.NotNull)
     def email = column[String]("email", O.NotNull)
-    def * = (id.?, firstName, lastName, email) <> (User.tupled, User.unapply)
+    def companyId = column[Long]("company", O.NotNull)
+    def * = (id.?, firstName, lastName, email, companyId) <> (User.tupled, User.unapply)
     def roles = TableQuery[UserRoles].filter(_.userId === id)
+
+    def companyFk = foreignKey("companyFk", companyId, TableQuery[Companies])(_.id, onUpdate = ForeignKeyAction.Cascade)
   }
 
   case class Admin(id: Option[Long], userId: Option[Long])
@@ -54,6 +57,16 @@ object TableDefinitions {
     def roleFK = foreignKey("role_fk", roleId, TableQuery[Roles])(_.id , onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
 
     def * = (id.?, userId.?, roleId.?) <>(DbUserRole.tupled, DbUserRole.unapply)
+  }
+
+  case class Company(id: Option[Long], name: String, address: String, phone: String, contactEmail: String)
+  class Companies(tag: Tag) extends RichTable[Company](tag, "companies") {
+    def name = column[String]("name")
+    def address = column[String]("address")
+    def phone = column[String]("phone")
+    def contactEmail = column[String]("email")
+
+    def * = (id.?, name, address, phone, contactEmail) <> (Company.tupled, Company.unapply)
   }
 
   case class DbLoginInfo(id: Option[Long], providerID: String, providerKey: String)
@@ -142,21 +155,23 @@ object TableDefinitions {
 
   class MassageTypes(tag: Tag) extends RichTable[MassageType](tag, "massage_types") {
     def name = column[String]("name", O.NotNull)
-    def description = column[String]("masseur_id")
+    def description = column[String]("masseurId")
 
     def * = (id.?, name, description.?) <>(MassageType.tupled, MassageType.unapply)
   }
 
-  case class TimeSlot(id: Option[Long], masseurId: Long, startTime: DateTime, status: Int)
+  case class TimeSlot(id: Option[Long], masseurId: Long, startTime: DateTime, status: Int, companyId: Long)
 
   case class TimeSlots(tag: Tag) extends RichTable[TimeSlot](tag, "time_slots") {
-    def masseurId = column[Long]("masseur_id", O.NotNull)
+    def masseurId = column[Long]("masseurId", O.NotNull)
     def startTime = column[DateTime]("startTime", O.NotNull)
     def status = column[Int]("status")
+    def companyId = column[Long]("companyId", O.NotNull)
 
-    def masseurFk = foreignKey("masseur_fk", masseurId, TableQuery[Masseurs])(_.id, onUpdate = ForeignKeyAction.Cascade)
-//    def idx = index("idx", (masseurId, startTime), unique = true)
-    def * = (id.?, masseurId, startTime, status) <> (TimeSlot.tupled, TimeSlot.unapply)
+    def masseurFk = foreignKey("masseurFk", masseurId, TableQuery[Masseurs])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def companyFk = foreignKey("companyFk", companyId, TableQuery[Companies])(_.id, onUpdate = ForeignKeyAction.Cascade)
+    def idx = index("idx", (masseurId, startTime, companyId), unique = true)
+    def * = (id.?, masseurId, startTime, status, companyId) <> (TimeSlot.tupled, TimeSlot.unapply)
   }
 
   case class ReservationType(id: Option[Long], name: String, description: Option[String])

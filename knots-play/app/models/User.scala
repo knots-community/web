@@ -49,7 +49,7 @@ object Users extends Dao {
 
   def initialize() {
     DB withSession { implicit session =>
-      if (users.list.length == 0) users += User(None, "", "", "")
+      if (users.list.length == 0) users += User(None, "", "", "", 1)
       ()
     }
   }

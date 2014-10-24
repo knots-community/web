@@ -1,6 +1,6 @@
 package controllers
 
-import models.Users
+import models.{CompaniesDao, Users}
 import models.db.TableDefinitions.User
 import models.js.{Signup, LoginCredentials}
 import play.api.Routes
@@ -28,8 +28,9 @@ class ApplicationController extends Controller with Auth {
     (__ \ "firstName").read[String](minLength[String](2)) ~
       (__ \ "lastName").read[String](minLength[String](2)) ~
       (__ \ "email").read[String](minLength[String](5)) ~
-      (__ \ "password").read[String](minLength[String](2))
-    )((firstName, lastName, email, password) => Signup(firstName, lastName, email, password))
+      (__ \ "password").read[String](minLength[String](2)) ~
+      (__ \ "companyId").read[Long]
+    )((firstName, lastName, email, password, companyId) => Signup(firstName, lastName, email, password, companyId))
   /**
    * Retrieves all routes via reflection.
    * http://stackoverflow.com/questions/12012703/less-verbose-way-of-generating-play-2s-javascript-router
@@ -78,7 +79,8 @@ class ApplicationController extends Controller with Auth {
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
       }, {
         data => {
-          Users.save(User(None, data.firstName, data.lastName, data.email), data.password) map (
+          val c  = CompaniesDao.findById(data.companyId)
+          Users.save(User(None, data.firstName, data.lastName, data.email, data.companyId), data.password) map (
             newUser => {
               val token = TokenService.create(data.email)
               val tokenStr = TokenService.serialize(token)
