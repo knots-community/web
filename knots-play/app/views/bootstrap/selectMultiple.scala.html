@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
+@(field: play.api.data.Field, options: Seq[models.MasseurProfile], args: (Symbol,Any)*)(implicit handler: helper.FieldConstructor, lang: play.api.i18n.Lang)
 
-</body>
-</html>
+    @values = @{ field.indexes.map { v => field("[" + v + "]").value } }
+
+@helper.input(field, args:_*) { (id, name, value, htmlArgs) =>
+    <label>Pick Masseurs</label>
+
+    <div class="form-group form-group-select2">
+
+    <select name="masseurs[]" style="width:500px" id="sel2Multi" multiple>
+
+        <option></option>
+
+        @options.map { v =>
+            <option value="@v.id" >@{v.firstName + " " + v.lastName}</option>
+        }
+    </select>
+  </div>
+}

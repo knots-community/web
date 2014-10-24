@@ -17,15 +17,23 @@ object CompaniesDao extends Dao{
   }
 
   def findById(id: Long) = DB withSession { implicit session =>
-    companies.filter(_.id === id).list
+    companies.filter(_.id === id).first
   }
 
   def update(company: Company) = DB withSession { implicit session =>
     companies.filter(_.id === company.id).update(company)
   }
 
-  def delete(company: Company) = DB withSession { implicit session =>
-    companies.filter(_.id === company.id).delete
+  def delete(id: Long) = DB withSession { implicit session =>
+    companies.filter(_.id === id).delete
+  }
+
+  def add(company: Company) = DB withSession { implicit request =>
+    companies += company
+  }
+
+  def initialize = DB withSession { implicit request =>
+//    companies.insertOrUpdate(Company(None, "Knots Community", "Montreal", "", "anton@knotsmcgill.com"))
   }
 
 }

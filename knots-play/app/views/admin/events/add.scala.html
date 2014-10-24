@@ -1,8 +1,33 @@
-@(user: Option[models.AdminUser], form: Form[_])
+@(user: Option[models.AdminUser], form: Form[models.Event], companies: List[models.db.TableDefinitions.Company], masseurs: Seq[models.MasseurProfile])
 
 @import bootstrap._
 
-@admin.main("Add Company", user) {
+    @scripts = {
+        <script>
+        //datepicker
+        $('#datepickerDate').datepicker({
+        format: 'mm-dd-yyyy'
+        });
+
+        //timepicker
+        $ ( '#timepicker, #timepicker2' ).timepicker ( {
+        minuteStep : 20,
+        showSeconds : false,
+        showMeridian : false,
+        disableFocus : false,
+        showWidget : true
+        } ).focus ( function ( ) {
+        $ ( this ).next ( ).trigger ( 'click' ) ;
+        } ) ;
+
+        $ ( '#sel2Multi' ).select2 ( {
+        placeholder : 'Select a Masseur',
+        allowClear : true
+        } ) ;
+        </script>
+    }
+
+@admin.main("Add Event", user, Html(""), scripts) {
     <div class="row">
         <div class="col-lg-6">
             <div class="main-box">
@@ -13,17 +38,49 @@
                 </header>
 
                 <div class="main-box-body clearfix">
-                @helper.form(action = routes.CompaniesController.save()) {
+                @helper.form(action = routes.EventsController.save()) {
                     @form.globalError.map { error =>
                         <div class="alert alert-danger fade in">
                             <strong>@error.message</strong>
                         </div>
                     }
 
-                    @input(form("name"), "Name")
-                    @input(form("address"), "Address")
-                    @input(form("phone"), "Phone number")
-                    @input(form("email"), "Contact email")
+                    <div class="form-group form-group-select2">
+                        <label>Company Name</label>
+                        <select name="companyId" class="form-control select2">
+                            <option></option>
+                            @for(c <- companies) {
+                                <option value="@c.id">@c.name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div >
+                        <label for="datepickerDate">Date</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class="form-control" id="datepickerDate" name="date">
+                        </div>
+                    </div>
+
+                    <div >
+                        <label for="timepicker">Start Time</label>
+                        <div class="input-group input-append bootstrap-timepicker">
+                            <input type="text" class="form-control" id="timepicker" name="startTime">
+                            <span class="add-on input-group-addon"><i class="fa fa-clock-o"></i></span>
+                        </div>
+                    </div>
+
+                    <div >
+                        <label for="timepicker">End Time</label>
+                        <div class="input-group input-append bootstrap-timepicker">
+                            <input type="text" class="form-control" id="timepicker2" name="endTime">
+                            <span class="add-on input-group-addon"><i class="fa fa-clock-o"></i></span>
+                        </div>
+                    </div>
+
+
+                    @selectMultiple(form("masseurs"), masseurs)
                     <div class="row">
                         <div class="col-xs-3">
                             <button type="submit" class="btn btn-success col-xs-12">Add</button>
@@ -34,4 +91,5 @@
             </div>
         </div>
     </div>
+
 }

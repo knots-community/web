@@ -1,4 +1,4 @@
-@(user: Option[models.AdminUser], form: Form[MasseurProfile], id: Long)
+@(user: Option[models.AdminUser], form: Form[models.db.TableDefinitions.Company], id: Long)
 
 @import bootstrap._
 
@@ -20,19 +20,10 @@
                         </div>
                     }
 
-                    @input(form("firstName"), "First Name")
-                    @input(form("lastName"), "Last Name")
-                    @input(form("email"), "Email address")
-                    <div class="form-group">
-                        <label for="inputSex">Sex</label>
-                        <select class="form-control" name="sex">
-                            <option>Female</option>
-                            <option>Male</option>
-                        </select>
-                    </div>
-                    @*<div class="form-group">*@
-                    @*<label>Massage Types</label>*@
-                    @*</div>*@
+                    @input(form("name"), "Name")
+                    @input(form("address"), "Address")
+                    @input(form("phone"), "Phone Number")
+                    @input(form("email"), "Contact Email")
                     <div class="row">
                         <div class="col-xs-3">
                             <button type="submit" class="btn btn-success col-xs-12">Save</button>

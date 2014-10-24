@@ -1,4 +1,4 @@
-@(user: Option[models.AdminUser], users: List[models.db.TableDefinitions.Company])
+@(user: Option[models.AdminUser], companies: List[models.db.TableDefinitions.Company])
 @admin.main("Company List", user) {
     <div class="row">
         <div class="col-lg-12">
@@ -23,42 +23,43 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th><a href="#"><span>Masseur</span></a></th>
-                                    <th class="text-center"><span>Status</span></th>
-                                    <th class="text-center"><a href="#" class="desc"><span>Created</span></a></th>
-                                    <th class="text-center"><a href="#" class="desc"><span>Last Active</span></a></th>
+                                    <th><a href="#"><span>Company</span></a></th>
+                                    <th class="text-center"><span>Name</span></th>
+                                    <th class="text-center"><a href="#" class="desc"><span>Address</span></a></th>
+                                    <th class="text-center"><a href="#" class="desc"><span>Phone</span></a></th>
+                                    <th class="text-center"><a href="#" class="desc"><span>Email</span></a></th>
                                     <th>&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            @for(u <- users) {
+                            @for(c <- companies) {
                                 <tr>
                                     <td>
-                                    @{u.firstName + " " + u.lastName}
+                                    @c.name
                                     </td>
                                     <td class="text-center">
-                                        <span class="label label-success">Active</span>
+                                    @c.address
                                     </td>
                                     <td class="text-center">
-                                        2013/09/22 19:00
+                                    @c.phone
                                     </td>
                                     <td class="text-center">
-                                        2013/09/22 19:00
+                                    @c.contactEmail
                                     </td>
                                     <td style="width : 15 % ;">
-                                        <a href="@routes.AdminController.showMasseur(u.id.get)" class="table-link">
+                                        <a href="@routes.CompaniesController.find(c.id.get)" class="table-link">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
-                                        <a href="@routes.AdminController.editMasseur(u.id.get)" class="table-link">
+                                        <a href="@routes.CompaniesController.edit(c.id.get)" class="table-link">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
-                                        <a href="@routes.AdminController.deleteMasseur(u.id.get)" class="table-link danger">
+                                        <a href="@routes.CompaniesController.delete(c.id.get)" class="table-link danger">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
