@@ -1,7 +1,5 @@
 package controllers
 
-import java.time.format.DateTimeFormatter
-
 import models.Reservations.SlotEntry
 import models.{Users, CompaniesDao, Reservations}
 import models.js.{Booking, LoginCredentials}
