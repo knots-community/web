@@ -25,7 +25,7 @@ class CompaniesController @Inject()(implicit val env: Environment[AdminUser, Cac
       "phone" -> nonEmptyText(5),
       "email" -> email
     )((id, name, address, phone, email) => {
-      Company(id, name, address, phone, email)
+      Company(id, name, address, phone, email, None)
     })
       ((c: Company) => Some(c.id, c.name, c.address, c.phone, c.contactEmail))
   )

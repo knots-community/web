@@ -29,8 +29,8 @@ class ApplicationController extends Controller with Auth {
       (__ \ "lastName").read[String](minLength[String](2)) ~
       (__ \ "email").read[String](minLength[String](5)) ~
       (__ \ "password").read[String](minLength[String](2)) ~
-      (__ \ "companyId").read[Long]
-    )((firstName, lastName, email, password, companyId) => Signup(firstName, lastName, email, password, companyId))
+      (__ \ "companyName").read[String]
+    )((firstName, lastName, email, password, companyName) => Signup(firstName, lastName, email, password, companyName))
   /**
    * Retrieves all routes via reflection.
    * http://stackoverflow.com/questions/12012703/less-verbose-way-of-generating-play-2s-javascript-router
@@ -79,8 +79,8 @@ class ApplicationController extends Controller with Auth {
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
       }, {
         data => {
-          val c  = CompaniesDao.findById(data.companyId)
-          Users.save(User(None, data.firstName, data.lastName, data.email, data.companyId), data.password) map (
+          val c = CompaniesDao.findByName(data.companyName)
+          Users.save(User(None, data.firstName, data.lastName, data.email, c.id.get), data.password) map (
             newUser => {
               val token = TokenService.create(data.email)
               val tokenStr = TokenService.serialize(token)
@@ -92,6 +92,23 @@ class ApplicationController extends Controller with Auth {
             ) getOrElse (BadRequest(Json.obj("status" -> "KO", "message" -> "user already exists")))
         }
       })
+  }
+
+  case class CompanyName(companyKey: String)
+
+  implicit val companyNameJson = Json.format[CompanyName]
+
+  def getCompanyName = Action(parse.json) { implicit request =>
+    request.body.validate[CompanyName].fold(
+    errors => {
+      BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
+    }, {
+      data => {
+        val c = CompaniesDao.findBySignupLink(data.companyKey)
+        Ok(Json.obj("status" -> "OK", "companyName" -> c.name))
+      }
+    }
+    )
   }
 
   /**

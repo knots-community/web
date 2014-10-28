@@ -4,6 +4,8 @@
 angular.module('Knots')
     .factory('userService', function ($http, $q, $cookies, $log, playRoutes, $location) {
         var user, token = $cookies['XSRF-TOKEN'];
+        var companyName = "";
+        var companyRequest = {};
 
         /* If the token is assigned, check that the token is still valid on the server */
         if (token) {
@@ -49,12 +51,25 @@ angular.module('Knots')
                 token = undefined;
                 user = undefined;
 //                return playRoutes.controllers.ApplicationController.logout().post().then(function () {
-                    $log.info("Good bye ");
-                    $location.path('/');
+                $log.info("Good bye ");
+                $location.path('/');
 //                });
+            },
+            queryCompanyName: function (companyKey) {
+                $log.info(companyKey);
+                return playRoutes.controllers.ApplicationController.getCompanyName().post(companyKey)
+                    .success(function (result) {
+                        companyName = result.companyName;
+                    })
+                    .error(function (err) {
+                        $log.error(err);
+                    });
             },
             getUser: function () {
                 return user;
+            },
+            getCompanyName: function () {
+                return companyName;
             }
         };
     })
@@ -83,6 +98,7 @@ angular.module('Knots')
         return {
             makeReservation: function (reservation) {
                 this.bookingInfo = reservation;
+                reservation.companyName = userService.getCompanyName();
                 return playRoutes.controllers.BookingController.performBooking().post(reservation).then(function (response) {
                     $location.path('/confirmation');
                 });
@@ -90,7 +106,8 @@ angular.module('Knots')
 
             queryTimeSlots: function () {
                 return playRoutes.controllers.BookingController.timeSlots().get().then(function (response) {
-                    timeSlots = response;
+                    timeSlots = response.data.slots.events;
+                    $log.info(timeSlots);
                     $location.path('/dashboard');
                 });
             },

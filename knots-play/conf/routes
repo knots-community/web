@@ -10,6 +10,7 @@ GET         /assets/jsroutes.js                @controllers.ApplicationControlle
 # Authentication
 POST        /login                             @controllers.ApplicationController.signin
 POST        /signup                            @controllers.ApplicationController.signup
+POST         /companyName                       @controllers.ApplicationController.getCompanyName
 #POST        /logout                           @controllers.Application.logout()
 
 GET         /authuser                          @controllers.UsersController.authUser

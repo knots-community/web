@@ -59,14 +59,15 @@ object TableDefinitions {
     def * = (id.?, userId.?, roleId.?) <>(DbUserRole.tupled, DbUserRole.unapply)
   }
 
-  case class Company(id: Option[Long], name: String, address: String, phone: String, contactEmail: String)
+  case class Company(id: Option[Long], name: String, address: String, phone: String, contactEmail: String, signupLink: Option[String])
   class Companies(tag: Tag) extends RichTable[Company](tag, "companies") {
     def name = column[String]("name")
     def address = column[String]("address")
     def phone = column[String]("phone")
     def contactEmail = column[String]("email")
+    def signupLink = column[String]("signupLink")
 
-    def * = (id.?, name, address, phone, contactEmail) <> (Company.tupled, Company.unapply)
+    def * = (id.?, name, address, phone, contactEmail, signupLink.?) <> (Company.tupled, Company.unapply)
   }
 
   case class DbLoginInfo(id: Option[Long], providerID: String, providerKey: String)

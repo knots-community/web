@@ -7,7 +7,7 @@ import models.db.TableDefinitions.{TimeSlot, MassageReservation, ReservationType
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
-import org.joda.time.{DateTime, DateTimeComparator, DateTimeZone}
+import org.joda.time.{LocalDate, DateTime, DateTimeComparator, DateTimeZone}
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
@@ -103,14 +103,17 @@ object Reservations extends Dao {
 //      company <- companies if ts.companyId === company.id
 //    } yield (ts, mass, company)).list
 //  }
+case class SlotEntry(slotId: Long, startTime: String, masseurId: Long, masseurName: String)
+  implicit val getSlotEhtryResult = GetResult(r => SlotEntry(r.<<, r.<<, r.<<, r.<<))
 
 
-  def findTimeSlots(start: DateTime, end: DateTime) = DB withSession { implicit session =>
-    (for {
-      ts <- timeSlots
-      mass <- masseurs if ts.masseurId === mass.id
-      company <- companies if ts.companyId === company.id
-    } yield (ts, mass, company)).list
+
+  def findTimeSlots(start: DateTime, end: DateTime, companyId: Long) : List[SlotEntry] = DB withSession { implicit session =>
+    val startString = DateTime.now.toDateTime.toString
+    val endString = DateTime.now.withYear(2050)
+
+    val q = sql"""select time_slots."id", time_slots."startTime", masseurs."id", users."firstName" || ' ' || users."lastName" FROM time_slots, masseurs, users WHERE (time_slots."startTime" >= TIMESTAMP '#$startString') AND (time_slots."startTime" < TIMESTAMP '#$endString') and (time_slots."companyId" = '#$companyId') and (time_slots."masseurId" = masseurs."id") and (masseurs."userId" = users."id") AND (time_slots."status" = 0) ORDER BY (masseurs."id", time_slots."startTime")""".as[SlotEntry]
+    q.list
   }
 
 
@@ -119,6 +122,13 @@ object Reservations extends Dao {
       ts <- timeSlots if ts.companyId === company && ts.status === 0
       mass <- masseurs if ts.masseurId === mass.id
     } yield (ts, mass)).list
+  }
+
+  def findDatesForCompany(companyId: Long) = DB withSession { implicit request =>
+    val startString = DateTime.now.toDateTime.toString
+    val endString = DateTime.now.withYear(2050)
+    val q = sql"""select DISTINCT (date_trunc('day', time_slots."startTime")) FROM time_slots WHERE (time_slots."startTime" >= TIMESTAMP '#$startString') AND (time_slots."startTime" < TIMESTAMP '#$endString') and (time_slots."companyId" = '#$companyId')""".as[String]
+    q.list
   }
 
   case class ScheduleEntry(date: String, title: String, masseurId: Long, allDay: Boolean = true)

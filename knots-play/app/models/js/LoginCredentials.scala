@@ -9,7 +9,7 @@ import org.joda.time.DateTime
  */
 case class LoginCredentials(email: String, password: String)
 
-case class Signup(firstName: String, lastName: String, email: String, password: String, companyId: Long)
+case class Signup(firstName: String, lastName: String, email: String, password: String, companyName: String)
 
 case class Booking(masseurId: Long, startTime: DateTime)
 

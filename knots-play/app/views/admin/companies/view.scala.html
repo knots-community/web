@@ -8,6 +8,10 @@
                     <h2>@company.name</h2>
                 </header>
 
+                <div class="profile-label">
+                    <span class="label label-info">Employee registration link: @company.signupLink.get</span>
+                </div>
+
                 <div class="main-box-body clearfix">
                     <div class="profile-message-btn center-block text-center">
                         <a href="@routes.CompaniesController.edit(company.id.get)" class="btn btn-success">

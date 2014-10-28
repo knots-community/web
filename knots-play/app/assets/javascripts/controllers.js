@@ -8,7 +8,7 @@ angular.module('Knots')
         $routeProvider
             .when('/', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
             .when('/login', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
-            .when('/signup', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
+            .when('/signup/:companyKey', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'SignUpCtrl'})
             .when('/dashboard', {templateUrl: '/assets/javascripts/partials/dashboard.html', controller: 'DashboardCtrl'})
             .when('/confirmation', { templateUrl: '/assets/javascripts/partials/confirmation.html', controller: 'ConfirmationCtrl'})
             .otherwise({templateUrl: '/assets/javascripts/partials/home.html'});
@@ -54,21 +54,32 @@ angular.module('Knots')
                 controller: 'LoginDialogCtrl'
             });
         };
+    })
 
+    .controller('SignUpCtrl', function ($scope, userService, $location, $modal, $routeParams) {
+        $scope.companyRequest = {};
+        $scope.companyRequest.companyKey = $routeParams.companyKey;
+        $scope.companyName = "";
+        userService.queryCompanyName($scope.companyRequest).then(function (response) {
+            $scope.companyName = response.companyName;
+
+            $modal.open({
+                templateUrl: '/assets/javascripts/partials/signup.html',
+                controller: 'RegistrationDialogCtrl',
+                keyboard: false
+            });
+        });
     })
 
     .controller('RegistrationDialogCtrl', function ($scope, $modalInstance, userService, $log, $location, bookingService) {
+        $scope.companyName = userService.getCompanyName();
         $scope.signUp = function (credentials) {
             $modalInstance.close();
+            credentials.companyName = $scope.companyName;
             userService.signup(credentials).then(function (/*user*/) {
                 $log.log("Registration success");
                 $location.path('/dashboard');
-                var t = new Date(2014, 10 ,31).getTime();
-                var oio = {date: t};
-                var day = JSON.stringify(oio);
-                bookingService.queryTimeSlots(day);
             });
-
         };
     })
 
@@ -78,36 +89,61 @@ angular.module('Knots')
             userService.loginUser(credentials).then(function (/*user*/) {
                 $log.log("Login success");
                 $location.path('/dashboard');
-                var date = JSON.stringify({day: new Date(2014, 10, 31).getTime()});
-                $log.log(date);
-                bookingService.queryTimeSlots(JSON.stringify({day: date}));
+                bookingService.queryTimeSlots();
             });
         };
     })
 
 
     .controller('DashboardCtrl', function ($scope, $log, userService, bookingService) {
-        $scope.user = userService.getUser();
-        $log.log($scope.user);
-
+        $scope.user = {};
+        $scope.events = [];
+        $scope.dates = [];
         $scope.reservation = {};
+        $scope.selectedDate = "";
+        $scope.selectedMasseur = "";
 
-        $scope.company = { name: "AutoCad Inc", location: "10 rue Duke, Montreal, Québec H3C 2L7"};
-        $scope.masseurs = [
-            { id: '1', name: "John", sex: "m"},
-            { id: '2', name: "Barbara", sex: "f"},
-            { id: '3', name: "Jennifer", sex: "f"},
-            { id: '4', name: "Amy", sex: "f"}
-        ];
+        (function() {
+            bookingService.queryTimeSlots().then(function() {
+                $scope.events = bookingService.getTimeSlots();
+                $scope.user = userService.getUser();
+                angular.forEach($scope.events, function(value, key) {
+                    $scope.dates.push(value.date);
+                });
+            });
+        })();
 
-        $scope.timeSlotsAvailable = [
-            { masseur: "John", times: [ "11:20", "13:30", "16:40"] },
-            { masseur: "Barbara", times: [ "9:45", "10:00", "14:30"]},
-            { masseur: "Jennifer", times: [ "9:45", "10:00", "15:00", "15:30"] },
-            { masseur: "Amy", times: [ "14:00, 14:45", "15:00", "15:30"] }
-        ];
+//        $scope.reservation = {};
+//
+//        $scope.masseurs = {};
+//        angular.forEach($scope.slots, function(value, key) {
+//           $scope.dates[value.date] = true;
+//            if(!value.masseurId in $scope.masseurs) {
+//                $scope.masseurs[value.masseurId] = true;
+//                $scope.masseurs[value.masseurId].name = value.masseurName;
+//                $scope.masseurs[value.masseurId].slots = [];
+//            }
+//
+//            $scope.masseurs[value.masseurId].push({id: value.slotId, time: value.startTime});
+//        });
 
-        $scope.selectedMasseur = undefined;
+
+//        $scope.company = { name: "AutoCad Inc", location: "10 rue Duke, Montreal, Québec H3C 2L7"};
+//        $scope.masseurs = [
+//            { id: '1', name: "John", sex: "m"},
+//            { id: '2', name: "Barbara", sex: "f"},
+//            { id: '3', name: "Jennifer", sex: "f"},
+//            { id: '4', name: "Amy", sex: "f"}
+//        ];
+
+//        $scope.timeSlotsAvailable = [
+//            { masseur: "John", times: [ "11:20", "13:30", "16:40"] },
+//            { masseur: "Barbara", times: [ "9:45", "10:00", "14:30"]},
+//            { masseur: "Jennifer", times: [ "9:45", "10:00", "15:00", "15:30"] },
+//            { masseur: "Amy", times: [ "14:00, 14:45", "15:00", "15:30"] }
+//        ];
+
+//        $scope.selectedMasseur = undefined;
 
         $scope.makeReservation = function (reservation) {
             bookingService.makeReservation(reservation);
