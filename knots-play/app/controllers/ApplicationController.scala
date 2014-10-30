@@ -130,4 +130,7 @@ class ApplicationController extends Controller with Auth {
     Ok("GOTCHA")
   }
 
+  def main(page: String) = Action { request =>
+    Ok(views.html.main())
+  }
 }

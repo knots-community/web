@@ -1,4 +1,4 @@
-@(user: Option[models.AdminUser], company: models.db.TableDefinitions.Company)
+@(user: Option[models.AdminUser], company: models.db.TableDefinitions.Company, genericSignupUrl: String)
 @admin.main("Company Profile", user) {
 
     <div class="row" id="user-profile">
@@ -8,11 +8,12 @@
                     <h2>@company.name</h2>
                 </header>
 
-                <div class="profile-label">
-                    <span class="label label-info">Employee registration link: @company.signupLink.get</span>
-                </div>
-
                 <div class="main-box-body clearfix">
+                    <div class="profile-details">
+                        <span class="label"><a href="@{
+                            genericSignupUrl + company.signupLink.get
+                        }">Employee registration link</a></span>
+                    </div>
                     <div class="profile-message-btn center-block text-center">
                         <a href="@routes.CompaniesController.edit(company.id.get)" class="btn btn-success">
                             <i class="fa fa-envelope"></i>

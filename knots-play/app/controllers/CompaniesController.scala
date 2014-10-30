@@ -21,8 +21,8 @@ class CompaniesController @Inject()(implicit val env: Environment[AdminUser, Cac
     mapping(
       "id" -> optional(longNumber),
       "name" -> nonEmptyText(2),
-      "address" -> nonEmptyText(10),
-      "phone" -> nonEmptyText(5),
+      "address" -> nonEmptyText(2),
+      "phone" -> nonEmptyText(2),
       "email" -> email
     )((id, name, address, phone, email) => {
       Company(id, name, address, phone, email, None)
@@ -37,7 +37,8 @@ class CompaniesController @Inject()(implicit val env: Environment[AdminUser, Cac
 
   def find(id: Long) = SecuredAction { implicit request =>
     val company = CompaniesDao.findById(id)
-    Ok(views.html.admin.companies.view(Some(request.identity), company))
+    val genericSignupUrl = "http://" + request.host + "/signup/";
+    Ok(views.html.admin.companies.view(Some(request.identity), company, genericSignupUrl))
   }
 
   def save = SecuredAction { implicit request =>

@@ -4,16 +4,19 @@
 
 angular.module('Knots')
 
-    .config(function ($routeProvider) {
+    .config(function ($routeProvider, userResolve) {
         $routeProvider
             .when('/', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
             .when('/login', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
             .when('/signup/:companyKey', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'SignUpCtrl'})
-            .when('/dashboard', {templateUrl: '/assets/javascripts/partials/dashboard.html', controller: 'DashboardCtrl'})
-            .when('/confirmation', { templateUrl: '/assets/javascripts/partials/confirmation.html', controller: 'ConfirmationCtrl'})
+            .when('/dashboard', {templateUrl: '/assets/javascripts/partials/dashboard.html', controller: 'DashboardCtrl', resolve:userResolve})
+            .when('/confirmation', { templateUrl: '/assets/javascripts/partials/confirmation.html', controller: 'ConfirmationCtrl', resolve:userResolve})
             .otherwise({templateUrl: '/assets/javascripts/partials/home.html'});
         //.when('/users', {templateUrl:'/assets/templates/user/users.html', controller:controllers.UserCtrl})
         //.when('/users/:id', {templateUrl:'/assets/templates/user/editUser.html', controller:controllers.UserCtrl});
+    })
+    .config(function($locationProvider) {
+        return $locationProvider.html5Mode(true).hashPrefix("!");
     })
 
 /** Controls the index page */

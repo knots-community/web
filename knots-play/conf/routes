@@ -64,3 +64,5 @@ POST         /deploy                            @controllers.ApplicationControll
 #TODO:
 
 GET         /admin/masseurs/list/json          @controllers.AdminController.listMasseursJson
+
+GET         /*any                               @controllers.ApplicationController.main(any)
