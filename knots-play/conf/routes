@@ -60,7 +60,7 @@ GET         /assets/*file                      controllers.Assets.versioned(path
 GET         /admin/metrics                     com.kenshoo.play.metrics.MetricsController.metrics
 
 POST         /deploy                            @controllers.ApplicationController.deploy
-
+ 
 #TODO:
 
 GET         /admin/masseurs/list/json          @controllers.AdminController.listMasseursJson
