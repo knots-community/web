@@ -102,7 +102,6 @@ angular.module('Knots')
         $scope.user = {};
         $scope.events = [];
         $scope.dates = [];
-        $scope.reservation = {};
         $scope.selectedDate = "";
         $scope.selectedMasseur = {};
         $scope.selectedTime = "";
@@ -119,10 +118,18 @@ angular.module('Knots')
         })();
 
         $scope.makeReservation = function () {
-            $scope.reservation.masseurId = $scope.selectedMasseur.masseurId;
-            $scope.reservation.slotId = $scope.selectedTime.startTime;
-            $log.error("Booking with " + $scope.reservation);
-            bookingService.makeReservation($scope.reservation);
+            var reservation = {};
+            angular.forEach($scope.events, function(e) {
+                if(e.date == $scope.selectedDate) {}
+                    angular.forEach(e.masseurSlots, function(ms) {
+                        if(ms.masseurInfo.name == $scope.selectedMasseur) {
+                            reservation.masseurId = ms.masseurInfo.masseurId;
+                        }
+                    });
+            });
+            reservation.slotId = $scope.selectedTime.id;
+            $log.error(reservation);
+            bookingService.makeReservation(reservation);
         };
     })
 

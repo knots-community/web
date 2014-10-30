@@ -109,11 +109,12 @@ angular.module('Knots')
             },
 
             queryTimeSlots: function () {
-                return playRoutes.controllers.BookingController.timeSlots().get().then(function (response) {
-                    timeSlots = response.data.slots.events;
-                    $log.info(timeSlots);
-                    $location.path('/dashboard');
-                });
+                return playRoutes.controllers.BookingController.timeSlots().get()
+                    .success(function(result) {
+                        timeSlots = result.slots.events;
+                        $log.info(timeSlots);
+                        $location.path('/dashboard');
+                    });
             },
 
             getTimeSlots: function () {

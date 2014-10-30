@@ -97,7 +97,7 @@ object Reservations extends Dao {
 
   def makeReservation(userId: Long, masseurId: Long, massageType: Long, slotId: Long): Boolean = DB withTransaction { implicit session =>
     timeSlots.filter(_.id === slotId).map(x => (x.status)).update((1))
-    (reservations += MassageReservation(None, userId, masseurId, DateTime.now, slotId, 0, None, Regular, massageType, slotId)) > 0
+    (reservations += MassageReservation(None, userId, masseurId, DateTime.now, 0, None, Regular, massageType, slotId)) > 0
   }
 
 //  def findTimeSlots(start: DateTime, end: DateTime) = DB withSession { implicit session =>

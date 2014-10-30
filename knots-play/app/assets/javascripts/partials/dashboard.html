@@ -1,43 +1,43 @@
 <section class="dashboard">
     <div class="container">
         <div class="booking-title">
-            <h3>Book Your Massage!</h3>
+            <h2>Book Your Massage!</h2>
         </div>
 
         <div class="booking-info">
-            <p>Provided by: {{company.name}}</p>
+            <h4>Provided by: {{company.name}}</h4>
 
-            <p>Location: {{company.location}}</p>
+            <h4>Location: {{company.location}}</h4>
         </div>
 
         <form name="form">
             <fieldset>
-                <h2>Select a date:</h2>
+                <h4>Select a date:</h4>
 
                 <div class="btn-group">
-                    <button class="btn btn-primary" ng-model="$parent.selectedDate"
+                    <label class="btn btn-primary" ng-model="$parent.selectedDate"
                             ng-repeat="date in dates" btn-radio="'{{date}}'">{{date}}
-                    </button>
+                    </label>
                 </div>
                 <p>
 
-                <h2>Preferred therapist:</h2>
+                <h4>Preferred therapist:</h4>
 
                 <div class="btn-group">
-                    <button class="btn btn-primary" ng-model="$parent.selectedMasseur"
+                    <label class="btn btn-primary" ng-model="$parent.selectedMasseur"
                             ng-repeat="e in events | availableMasseurs:selectedDate" btn-radio="'{{e}}'">
-                        {{e.name}}
-                    </button>
+                        {{e}}
+                    </label>
                 </div>
 
-                <p>Preferred Time:
+                <h4>Preferred Time:</h4>
 
                 <div class="btn-group">
-                    <button class="btn btn-primary" ng-model="$parent.selectedTime"
+                    <label class="btn btn-primary" ng-model="$parent.selectedTime"
                             ng-repeat="e in events | availableTimeSlots:selectedDate:selectedMasseur"
-                            btn-radio="'{{e}}'"
+                            btn-radio="{{e}}"
                             >{{e.startTime}}
-                    </button>
+                    </label>
                 </div>
 
                 <p>

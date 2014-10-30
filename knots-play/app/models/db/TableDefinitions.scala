@@ -185,7 +185,7 @@ object TableDefinitions {
   }
 
   case class MassageReservation(id: Option[Long], userId: Long, masseurId: Long, reservationTime: DateTime,
-                                slotId: Long, paymentDue: Int, comments: Option[String],
+                                paymentDue: Int, comments: Option[String],
                                 reservationType: Long, massageType: Long, timeSlotId: Long)
 
   class MassageReservations(tag: Tag) extends RichTable[MassageReservation](tag, "massage_reservations") {
@@ -193,11 +193,11 @@ object TableDefinitions {
     def masseurId = column[Long]("masseur_id", O.NotNull)
     def reservationTime = column[DateTime]("reservation_time", O.NotNull)
     def paymentDue = column[Int]("payment_due", O.NotNull)
-    def comments = column[String]("comments")
+    def comments = column[String]("comments", O.Nullable)
     def typeId = column[Long]("reservation_type_id", O.NotNull)
     def massageTypeId = column[Long]("massage_type_id", O.NotNull)
     def timeSlotId = column[Long]("time_slot_id", O.NotNull)
-    def * = (id.?, userId, masseurId, reservationTime, timeSlotId, paymentDue, comments.?, typeId, massageTypeId, timeSlotId) <>(
+    def * = (id.?, userId, masseurId, reservationTime, paymentDue, comments.?, typeId, massageTypeId, timeSlotId) <>(
         MassageReservation.tupled, MassageReservation.unapply)
     def res_idx = index("res_idx", (timeSlotId, userId), unique = true)
     def userFk = foreignKey("user_fk", userId, TableQuery[Users])(_.id, onUpdate = ForeignKeyAction.Cascade)

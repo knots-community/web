@@ -14,7 +14,7 @@ angular.module("Knots")
                         $log.info("Found date!");
                         angular.forEach(item.masseurSlots, function (m) {
                             $log.info("Comparing info on " + m.masseurInfo.name + " and " + masseur);
-                            if (m.masseurInfo.name == masseur.name) {
+                            if (masseur == m.masseurInfo.name) {
                                 $log.info("Found masseur!");
                                 angular.forEach(m.slots, function (s) {
                                     resultArr.push(s);
@@ -28,14 +28,15 @@ angular.module("Knots")
             return resultArr;
         };
     })
-    .filter("availableMasseurs", function () {
+    .filter("availableMasseurs", function ($log) {
         return function (items, selectedDate) {
             var resultArr = [];
             if (selectedDate !== undefined) {
                 angular.forEach(items, function (item) {
                     if (item.date == selectedDate) {
                         angular.forEach(item.masseurSlots, function (s) {
-                            resultArr.push(s.masseurInfo);
+                            $log.info(s.masseurInfo);
+                            resultArr.push(s.masseurInfo.name);
                         });
                     }
                 });
