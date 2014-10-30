@@ -5,13 +5,13 @@
         </div>
 
         <div class="booking-info">
-            <p>Provided by: {{company.name}}</p>
+            <p>Provided by: {{bookingInfo.companyName}}</p>
 
-            <p>Location: {{company.location}}</p>
+            <p>Location: {{bookingInfo.address}}</p>
 
-            <p>Your Masseur: {{bookingInfo.bookingInfo.selectedMasseur.name}}</p>
+            <p>Your Masseur: {{bookingInfo.masseurName}}</p>
 
-            <p>Time: {{bookingInfo.bookingInfo.time}}</p>
+            <p>Time: {{bookingInfo.bookingInfo.time | date:'short'}}</p>
         </div>
     </div>
 </section>

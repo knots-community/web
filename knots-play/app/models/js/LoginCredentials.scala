@@ -11,6 +11,6 @@ case class LoginCredentials(email: String, password: String)
 
 case class Signup(firstName: String, lastName: String, email: String, password: String, companyName: String)
 
-case class Booking(masseurId: Long, startTime: DateTime)
+case class Booking(masseurId: Long, slotId: Long)
 
 case class TimeSlotsForCompany(company: String)

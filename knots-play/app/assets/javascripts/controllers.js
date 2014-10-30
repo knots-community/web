@@ -59,9 +59,9 @@ angular.module('Knots')
     .controller('SignUpCtrl', function ($scope, userService, $location, $modal, $routeParams) {
         $scope.companyRequest = {};
         $scope.companyRequest.companyKey = $routeParams.companyKey;
-        $scope.companyName = "";
-        userService.queryCompanyName($scope.companyRequest).then(function (response) {
-            $scope.companyName = response.companyName;
+        $scope.companyInfo = "";
+        userService.queryCompanyInfo($scope.companyRequest).then(function (response) {
+            $scope.companyInfo = response.company;
 
             $modal.open({
                 templateUrl: '/assets/javascripts/partials/signup.html',
@@ -71,11 +71,11 @@ angular.module('Knots')
         });
     })
 
-    .controller('RegistrationDialogCtrl', function ($scope, $modalInstance, userService, $log, $location, bookingService) {
-        $scope.companyName = userService.getCompanyName();
+    .controller('RegistrationDialogCtrl', function ($scope, $modalInstance, userService, $log, $location) {
+        $scope.companyInfo = userService.getCompanyInfo();
         $scope.signUp = function (credentials) {
             $modalInstance.close();
-            credentials.companyName = $scope.companyName;
+            credentials.companyName = $scope.companyInfo.name;
             userService.signup(credentials).then(function (/*user*/) {
                 $log.log("Registration success");
                 $location.path('/dashboard');
@@ -101,7 +101,9 @@ angular.module('Knots')
         $scope.dates = [];
         $scope.reservation = {};
         $scope.selectedDate = "";
-        $scope.selectedMasseur = "";
+        $scope.selectedMasseur = {};
+        $scope.selectedTime = "";
+        $scope.company = userService.getCompanyInfo();
 
         (function() {
             bookingService.queryTimeSlots().then(function() {
@@ -113,46 +115,16 @@ angular.module('Knots')
             });
         })();
 
-//        $scope.reservation = {};
-//
-//        $scope.masseurs = {};
-//        angular.forEach($scope.slots, function(value, key) {
-//           $scope.dates[value.date] = true;
-//            if(!value.masseurId in $scope.masseurs) {
-//                $scope.masseurs[value.masseurId] = true;
-//                $scope.masseurs[value.masseurId].name = value.masseurName;
-//                $scope.masseurs[value.masseurId].slots = [];
-//            }
-//
-//            $scope.masseurs[value.masseurId].push({id: value.slotId, time: value.startTime});
-//        });
-
-
-//        $scope.company = { name: "AutoCad Inc", location: "10 rue Duke, Montreal, Québec H3C 2L7"};
-//        $scope.masseurs = [
-//            { id: '1', name: "John", sex: "m"},
-//            { id: '2', name: "Barbara", sex: "f"},
-//            { id: '3', name: "Jennifer", sex: "f"},
-//            { id: '4', name: "Amy", sex: "f"}
-//        ];
-
-//        $scope.timeSlotsAvailable = [
-//            { masseur: "John", times: [ "11:20", "13:30", "16:40"] },
-//            { masseur: "Barbara", times: [ "9:45", "10:00", "14:30"]},
-//            { masseur: "Jennifer", times: [ "9:45", "10:00", "15:00", "15:30"] },
-//            { masseur: "Amy", times: [ "14:00, 14:45", "15:00", "15:30"] }
-//        ];
-
-//        $scope.selectedMasseur = undefined;
-
-        $scope.makeReservation = function (reservation) {
-            bookingService.makeReservation(reservation);
+        $scope.makeReservation = function () {
+            $scope.reservation.masseurId = $scope.selectedMasseur.masseurId;
+            $scope.reservation.slotId = $scope.selectedTime.startTime;
+            $log.error("Booking with " + $scope.reservation);
+            bookingService.makeReservation($scope.reservation);
         };
     })
 
     .controller('ConfirmationCtrl', function ($scope, $location, bookingService) {
-        $scope.bookingInfo = bookingService;
-        $scope.company = { name: "AutoCad Inc", location: "10 rue Duke, Montreal, Québec H3C 2L7"};
+        $scope.bookingInfo = bookingService.getBookingInfo();
     })
 
 /** Controls the footer */

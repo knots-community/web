@@ -4,8 +4,7 @@
 angular.module('Knots')
     .factory('userService', function ($http, $q, $cookies, $log, playRoutes, $location) {
         var user, token = $cookies['XSRF-TOKEN'];
-        var companyName = "";
-        var companyRequest = {};
+        var companyInfo = "";
 
         /* If the token is assigned, check that the token is still valid on the server */
         if (token) {
@@ -55,11 +54,11 @@ angular.module('Knots')
                 $location.path('/');
 //                });
             },
-            queryCompanyName: function (companyKey) {
+            queryCompanyInfo: function (companyKey) {
                 $log.info(companyKey);
-                return playRoutes.controllers.ApplicationController.getCompanyName().post(companyKey)
+                return playRoutes.controllers.ApplicationController.getCompanyInfo().post(companyKey)
                     .success(function (result) {
-                        companyName = result.companyName;
+                        companyInfo = result.company;
                     })
                     .error(function (err) {
                         $log.error(err);
@@ -68,8 +67,8 @@ angular.module('Knots')
             getUser: function () {
                 return user;
             },
-            getCompanyName: function () {
-                return companyName;
+            getCompanyInfo: function () {
+                return companyInfo;
             }
         };
     })
@@ -97,11 +96,16 @@ angular.module('Knots')
 
         return {
             makeReservation: function (reservation) {
-                this.bookingInfo = reservation;
-                reservation.companyName = userService.getCompanyName();
-                return playRoutes.controllers.BookingController.performBooking().post(reservation).then(function (response) {
-                    $location.path('/confirmation');
-                });
+                return playRoutes.controllers.BookingController.performBooking().post(reservation)
+                    .success(function (result) {
+                        bookingInfo = result.bookingInfo;
+                        $location.path('/confirmation');
+                    })
+                    .error(function (error) {
+                        $log.error(error);
+                    })
+                    .then(function (response) {
+                    });
             },
 
             queryTimeSlots: function () {
@@ -114,6 +118,10 @@ angular.module('Knots')
 
             getTimeSlots: function () {
                 return timeSlots;
+            },
+
+            getBookingInfo: function () {
+                return bookingInfo;
             }
         };
     });

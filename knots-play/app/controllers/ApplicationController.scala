@@ -1,7 +1,7 @@
 package controllers
 
 import models.{CompaniesDao, Users}
-import models.db.TableDefinitions.User
+import models.db.TableDefinitions.{Company, User}
 import models.js.{Signup, LoginCredentials}
 import play.api.Routes
 import play.api.cache.Cached
@@ -12,6 +12,7 @@ import play.api.mvc.{Action, Controller, Cookie}
 import play.api.cache._
 import utils.auth.{Auth, AuthUtils, TokenService}
 import play.api.Play.current
+import sys.process._
 
 
 class ApplicationController extends Controller with Auth {
@@ -97,15 +98,16 @@ class ApplicationController extends Controller with Auth {
   case class CompanyName(companyKey: String)
 
   implicit val companyNameJson = Json.format[CompanyName]
+  implicit val companyJson = Json.format[Company]
 
-  def getCompanyName = Action(parse.json) { implicit request =>
+  def getCompanyInfo = Action(parse.json) { implicit request =>
     request.body.validate[CompanyName].fold(
     errors => {
       BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
     }, {
       data => {
         val c = CompaniesDao.findBySignupLink(data.companyKey)
-        Ok(Json.obj("status" -> "OK", "companyName" -> c.name))
+        Ok(Json.obj("status" -> "OK", "company" -> c))
       }
     }
     )
@@ -121,6 +123,11 @@ class ApplicationController extends Controller with Auth {
       implicit request =>
         Ok(Routes.javascriptRouter(varName)(routeCache: _*)).as(JAVASCRIPT)
     }
+  }
+
+  def deploy = Action(parse.json) { request =>
+    ("cd /src/web/knots-play" #| "git pull" !)
+    Ok("GOTCHA")
   }
 
 }

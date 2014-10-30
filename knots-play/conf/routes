@@ -10,7 +10,7 @@ GET         /assets/jsroutes.js                @controllers.ApplicationControlle
 # Authentication
 POST        /login                             @controllers.ApplicationController.signin
 POST        /signup                            @controllers.ApplicationController.signup
-POST         /companyName                       @controllers.ApplicationController.getCompanyName
+POST         /companyInfo                       @controllers.ApplicationController.getCompanyInfo
 #POST        /logout                           @controllers.Application.logout()
 
 GET         /authuser                          @controllers.UsersController.authUser
@@ -59,6 +59,7 @@ POST        /admin/auth/credentials            @controllers.AdminCredentialsAuth
 GET         /assets/*file                      controllers.Assets.versioned(path="/public", file: Asset)
 GET         /admin/metrics                     com.kenshoo.play.metrics.MetricsController.metrics
 
+GET         /deploy                            @controllers.ApplicationController.deploy
 
 #TODO:
 

@@ -85,6 +85,10 @@ object Reservations extends Dao {
     } while (time <= end)
   }
 
+  def findSlotTime(slotId: Long) = DB withSession { implicit session =>
+    timeSlots.filter(_.id === slotId).map(s => s.startTime).first
+  }
+
   def removeTimeSlots(start: DateTime, end: DateTime, masseurId: Long): Boolean = DB withTransaction { implicit session =>
     (for {
       tt <- timeSlots if tt.masseurId === masseurId && tt.startTime >= start && tt.startTime <= end

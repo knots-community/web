@@ -15,31 +15,29 @@
                 <h2>Select a date:</h2>
 
                 <div class="btn-group">
-                    <label class="btn btn-primary" btn-radio="date" btn-checkbox
-                           ng-repeat="date in dates" ng-click="$parent.selectedDate = date">{{date}}</label>
+                    <button class="btn btn-primary" ng-model="$parent.selectedDate"
+                            ng-repeat="date in dates" btn-radio="'{{date}}'">{{date}}
+                    </button>
                 </div>
                 <p>
 
                 <h2>Preferred therapist:</h2>
 
                 <div class="btn-group">
-                    <label class="btn btn-primary" btn-radio="masseur" btn-checkbox
-                           ng-repeat="e in events | availableMasseurs:selectedDate"
-                           ng-click="$parent.selectedMasseur = e">{{e}}</label>
+                    <button class="btn btn-primary" ng-model="$parent.selectedMasseur"
+                            ng-repeat="e in events | availableMasseurs:selectedDate" btn-radio="'{{e}}'">
+                        {{e.name}}
+                    </button>
                 </div>
 
                 <p>Preferred Time:
 
                 <div class="btn-group">
-                    <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Left'">Morning</label>
-                    <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Middle'">Afternoon</label>
-                    <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Right'">Late</label>
-                </div>
-                </p>
-
-                <div class="btn-group">
-                    <label class="btn btn-primary" ng-model="whooohoooo"
-                           ng-repeat="e in events | availableTimeSlots:selectedDate:selectedMasseur | date:e" btn-radio="{{e}}">{{e}}</label>
+                    <button class="btn btn-primary" ng-model="$parent.selectedTime"
+                            ng-repeat="e in events | availableTimeSlots:selectedDate:selectedMasseur"
+                            btn-radio="'{{e}}'"
+                            >{{e.startTime}}
+                    </button>
                 </div>
 
                 <p>
