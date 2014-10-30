@@ -127,7 +127,7 @@ class ApplicationController extends Controller with Auth {
 
   def deploy = Action(parse.json) { request =>
     ("cd /src/web/knots-play" #| "git pull" !)
-    Ok("GOTCHA")
+    Ok("GOTCHA") 
   }
 
 }
