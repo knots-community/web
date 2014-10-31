@@ -12,9 +12,9 @@ import forms.SignUpForm
 import models.AdminUser
 import models.services.AdminService
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.mvc.Action
 
 import scala.concurrent.Future
+import play.api.mvc._
 
 /**
  * The sign up controller.
@@ -51,5 +51,15 @@ class AdminSignupController @Inject()(implicit val env: Environment[AdminUser, C
         }
       }
     })
+  }
+
+  def signout = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(identity) =>
+        env.authenticatorService.retrieve(request).flatMap { authenticator =>
+          Future.successful(env.authenticatorService.discard(Redirect(routes.AdminController.index)))
+        }
+      case None => Future.successful(Redirect(routes.AdminController.index))
+    }
   }
 }

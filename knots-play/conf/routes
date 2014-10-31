@@ -10,7 +10,7 @@ GET         /assets/jsroutes.js                @controllers.ApplicationControlle
 # Authentication
 POST        /login                             @controllers.ApplicationController.signin
 POST        /signup                            @controllers.ApplicationController.signup
-POST         /companyInfo                       @controllers.ApplicationController.getCompanyInfo
+POST        /companyInfo                       @controllers.ApplicationController.getCompanyInfo
 #POST        /logout                           @controllers.Application.logout()
 
 GET         /authuser                          @controllers.UsersController.authUser
@@ -54,15 +54,16 @@ GET         /admin/auth/login                  @controllers.AdminController.sign
 POST        /admin/auth/signup                 @controllers.AdminSignupController.signup
 GET         /admin/auth/signup                 @controllers.AdminSignupController.signup
 POST        /admin/auth/credentials            @controllers.AdminCredentialsAuthController.authenticate
+GET         /admin/auth/logout                 @controllers.AdminSignupController.signout
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                      controllers.Assets.versioned(path="/public", file: Asset)
 GET         /admin/metrics                     com.kenshoo.play.metrics.MetricsController.metrics
 
-POST         /deploy                            @controllers.ApplicationController.deploy
+POST        /deploy                            @controllers.ApplicationController.deploy
 
 #TODO:
 
 GET         /admin/masseurs/list/json          @controllers.AdminController.listMasseursJson
 
-GET         /*any                               @controllers.ApplicationController.main(any)
+GET         /*any                              @controllers.ApplicationController.main(any)
