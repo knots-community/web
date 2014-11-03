@@ -1,10 +1,10 @@
 @(user: Option[models.AdminUser], users: List[models.MasseurProfile])
-@admin.main("Masseur List", user) {
+@admin.main("Energizer List", user) {
     <div class="row">
         <div class="col-lg-12">
             <div class="main-box clearfix">
                 <header class="main-box-header clearfix">
-                    <h2 class="pull-left">Masseurs</h2>
+                    <h2 class="pull-left">Energizers</h2>
 
                     <div class="filter-block pull-right">
                         <div class="form-group pull-left">
@@ -12,8 +12,8 @@
                             <i class="fa fa-search search-icon"></i>
                         </div>
 
-                        <a href="#" class="btn btn-primary pull-right">
-                            <i class="fa fa-plus-circle fa-lg"></i> Add user
+                        <a href=@routes.AdminController.addMasseur class="btn btn-primary pull-right">
+                            <i class="fa fa-plus-circle fa-lg"></i> Add energizer
                         </a>
                     </div>
                 </header>
@@ -23,7 +23,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th><a href="#"><span>Masseur</span></a></th>
+                                    <th><a href="#"><span>Energizer</span></a></th>
                                     <th class="text-center"><span>Status</span></th>
                                     <th class="text-center"><a href="#" class="desc"><span>Created</span></a></th>
                                     <th class="text-center"><a href="#" class="desc"><span>Last Active</span></a></th>
