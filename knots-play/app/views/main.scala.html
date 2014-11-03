@@ -43,12 +43,11 @@
     <body>
         <header id="site-header" class="site-header" ng-controller='HeaderCtrl' ng-cloak>
             <div class="container" data-ng-switch="!!user" data-ng-cloak>
-                <h1><a class="site-title pull-left" href="@routes.ApplicationController.index()"><i class=""></i>
-                    Knots</a>
-                </h1>
+                <a class="site-title pull-left" href="@routes.ApplicationController.index()"><i class=""></i>
+                    Knots Community</a>
                 <div data-ng-switch-when="false">
-                    <div class="btn-users text-right">
-                        <a class="btn" href="" ng-click="login()">Login</a> |
+                    <div class="text-right">
+                        <a class="btn btn-orange btn-users" href="" ng-click="login()">Login</a>
                     </div>
                 </div>
                 <div data-ng-switch-when="true">
