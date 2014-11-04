@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-nop" % "1.6.4",
   "com.mohiva" %% "play-silhouette" % "1.0",
   "net.codingwell" %% "scala-guice" % "4.0.0-beta4",
-  "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.0",
+  "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.1",
   "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.6",
   "com.atlassian.jwt" % "jwt-core" % "1.2.1",
   "com.atlassian.jwt" % "jwt-api" % "1.2.1",

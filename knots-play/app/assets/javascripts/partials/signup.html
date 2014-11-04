@@ -1,39 +1,39 @@
-<div class="modal-header">Sign Up for massage at {{company.name}} with Knots!</div>
-<div class="modal-body">
-    <div class="page-signin text-center">
-        <div class="signin-body">
-            <div class="form-container">
-                <form name="form" class="form-validation" novalidate ng-submit="signUp(credentials)">
-                    <fieldset>
-                        <div class="input-group margin-bottom-sm">
-                            <span class="input-group-addon input-round"><i class="fa fa-envelope-o fa-fw"></i></span>
-                            <input class="form-control input-lg text-center input-round" type="text" placeholder="First Name" data-ng-model="credentials.firstName">
-                        </div>
+<div class="page-signin text-center">
+    <div class="form-container">
+        <h2>Sign Up with Knots!</h2>
+        <form name="form" class="form-validation" novalidate ng-submit="signUp(credentials)">
+            <fieldset>
+                <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon"><i class="fa fa-child fa-fw"></i></span>
+                    <input class="form-control input-lg text-center input-round" type="text"
+                           placeholder="First Name" data-ng-model="credentials.firstName">
+                </div>
 
-                        <div class="input-group margin-bottom-sm">
-                            <span class="input-group-addon input-round"><i class="fa fa-envelope-o fa-fw"></i></span>
-                            <input class="form-control input-lg text-center input-round" type="text" placeholder="Last Name" data-ng-model="credentials.lastName">
-                        </div>
+                <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon"><i class="fa fa-heart fa-fw"></i></span>
+                    <input class="form-control input-lg text-center input-round" type="text" placeholder="Last Name"
+                           data-ng-model="credentials.lastName">
+                </div>
 
 
-                        <div class="input-group margin-bottom-sm">
-                            <span class="input-group-addon input-round"><i class="fa fa-envelope-o fa-fw"></i></span>
-                            <input class="form-control input-lg text-center input-round" type="text" placeholder="Email Address" data-ng-model="credentials.email">
-                        </div>
+                <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                    <input class="form-control input-lg text-center input-round" type="text"
+                           placeholder="Email Address" data-ng-model="credentials.email">
+                </div>
 
-                        <div class="input-group">
-                            <span class="input-group-addon input-round"><i class="fa fa-key fa-fw"></i></span>
-                            <input class="form-control input-lg text-center input-round" type="password" placeholder="Password" data-ng-model="credentials.password">
-                        </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                    <input class="form-control input-lg text-center input-round" type="password"
+                           placeholder="Password" data-ng-model="credentials.password">
+                </div>
 
-                        <p>
-                            <button class="btn btn-success btn-block btn-lg"
-                                    data-ng-click="signUp(credentials)">Create Account
-                            </button>
-                        </p>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
+                <p>
+                    <button class="btn btn-orange btn-users btn-lg"
+                            data-ng-click="signUp(credentials)">Create Account
+                    </button>
+                </p>
+            </fieldset>
+        </form>
     </div>
 </div>

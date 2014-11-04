@@ -7,15 +7,15 @@ angular.module('Knots')
     .config(function ($routeProvider, userResolve) {
         $routeProvider
             .when('/', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
-            .when('/login', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
-            .when('/signup/:companyKey', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'SignUpCtrl'})
-            .when('/dashboard', {templateUrl: '/assets/javascripts/partials/dashboard.html', controller: 'DashboardCtrl', resolve:userResolve})
-            .when('/confirmation', { templateUrl: '/assets/javascripts/partials/confirmation.html', controller: 'ConfirmationCtrl', resolve:userResolve})
+            .when('/login', {templateUrl: '/assets/javascripts/partials/login.html', controller: 'LoginCtrl'})
+            .when('/signup/:companyKey', {templateUrl: '/assets/javascripts/partials/signup.html', controller: 'SignUpCtrl'})
+            .when('/dashboard', {templateUrl: '/assets/javascripts/partials/dashboard.html', controller: 'DashboardCtrl', resolve: userResolve})
+            .when('/confirmation', { templateUrl: '/assets/javascripts/partials/confirmation.html', controller: 'ConfirmationCtrl', resolve: userResolve})
             .otherwise({templateUrl: '/assets/javascripts/partials/home.html'});
         //.when('/users', {templateUrl:'/assets/templates/user/users.html', controller:controllers.UserCtrl})
         //.when('/users/:id', {templateUrl:'/assets/templates/user/editUser.html', controller:controllers.UserCtrl});
     })
-    .config(function($locationProvider) {
+    .config(function ($locationProvider) {
         return $locationProvider.html5Mode(true).hashPrefix("!");
     })
 
@@ -50,34 +50,22 @@ angular.module('Knots')
                 controller: 'RegistrationDialogCtrl'
             });
         };
-
-        $scope.login = function () {
-            $modal.open({
-                templateUrl: '/assets/javascripts/partials/login.html',
-                controller: 'LoginDialogCtrl'
-            });
-        };
     })
 
-    .controller('SignUpCtrl', function ($scope, userService, $location, $modal, $routeParams) {
+    .controller('SignUpCtrl', function ($scope, userService, $location, $log, $routeParams) {
         $scope.companyRequest = {};
         $scope.companyRequest.companyKey = $routeParams.companyKey;
-        $scope.companyInfo = "";
-        userService.queryCompanyInfo($scope.companyRequest).then(function (response) {
-            $scope.companyInfo = response.company;
+        $scope.companyInfo = {};
 
-            $modal.open({
-                templateUrl: '/assets/javascripts/partials/signup.html',
-                controller: 'RegistrationDialogCtrl',
-                keyboard: false
+        (function () {
+            $log.info("REQUEST FOR COMPANY");
+            userService.queryCompanyInfo($scope.companyRequest).then(function (response) {
+                $log.info("GOT THE COMPANY!");
+                $scope.companyInfo = response.data.company;
+                $log.info(response);
             });
-        });
-    })
-
-    .controller('RegistrationDialogCtrl', function ($scope, $modalInstance, userService, $log, $location) {
-        $scope.companyInfo = userService.getCompanyInfo();
+        })();
         $scope.signUp = function (credentials) {
-            $modalInstance.close();
             credentials.companyName = $scope.companyInfo.name;
             userService.signup(credentials).then(function (/*user*/) {
                 $log.log("Registration success");
@@ -86,9 +74,8 @@ angular.module('Knots')
         };
     })
 
-    .controller('LoginDialogCtrl', function ($scope, $modalInstance, userService, $log, $location, bookingService) {
+    .controller('LoginCtrl', function ($scope, userService, $log, $location, bookingService) {
         $scope.login = function (credentials) {
-            $modalInstance.close();
             userService.loginUser(credentials).then(function (/*user*/) {
                 $log.log("Login success");
                 $location.path('/dashboard');
@@ -107,11 +94,11 @@ angular.module('Knots')
         $scope.selectedTime = "";
         $scope.company = userService.getCompanyInfo();
 
-        (function() {
-            bookingService.queryTimeSlots().then(function() {
+        (function () {
+            bookingService.queryTimeSlots().then(function () {
                 $scope.events = bookingService.getTimeSlots();
                 $scope.user = userService.getUser();
-                angular.forEach($scope.events, function(value, key) {
+                angular.forEach($scope.events, function (value, key) {
                     $scope.dates.push(value.date);
                 });
             });
@@ -119,13 +106,14 @@ angular.module('Knots')
 
         $scope.makeReservation = function () {
             var reservation = {};
-            angular.forEach($scope.events, function(e) {
-                if(e.date == $scope.selectedDate) {}
-                    angular.forEach(e.masseurSlots, function(ms) {
-                        if(ms.masseurInfo.name == $scope.selectedMasseur) {
-                            reservation.masseurId = ms.masseurInfo.masseurId;
-                        }
-                    });
+            angular.forEach($scope.events, function (e) {
+                if (e.date == $scope.selectedDate) {
+                }
+                angular.forEach(e.masseurSlots, function (ms) {
+                    if (ms.masseurInfo.name == $scope.selectedMasseur) {
+                        reservation.masseurId = ms.masseurInfo.masseurId;
+                    }
+                });
             });
             reservation.slotId = $scope.selectedTime.id;
             $log.error(reservation);
