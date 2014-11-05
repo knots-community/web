@@ -1,53 +1,57 @@
 <section class="dashboard">
-    <div class="container reservation-body center-block">
-        <div class="booking-title">
-            <h2>Book Your Massage!</h2>
+    <div class="panel panel-default reservation-container">
+        <div class="panel-heading">
+            <h1 class="panel-title">Book Your Massage!<span
+                    class="panel-title pull-right">Provided by {{company.name}}</span></h1>
         </div>
 
-        <div class="booking-info">
-            <h4>Provided by: {{company.name}}</h4>
+        <div class="panel-body">
+            <form name="form">
+                <fieldset>
+                    <div class="card">
+                        <h1>Massage location</h1>
 
-            <h4>Location: {{company.location}}</h4>
-        </div>
+                        <h2>{{company.location}}</h2>
+                    </div>
 
-        <form name="form">
-            <fieldset>
+                    <div class="card">
+                        <h1>Choose a date</h1>
 
-                <h4>Select a date:</h4>
+                        <div class="btn-group">
+                            <label class="btn btn-primary awesome-checkbox" ng-model="$parent.selectedDate"
+                                   ng-repeat="date in dates" btn-radio="'{{date}}'">{{date}}
+                            </label>
+                        </div>
+                    </div>
 
-                <div class="btn-group">
-                    <label class="btn btn-primary" ng-model="$parent.selectedDate"
-                            ng-repeat="date in dates" btn-radio="'{{date}}'">{{date}}
-                    </label>
-                </div>
-                <p>
+                    <div class="card">
+                        <h1>Preferred Energizer</h1>
 
-                <h4>Preferred Energizer:</h4>
+                        <div class="btn-group">
+                            <label class="btn btn-primary awesome-checkbox" ng-model="$parent.selectedMasseur"
+                                   ng-repeat="e in events | availableMasseurs:selectedDate" btn-radio="'{{e}}'">
+                                {{e}}
+                            </label>
+                        </div>
+                    </div>
 
-                <div class="btn-group">
-                    <label class="btn btn-primary" ng-model="$parent.selectedMasseur"
-                            ng-repeat="e in events | availableMasseurs:selectedDate" btn-radio="'{{e}}'">
-                        {{e}}
-                    </label>
-                </div>
+                    <div class="card">
+                        <h1>Select time</h1>
+                        <div class="btn-group">
+                            <label class="btn btn-primary awesome-checkbox" ng-model="$parent.selectedTime"
+                                   ng-repeat="e in events | availableTimeSlots:selectedDate:selectedMasseur"
+                                   btn-radio="{{e}}"
+                                    >{{e.startTime}}
+                            </label>
+                        </div>
 
-                <h4>Preferred Time:</h4>
+                    </div>
 
-                <div class="btn-group">
-                    <label class="btn btn-primary" ng-model="$parent.selectedTime"
-                            ng-repeat="e in events | availableTimeSlots:selectedDate:selectedMasseur"
-                            btn-radio="{{e}}"
-                            >{{e.startTime}}
-                    </label>
-                </div>
-
-                <p>
-                    <button class="btn btn-success btn-lg" data-ng-disabled="form.$invalid"
+                    <button class="btn btn-orange btn-users" data-ng-disabled="form.$invalid"
                             data-ng-click="makeReservation(reservation)">Looks Good!
                     </button>
-                </p>
-            </fieldset>
-        </form>
+                </fieldset>
+            </form>
+        </div>
     </div>
-
 </section>
