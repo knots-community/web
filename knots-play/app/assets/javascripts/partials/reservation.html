@@ -1,0 +1,53 @@
+<section class="dashboard">
+    <div class="container reservation-body center-block">
+        <div class="booking-title">
+            <h2>Book Your Massage!</h2>
+        </div>
+
+        <div class="booking-info">
+            <h4>Provided by: {{company.name}}</h4>
+
+            <h4>Location: {{company.location}}</h4>
+        </div>
+
+        <form name="form">
+            <fieldset>
+
+                <h4>Select a date:</h4>
+
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="$parent.selectedDate"
+                            ng-repeat="date in dates" btn-radio="'{{date}}'">{{date}}
+                    </label>
+                </div>
+                <p>
+
+                <h4>Preferred Energizer:</h4>
+
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="$parent.selectedMasseur"
+                            ng-repeat="e in events | availableMasseurs:selectedDate" btn-radio="'{{e}}'">
+                        {{e}}
+                    </label>
+                </div>
+
+                <h4>Preferred Time:</h4>
+
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="$parent.selectedTime"
+                            ng-repeat="e in events | availableTimeSlots:selectedDate:selectedMasseur"
+                            btn-radio="{{e}}"
+                            >{{e.startTime}}
+                    </label>
+                </div>
+
+                <p>
+                    <button class="btn btn-success btn-lg" data-ng-disabled="form.$invalid"
+                            data-ng-click="makeReservation(reservation)">Looks Good!
+                    </button>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+
+</section>

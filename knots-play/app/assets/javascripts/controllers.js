@@ -3,13 +3,12 @@
  */
 
 angular.module('Knots')
-
     .config(function ($routeProvider, userResolve) {
         $routeProvider
             .when('/', {templateUrl: '/assets/javascripts/partials/home.html', controller: 'HomeCtrl'})
             .when('/login', {templateUrl: '/assets/javascripts/partials/login.html', controller: 'LoginCtrl'})
             .when('/signup/:companyKey', {templateUrl: '/assets/javascripts/partials/signup.html', controller: 'SignUpCtrl'})
-            .when('/dashboard', {templateUrl: '/assets/javascripts/partials/dashboard.html', controller: 'DashboardCtrl', resolve: userResolve})
+            .when('/dashboard', {templateUrl: '/assets/javascripts/partials/reservation.html', controller: 'ReservationCtrl', resolve: userResolve})
             .when('/confirmation', { templateUrl: '/assets/javascripts/partials/confirmation.html', controller: 'ConfirmationCtrl', resolve: userResolve})
             .otherwise({templateUrl: '/assets/javascripts/partials/home.html'});
         //.when('/users', {templateUrl:'/assets/templates/user/users.html', controller:controllers.UserCtrl})
@@ -85,7 +84,7 @@ angular.module('Knots')
     })
 
 
-    .controller('DashboardCtrl', function ($scope, $log, userService, bookingService) {
+    .controller('ReservationCtrl', function ($scope, $log, userService, bookingService) {
         $scope.user = {};
         $scope.events = [];
         $scope.dates = [];
@@ -95,6 +94,7 @@ angular.module('Knots')
         $scope.company = userService.getCompanyInfo();
 
         (function () {
+
             bookingService.queryTimeSlots().then(function () {
                 $scope.events = bookingService.getTimeSlots();
                 $scope.user = userService.getUser();
@@ -119,6 +119,7 @@ angular.module('Knots')
             $log.error(reservation);
             bookingService.makeReservation(reservation);
         };
+
     })
 
     .controller('ConfirmationCtrl', function ($scope, $location, bookingService) {
@@ -128,5 +129,6 @@ angular.module('Knots')
 /** Controls the footer */
     .controller('FooterCtrl', [function (/*$scope*/) {
     }]);
+
 
 

@@ -1,17 +1,30 @@
 <section class="dashboard">
-    <div class="container">
-        <div class="booking-title">
-            <h3>Your booking has been confirmed!</h3>
+    <div class="panel panel-default reservation-container">
+        <div class="panel-heading">
+            <h1 class="panel-title center-text">Your booking has been confirmed!!</h1>
         </div>
 
-        <div class="booking-info">
-            <p>Provided by: {{bookingInfo.companyName}}</p>
 
-            <p>Location: {{bookingInfo.address}}</p>
+        <div class="panel-body">
+            <div class="card">
 
-            <p>Your Energizer: {{bookingInfo.masseurName}}</p>
+                <h1>Provided by: {{bookingInfo.companyName}}</h1>
 
-            <p>Time: {{bookingInfo.bookingInfo.time | date:'short'}}</p>
+                <p></p>
+
+                <h1>Location: {{bookingInfo.address}}</h1>
+
+                <p></p>
+
+                <h1>Your Energizer: {{bookingInfo.masseurName}}</h1>
+
+                <p></p>
+
+                <h1>Time: {{bookingInfo.time | date:'short'}}</h1>
+
+                <p></p>
+
+            </div>
         </div>
     </div>
 </section>
