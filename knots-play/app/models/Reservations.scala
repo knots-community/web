@@ -113,8 +113,8 @@ case class SlotEntry(slotId: Long, startTime: String, masseurId: Long, masseurNa
 
 
   def findTimeSlots(start: DateTime, end: DateTime, companyId: Long) : List[SlotEntry] = DB withSession { implicit session =>
-    val startString = DateTime.now.toDateTime.toString
-    val endString = DateTime.now.withYear(2050)
+    val startString = start.toString
+    val endString = end.toString
 
     val q = sql"""select time_slots."id", time_slots."startTime", masseurs."id", users."firstName" || ' ' || users."lastName" FROM time_slots, masseurs, users WHERE (time_slots."startTime" >= TIMESTAMP '#$startString') AND (time_slots."startTime" < TIMESTAMP '#$endString') and (time_slots."companyId" = '#$companyId') and (time_slots."masseurId" = masseurs."id") and (masseurs."userId" = users."id") AND (time_slots."status" = 0) ORDER BY (masseurs."id", time_slots."startTime")""".as[SlotEntry]
     q.list

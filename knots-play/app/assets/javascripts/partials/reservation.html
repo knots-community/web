@@ -18,7 +18,7 @@
                         <h1>Choose a date</h1>
 
                         <div class="btn-group">
-                            <label class="btn btn-primary awesome-checkbox" ng-model="$parent.selectedDate"
+                            <label class="btn btn-primary awesome-checkbox" ng-model="$parent.selectedDate" ng-click="$parent.selectedMasseur=undefined"
                                    ng-repeat="date in dates" btn-radio="'{{date}}'">{{date}}
                             </label>
                         </div>

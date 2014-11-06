@@ -56,7 +56,7 @@ class BookingController extends Controller with Auth {
     for (d <- dates) {
       val parsedDate = DateTime.parse(d, DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss"))
       events.events += Event(parsedDate.toLocalDate, ListBuffer())
-      val slots = Reservations.findTimeSlots(parsedDate, parsedDate.withTime(20, 0, 0, 0), company.id.get)
+      val slots = Reservations.findTimeSlots(parsedDate, parsedDate.withTime(23, 0, 0, 0), company.id.get)
 
       var currentMasseur: String = ""
       for (s <- slots) {
