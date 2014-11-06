@@ -121,6 +121,15 @@ angular.module('Knots')
         var companyInfo = undefined;
 
         return {
+            queryCompaynyInfoByKey: function(key) {
+                return playRoutes.controllers.ApplicationController.getCompanyInfo().post(key)
+                    .success(function (result) {
+                        companyInfo = result.company;
+                    })
+                    .error(function (err) {
+                        $log.error(err);
+                    });
+            },
             queryCompanyInfo: function () {
                 $log.info(playRoutes);
                 return playRoutes.controllers.BookingController.getCompanyInfo().get()

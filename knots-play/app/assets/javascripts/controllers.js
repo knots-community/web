@@ -60,7 +60,7 @@ angular.module('Knots')
 
         $log.info("REQUEST FOR COMPANY");
         $log.info($scope.companyRequest);
-        companyService.queryCompanyInfo($scope.companyRequest).then(function (response) {
+        companyService.queryCompaynyInfoByKey($scope.companyRequest).then(function (response) {
             $log.info("GOT THE COMPANY!");
             $scope.companyInfo = response.data.company;
             $log.info(response);
