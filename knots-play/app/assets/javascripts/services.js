@@ -118,12 +118,12 @@ angular.module('Knots')
     })
 
     .factory('companyService', function ($http, $log, playRoutes) {
-        var companyInfo = "";
+        var companyInfo = undefined;
 
         return {
-            queryCompanyInfo: function (companyKey) {
-                $log.info(companyKey);
-                return playRoutes.controllers.ApplicationController.getCompanyInfo().post(companyKey)
+            queryCompanyInfo: function () {
+                $log.info(playRoutes);
+                return playRoutes.controllers.BookingController.getCompanyInfo().get()
                     .success(function (result) {
                         companyInfo = result.company;
                     })

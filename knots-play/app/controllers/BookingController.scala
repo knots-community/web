@@ -1,6 +1,7 @@
 package controllers
 
 import models.Reservations.SlotEntry
+import models.db.TableDefinitions.Company
 import models.{Masseurs, Users, CompaniesDao, Reservations}
 import models.js.{Booking, LoginCredentials}
 import org.joda.time.format.DateTimeFormat
@@ -90,5 +91,14 @@ class BookingController extends Controller with Auth {
         Reservations.makeReservation(user.id.get, bookingInfo.masseurId, 1, bookingInfo.slotId)
         Ok(Json.obj("status" -> "OK", "bookingInfo" -> BookingInfo(company.name, company.address, startTime.toDateTimeISO.toString, masseur.firstName + " " + masseur.lastName))).as(JSON)
       }))
+  }
+
+  implicit val companyJson = Json.format[Company]
+
+  def getCompanyInfo = SecuredAction { implicit request =>
+    val userId = request.userId;
+    val user = Users.findById(userId).get
+    val company = CompaniesDao.findById(user.companyId)
+    Ok(Json.obj("status" -> "OK", "company" -> company))
   }
 }

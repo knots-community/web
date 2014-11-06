@@ -5,17 +5,17 @@
 angular.module("Knots")
     .filter("availableTimeSlots", function ($log) {
         return function (items, selectedDate, masseur) {
-            $log.info("Maybe filterin ya time slots?? Date = " + selectedDate + " and masseur = " + masseur);
+//            $log.info("Maybe filterin ya time slots?? Date = " + selectedDate + " and masseur = " + masseur);
             var resultArr = [];
             if (masseur !== undefined && selectedDate !== undefined) {
-                $log.info("Filtering ya slots on date = " + selectedDate + " and masseur = " + masseur);
+//                $log.info("Filtering ya slots on date = " + selectedDate + " and masseur = " + masseur);
                 angular.forEach(items, function (item) {
                     if (item.date == selectedDate) {
-                        $log.info("Found date!");
+//                        $log.info("Found date!");
                         angular.forEach(item.masseurSlots, function (m) {
-                            $log.info("Comparing info on " + m.masseurInfo.name + " and " + masseur);
+//                            $log.info("Comparing info on " + m.masseurInfo.name + " and " + masseur);
                             if (masseur == m.masseurInfo.name) {
-                                $log.info("Found masseur!");
+//                                $log.info("Found masseur!");
                                 angular.forEach(m.slots, function (s) {
                                     resultArr.push(s);
                                 });
@@ -24,7 +24,7 @@ angular.module("Knots")
                     }
                 });
             }
-            $log.info("Filtered + " + resultArr.length + " slots!");
+//            $log.info("Filtered + " + resultArr.length + " slots!");
             return resultArr;
         };
     })
