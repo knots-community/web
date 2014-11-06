@@ -11,6 +11,7 @@ GET         /assets/jsroutes.js                @controllers.ApplicationControlle
 POST        /login                             @controllers.ApplicationController.signin
 POST        /signup                            @controllers.ApplicationController.signup
 POST        /companyInfo                       @controllers.ApplicationController.getCompanyInfo
+GET         /companyInfo/id                    @controllers.ApplicationController.getCompanyInfoById(id: Long)
 #POST        /logout                           @controllers.Application.logout()
 
 GET         /authuser                          @controllers.UsersController.authUser

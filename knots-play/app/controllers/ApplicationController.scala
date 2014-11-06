@@ -68,7 +68,9 @@ class ApplicationController extends Controller with Auth {
             Ok(Json.obj("token" -> token))
               .withCookies(Cookie(AuthUtils.AuthTokenCookieKey, token, None, httpOnly = false))
           }
-          ) getOrElse (BadRequest(Json.obj("status" -> "KO", "message" -> "User not registered")))
+          ) getOrElse {
+          BadRequest(Json.obj("status" -> "KO", "message" -> "User not registered"))
+        }
       }
       )
   }
@@ -111,6 +113,11 @@ class ApplicationController extends Controller with Auth {
       }
     }
     )
+  }
+
+  def getCompanyInfoById(id: Long) = SecuredAction { implicit request =>
+    val company = CompaniesDao.findById(id)
+    Ok(Json.obj("status" -> "OK", "company" -> company))
   }
 
   /**

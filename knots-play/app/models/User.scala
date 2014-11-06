@@ -15,13 +15,13 @@ object Users extends Dao {
 
   def find(email: String, pwd: String): Option[User] = {
     DB withSession { implicit session =>
-      val hash = PasswordHasher.hash(pwd)
       val q = for {
-        pwdInfo <- tokenPasswords if pwdInfo.token === hash
-        user <- users if user.id === pwdInfo.userId
-      } yield user
+        user <- users if user.email === email
+        pwdInfo <- tokenPasswords if pwdInfo.userId === user.id
+      } yield (user, pwdInfo)
 
-      q.firstOption
+      val res: Option[(User, TokenPassword)] = q.firstOption
+      res.map(tuple => if(PasswordHasher.matches(tuple._2.token, pwd)) { Some(tuple._1)} else None) getOrElse(None)
     }
   }
 

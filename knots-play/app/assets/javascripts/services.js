@@ -4,7 +4,6 @@
 angular.module('Knots')
     .factory('userService', function ($http, $q, $cookies, $log, playRoutes, $location) {
         var user, token = $cookies['XSRF-TOKEN'];
-        var companyInfo = "";
 
         /* If the token is assigned, check that the token is still valid on the server */
         if (token) {
@@ -46,29 +45,20 @@ angular.module('Knots')
             },
             logout: function () {
                 // Logout on server in a real app
-                delete $cookies['XSRF-TOKEN'];
-                token = undefined;
-                user = undefined;
+                this.clear();
 //                return playRoutes.controllers.ApplicationController.logout().post().then(function () {
                 $log.info("Good bye ");
                 $location.path('/');
 //                });
             },
-            queryCompanyInfo: function (companyKey) {
-                $log.info(companyKey);
-                return playRoutes.controllers.ApplicationController.getCompanyInfo().post(companyKey)
-                    .success(function (result) {
-                        companyInfo = result.company;
-                    })
-                    .error(function (err) {
-                        $log.error(err);
-                    });
-            },
             getUser: function () {
                 return user;
             },
-            getCompanyInfo: function () {
-                return companyInfo;
+            clear: function () {
+                $log.info("Clearing user cookies");
+                delete $cookies['XSRF-TOKEN'];
+                token = undefined;
+                user = undefined;
             }
         };
     })
@@ -110,7 +100,7 @@ angular.module('Knots')
 
             queryTimeSlots: function () {
                 return playRoutes.controllers.BookingController.timeSlots().get()
-                    .success(function(result) {
+                    .success(function (result) {
                         timeSlots = result.slots.events;
                         $log.info(timeSlots);
                         $location.path('/dashboard');
@@ -125,4 +115,25 @@ angular.module('Knots')
                 return bookingInfo;
             }
         };
+    })
+
+    .factory('companyService', function ($http, $log, playRoutes) {
+        var companyInfo = "";
+
+        return {
+            queryCompanyInfo: function (companyKey) {
+                $log.info(companyKey);
+                return playRoutes.controllers.ApplicationController.getCompanyInfo().post(companyKey)
+                    .success(function (result) {
+                        companyInfo = result.company;
+                    })
+                    .error(function (err) {
+                        $log.error(err);
+                    });
+            },
+            getCompanyInfo: function () {
+                return companyInfo;
+            }
+        }
     });
+

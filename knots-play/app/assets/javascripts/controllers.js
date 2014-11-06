@@ -56,14 +56,15 @@ angular.module('Knots')
         $scope.companyRequest.companyKey = $routeParams.companyKey;
         $scope.companyInfo = {};
 
-        (function () {
-            $log.info("REQUEST FOR COMPANY");
-            userService.queryCompanyInfo($scope.companyRequest).then(function (response) {
-                $log.info("GOT THE COMPANY!");
-                $scope.companyInfo = response.data.company;
-                $log.info(response);
-            });
-        })();
+        userService.clear();
+
+        $log.info("REQUEST FOR COMPANY");
+        userService.queryCompanyInfo($scope.companyRequest).then(function (response) {
+            $log.info("GOT THE COMPANY!");
+            $scope.companyInfo = response.data.company;
+            $log.info(response);
+        });
+
         $scope.signUp = function (credentials) {
             credentials.companyName = $scope.companyInfo.name;
             userService.signup(credentials).then(function (/*user*/) {
@@ -74,6 +75,7 @@ angular.module('Knots')
     })
 
     .controller('LoginCtrl', function ($scope, userService, $log, $location, bookingService) {
+        userService.clear();
         $scope.login = function (credentials) {
             userService.loginUser(credentials).then(function (/*user*/) {
                 $log.log("Login success");
@@ -83,7 +85,6 @@ angular.module('Knots')
         };
     })
 
-
     .controller('ReservationCtrl', function ($scope, $log, userService, bookingService) {
         $scope.user = {};
         $scope.events = [];
@@ -92,6 +93,10 @@ angular.module('Knots')
         $scope.selectedMasseur = {};
         $scope.selectedTime = "";
         $scope.company = userService.getCompanyInfo();
+
+        if(!angular.isDefined($scope.company)) {
+            userService.queryCompanyInfo().onsucc
+        }
 
         (function () {
 
