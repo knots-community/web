@@ -33,20 +33,23 @@ object CompaniesDao extends Dao{
   }
 
   def add(company: Company) = DB withSession { implicit session =>
-    val c = company.copy(signupLink = Some(generateSignupLink))
+    val c = company.copy(signupLink = Some(generateSignupLink(company)))
     companies += c
   }
 
   def initialize = DB withSession { implicit session =>
-    val signupLink = Some(generateSignupLink())
-    if(companies.length.run == 0) companies += Company(None, "Knots Community", "Montreal", "", "anton@knotsmcgill.com", signupLink)
+    if(companies.length.run == 0) {
+      val knots = Company(None, "Knots Community", "Montreal", "", "anton@knotsmcgill.com", None)
+      generateSignupLink(knots)
+      companies += knots
+    }
   }
 
   def findBySignupLink(link: String) = DB withSession { implicit session =>
     companies.filter(_.signupLink === link).first
   }
 
-  private def generateSignupLink() = {
-    UUID.randomUUID().toString
+  private def generateSignupLink(c: Company) = {
+    c.name.filter(_ != ' ')
   }
 }
