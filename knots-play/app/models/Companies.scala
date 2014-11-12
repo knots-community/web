@@ -33,14 +33,13 @@ object CompaniesDao extends Dao{
   }
 
   def add(company: Company) = DB withSession { implicit session =>
-    val c = company.copy(signupLink = Some(generateSignupLink(company)))
+    val c = company.copy(signupLink = Some(generateSignupLink(company.name)))
     companies += c
   }
 
   def initialize = DB withSession { implicit session =>
     if(companies.length.run == 0) {
-      val knots = Company(None, "Knots Community", "Montreal", "", "anton@knotsmcgill.com", None)
-      generateSignupLink(knots)
+      val knots = Company(None, "Knots", "Montreal", "", "anton@knotsmcgill.com", Some(generateSignupLink("Knots")))
       companies += knots
     }
   }
@@ -49,7 +48,7 @@ object CompaniesDao extends Dao{
     companies.filter(_.signupLink === link).first
   }
 
-  private def generateSignupLink(c: Company) = {
-    c.name.filter(_ != ' ')
+  private def generateSignupLink(companyName: String) = {
+    companyName.filter(_ != ' ')
   }
 }
