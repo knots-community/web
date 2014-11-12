@@ -1,17 +1,17 @@
 @(user: Option[models.AdminUser])
 
     @styles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/fullcalendar.css")" type="text/css" />
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/fullcalendar.print.css")" type="text/css" media="print" />
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/calendar.css")" type="text/css" media="screen" />
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/fullcalendar/fullcalendar.css")" type="text/css" />
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/fullcalendar/fullcalendar.print.css")" type="text/css" media="print" />
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/admin/calendar.css")" type="text/css" media="screen" />
     }
 
     @scripts = {
         <!-- this page specific scripts -->
-        <script src="@routes.Assets.versioned("js/libs/jquery-ui.custom.min.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/moment.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/fullcalendar.min.js")"></script>
-        <script src="@routes.Assets.versioned("js/admin/admin_calendar.js")"></script>
+        <script src="@routes.Assets.versioned("lib/jquery-ui/jquery-ui.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/momentjs/min/moment.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/fullcalendar/fullcalendar.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/admin/admin_calendar.js")"></script>
     }
 
 @admin.main("Calendar", user, styles, scripts) {

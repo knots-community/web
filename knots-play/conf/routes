@@ -5,7 +5,7 @@
 # Home page
 GET         /                                  @controllers.ApplicationController.index
 
-GET         /assets/jsroutes.js                @controllers.ApplicationController.jsRoutes()
+GET         /jsroutes.js                        @controllers.ApplicationController.jsRoutes()
 
 # Authentication
 POST        /login                             @controllers.ApplicationController.signin

@@ -8,14 +8,14 @@
         <title>Admin Dashboard</title>
 
             <!-- bootstrap -->
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap/bootstrap.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
 
             <!-- libraries -->
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/font-awesome.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/font-awesome/css/font-awesome.min.css")">
 
             <!-- global styles -->
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/layout.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/elements.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/admin/layout.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/admin/elements.css")">
 
             <!-- this page specific styles -->
 
@@ -23,7 +23,7 @@
         <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700,300|Titillium+Web:200,300,400' rel='stylesheet' type='text/css'>
 
             <!-- Favicon -->
-        <link type="image/x-icon" href="@routes.Assets.versioned("img/favicon.png")" rel="shortcut icon"/>
+        <link type="image/x-icon" href="@routes.Assets.versioned("images/favicon.png")" rel="shortcut icon"/>
 
             <!--[if lt IE 9]>
 		<script src="js/html5shiv.js"></script>
@@ -45,7 +45,7 @@
                             <div class="col-xs-12">
                                 <header id="login-header">
                                     <div id="login-logo">
-                                        <img src="@routes.Assets.versioned("img/logo.png")" alt=""/>
+                                        <img src="@routes.Assets.versioned("images/logo.png")" alt=""/>
                                     </div>
                                 </header>
                                 <div id="login-box-inner">
@@ -72,14 +72,15 @@
             </div>
         </div>
 
-        <script type="application/javascript" src="@routes.Assets.versioned("js/libs/jquery.js")"/>
-        <script type="application/javascript" src="@routes.Assets.versioned("js/libs/bootstrap.js")"/>
+        <script src="@routes.Assets.versioned("lib/jquery/jquery.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/bootstrap/js/bootstrap.js")"></script>
 
 
             <!-- theme scripts -->
-        <script src="@routes.Assets.versioned("js/scripts.js")"/>
+        <script src="@routes.Assets.versioned("javascripts/admin/scripts.js")"></script>
 
-            <!-- this page specific inline scripts -->
+
+        <!-- this page specific inline scripts -->
 
     </body>
 </html>

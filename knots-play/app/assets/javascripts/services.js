@@ -118,7 +118,7 @@ angular.module('Knots')
     })
 
     .factory('companyService', function ($http, $log, playRoutes) {
-        var companyInfo = undefined;
+        var companyInfo;
 
         return {
             queryCompaynyInfoByKey: function(key) {
@@ -143,6 +143,6 @@ angular.module('Knots')
             getCompanyInfo: function () {
                 return companyInfo;
             }
-        }
+        };
     });
 

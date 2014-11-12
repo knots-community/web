@@ -9,12 +9,23 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
-  "org.webjars" % "requirejs" % "2.1.14-1",
-  "org.webjars" % "underscorejs" % "1.6.0-3",
-  "org.webjars" % "bootstrap" % "3.1.1-2" exclude("org.webjars", "jquery"),
-  "org.webjars" % "angularjs" % "1.2.18" exclude("org.webjars", "jquery"),
-  "org.webjars" % "angular-ui-bootstrap" % "0.11.0-2",
+  filters,
+  cache,
+  "org.webjars" % "bootstrap" % "3.3.0" exclude("org.webjars", "jquery"),
+  "org.webjars" % "bootstrap-datepicker" % "1.3.0-3",
+  "org.webjars" % "bootstrap-timepicker" % "0.2.3-1",
+  "org.webjars" % "angularjs" % "1.3.2" exclude("org.webjars", "jquery"),
+  "org.webjars" % "fullcalendar" % "2.0.3",
+  "org.webjars" % "html5shiv" % "3.7.2",
+  "org.webjars" % "jquery" % "2.1.1",
+  "org.webjars" % "jquery-maskedinput" % "1.3.1",
+  "org.webjars" % "nanoScrollerJS" % "0.7.6",
+  "org.webjars" % "jquery-ui" % "1.11.1",
+  "org.webjars" % "momentjs" % "2.8.3",
+  "org.webjars" % "select2" % "3.5.1",
+  "org.webjars" % "angular-ui-bootstrap" % "0.11.2",
   "org.webjars" % "jquery" % "2.1.0-2",
+  "org.webjars" % "font-awesome" % "4.2.0",
   "com.typesafe.play" %% "play-slick" % "0.8.0",
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
   "org.slf4j" % "slf4j-nop" % "1.6.4",
@@ -27,7 +38,6 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.5",
   "org.joda" % "joda-convert" % "1.7",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
-  cache,
   // Test dependencies
   "org.webjars" % "rjs" % "2.1.11-1-trireme" % "test",
   "org.webjars" % "squirejs" % "0.1.0" % "test"
@@ -52,7 +62,7 @@ scalacOptions in ThisBuild ++= Seq(
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 // Apply RequireJS optimization, digest calculation and gzip compression to assets
-//pipelineStages := Seq(digest, gzip)
+pipelineStages := Seq(rjs, digest, gzip)
 
 //RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
 
@@ -63,3 +73,5 @@ excludeFilter in (Assets, LessKeys.less) := "_*.less"
 sources in (Compile,doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
+
+RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))

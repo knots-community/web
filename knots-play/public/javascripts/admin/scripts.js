@@ -45,13 +45,6 @@ $(function($) {
 		}
 	});
 	
-	$('.fixed-leftmenu #col-left').nanoScroller({
-    	alwaysVisible: true,
-    	iOSNativeScrolling: false,
-    	preventPageScrolling: true,
-    	contentClass: 'col-left-nano-content'
-    });
-	
 	// build all tooltips from data-attributes
 	$("[data-toggle='tooltip']").each(function (index, el) {
 		$(el).tooltip({

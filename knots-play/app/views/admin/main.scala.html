@@ -9,22 +9,21 @@
         <title>@title</title>
 
             <!-- bootstrap -->
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap/bootstrap.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/bootstrap/css/bootstrap.min.css")">
 
             <!-- libraries -->
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/font-awesome.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/nanoscroller.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/select2.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libs/bootstrap-timepicker.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/font-awesome/css/font-awesome.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/select2/select2.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/bootstrap-timepicker/css/bootstrap-timepicker.min.css")">
 
             <!-- global styles -->
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/layout.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/elements.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/admin/layout.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/admin/elements.css")">
 
             <!-- this page specific styles -->
         @styles
             <!-- Favicon -->
-        <link type="image/x-icon" href="@routes.Assets.versioned("img/favicon.png")" rel="shortcut icon"/>
+        <link type="image/x-icon" href="@routes.Assets.versioned("images/favicon.png")" rel="shortcut icon"/>
 
             <!-- google font libraries -->
         <link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,700,300|Titillium+Web:200,300,400' rel='stylesheet' type='text/css'>
@@ -40,8 +39,8 @@
         <header class="navbar" id="header-navbar">
             <div class="container">
                 <a href="/admin" id="logo" class="navbar-brand">
-                    <img src="@routes.Assets.versioned("img/logo.png")" alt="" class="normal-logo logo-white"/>
-                    <img src="@routes.Assets.versioned("img/logo.png")" alt="" class="small-logo hidden-xs hidden-sm hidden"/>
+                    <img src="@routes.Assets.versioned("images/logo.png")" alt="" class="normal-logo logo-white"/>
+                    <img src="@routes.Assets.versioned("images/logo.png")" alt="" class="small-logo hidden-xs hidden-sm hidden"/>
                 </a>
 
                 <div class="clearfix">
@@ -211,19 +210,19 @@
             </div>
         </div>
 
-        <script src="@routes.Assets.versioned("js/libs/jquery.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/bootstrap.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/jquery.nanoscroller.min.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/jquery.maskedinput.min.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/moment.min.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/bootstrap-datepicker.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/bootstrap-timepicker.js")"></script>
-        <script src="@routes.Assets.versioned("js/libs/select2.js")"></script>
+        <script src="@routes.Assets.versioned("lib/jquery/jquery.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/bootstrap/js/bootstrap.js")"></script>
+        <script src="@routes.Assets.versioned("lib/nanoScrollerJs/jquery.nanoscroller.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/jquery-maskedinput/jquery.maskedInput.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/momentjs/min/moment.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/bootstrap-datepicker/js/bootstrap-datepicker.js")"></script>
+        <script src="@routes.Assets.versioned("lib/bootstrap-timepicker/js/bootstrap-timepicker.min.js")"></script>
+        <script src="@routes.Assets.versioned("lib/select2/select2.min.js")"></script>
 
             <!-- this page specific scripts -->
         @scripts
             <!-- theme scripts -->
-        <script src="@routes.Assets.versioned("js/scripts.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/admin/scripts.js")"></script>
 
 
             <!-- this page specific inline scripts -->
