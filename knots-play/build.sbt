@@ -11,6 +11,7 @@ scalaVersion := "2.11.1"
 libraryDependencies ++= Seq(
   filters,
   cache,
+  "org.webjars" % "requirejs" % "2.1.15",
   "org.webjars" % "bootstrap" % "3.3.0" exclude("org.webjars", "jquery"),
   "org.webjars" % "bootstrap-datepicker" % "1.3.0-3",
   "org.webjars" % "bootstrap-timepicker" % "0.2.3-1",
@@ -62,7 +63,7 @@ scalacOptions in ThisBuild ++= Seq(
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 // Apply RequireJS optimization, digest calculation and gzip compression to assets
-pipelineStages := Seq(rjs, digest, gzip)
+//pipelineStages := Seq(rjs, digest, gzip)
 
 //RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
 
