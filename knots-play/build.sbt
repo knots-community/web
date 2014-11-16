@@ -6,13 +6,13 @@ scalacOptions += "-feature"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.4"
 
 libraryDependencies ++= Seq(
   filters,
   cache,
   "org.webjars" % "requirejs" % "2.1.15",
-  "org.webjars" % "bootstrap" % "3.3.0" exclude("org.webjars", "jquery"),
+  "org.webjars" % "bootstrap" % "3.3.1" exclude("org.webjars", "jquery"),
   "org.webjars" % "bootstrap-datepicker" % "1.3.0-3",
   "org.webjars" % "bootstrap-timepicker" % "0.2.3-1",
   "org.webjars" % "angularjs" % "1.3.2" exclude("org.webjars", "jquery"),
@@ -29,11 +29,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.2.0",
   "com.typesafe.play" %% "play-slick" % "0.8.0",
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-  "org.slf4j" % "slf4j-nop" % "1.6.4",
   "com.mohiva" %% "play-silhouette" % "1.0",
-  "net.codingwell" %% "scala-guice" % "4.0.0-beta4",
+  "net.codingwell" % "scala-guice_2.11" % "4.0.0-beta4",
   "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.1",
-  "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.6",
+  "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.7",
   "com.atlassian.jwt" % "jwt-core" % "1.2.1",
   "com.atlassian.jwt" % "jwt-api" % "1.2.1",
   "joda-time" % "joda-time" % "2.5",
@@ -46,7 +45,7 @@ libraryDependencies ++= Seq(
 
 // Scala Compiler Options
 scalacOptions in ThisBuild ++= Seq(
-  "-target:jvm-1.7",
+  "-target:jvm-1.8",
   "-encoding", "UTF-8",
   "-deprecation", // warning and location for usages of deprecated APIs
   "-feature", // warning and location for usages of features that should be imported explicitly
