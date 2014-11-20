@@ -1,22 +1,13 @@
-package models
+package models.implicits
 
+import models._
 import models.db.TableDefinitions.MassageType
-import play.api.Play.current
-import play.api.db.slick.Config.driver.simple._
-import play.api.db.slick._
 
 /**
  * Created by anton on 9/23/14.
  */
-sealed trait MassageTypeEnum
-case object Swedish extends MassageTypeEnum
-case object HotStone extends MassageTypeEnum
-case object Chair extends MassageTypeEnum
-case object DeepTissue extends MassageTypeEnum
-case object Thai extends MassageTypeEnum
-case object Shiatsu extends MassageTypeEnum
 
-object MassageTypeEnum extends Dao {
+object MassageTypeConversions {
 
   implicit def convertFromDb(value: MassageType) : MassageTypeEnum =  value match {
     case MassageType(Some(1), _, _) => Swedish
@@ -49,15 +40,4 @@ object MassageTypeEnum extends Dao {
 
   implicit def convertList2List(value: List[MassageTypeEnum]) : List[MassageType] = value.map(x => convert2Db(x))
   implicit def convertFromDbList(value: List[MassageType]) : List[MassageTypeEnum] = value.map(x => convertFromDb(x))
-
-  def initialize = DB withSession { implicit session =>
-      if(massageTypes.list.length ==0) {
-        massageTypes += Swedish
-        massageTypes += HotStone
-        massageTypes += Chair
-        massageTypes += DeepTissue
-        massageTypes += Thai
-        massageTypes += Shiatsu
-      }
-  }
 }

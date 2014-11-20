@@ -2,6 +2,7 @@ package models
 
 import java.util.UUID
 
+import models.db.Dao
 import models.db.TableDefinitions.Company
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._

@@ -1,4 +1,4 @@
-package models.services
+package models.silhouette.services
 
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.providers.CommonSocialProfile

@@ -1,10 +1,13 @@
 package models
 
+import models.db.AuthTableDefinitions.TokenPassword
+import models.db.Dao
 import models.db.TableDefinitions._
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.libs.json.Json
+import utils.auth.PasswordHasher
 
 object Users extends Dao {
   implicit val jsonFormat = Json.format[User]

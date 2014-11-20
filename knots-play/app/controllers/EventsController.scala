@@ -28,13 +28,13 @@ class EventsController @Inject()(implicit val env: Environment[AdminUser, Cached
       "endTime" -> nonEmptyText,
       "masseurs" -> seq(longNumber)
     )((companyId, date, startTime, endTime, masseurs) => {
-      Event(companyId, date, startTime, endTime, masseurs)
+      Events(companyId, date, startTime, endTime, masseurs)
     })
       ((e: Event) => Some(e.companyId, e.date, e.start, e.end, e.masseurs))
   )
 
   def list = SecuredAction { implicit request =>
-    val result = Event.list
+    val result = Events.list
     Ok(views.html.admin.events.list(Some(request.identity), result))
   }
 
@@ -73,5 +73,17 @@ class EventsController @Inject()(implicit val env: Environment[AdminUser, Cached
     val masseurs = Masseurs.getAllMasseurs
     val companies = CompaniesDao.findAll
     Ok(views.html.admin.events.add(Some(request.identity), form, companies, masseurs))
+  }
+
+  def edit = SecuredAction { implicit request =>
+    Redirect(routes.EventsController.list())
+  }
+
+  def delete = SecuredAction { implicit request =>
+    Redirect(routes.EventsController.list())
+  }
+
+  def find = SecuredAction { implicit request =>
+    Redirect(routes.EventsController.list())
   }
 }

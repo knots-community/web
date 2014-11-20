@@ -9,7 +9,7 @@ import com.mohiva.play.silhouette.core.providers._
 import com.mohiva.play.silhouette.core.services.AuthInfoService
 import forms.SignInForm
 import models.AdminUser
-import models.services.{AdminService}
+import models.silhouette.services.{AdminService}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 
@@ -32,7 +32,7 @@ class AdminCredentialsAuthController @Inject() (
    * @return The result to display.
    */
   def authenticate = Action.async { implicit request =>
-    SignInForm.form.bindFromRequest.fold (
+    SignInForm.form.bind FromRequest.fold (
       form => Future.successful(BadRequest(views.html.admin.signin(form))),
       credentials => (env.providers.get(CredentialsProvider.Credentials) match {
         case Some(p: CredentialsProvider) => p.authenticate(credentials)

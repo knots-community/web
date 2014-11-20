@@ -1,4 +1,4 @@
-package models
+package utils.auth
 
 import org.mindrot.jbcrypt.BCrypt
 

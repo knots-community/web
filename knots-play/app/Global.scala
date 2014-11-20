@@ -3,6 +3,7 @@ import com.kenshoo.play.metrics.MetricsFilter
 import com.mohiva.play.silhouette.core.SecuredSettings
 import controllers.routes
 import models._
+import models.implicits.MassageTypeEnum
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -26,10 +27,10 @@ object Global extends WithFilters(LoggingFilter, MetricsFilter) with SecuredSett
     // Now the configuration is read and we can create our Injector.
     injector = Guice.createInjector(new SilhouetteModule())
     CompaniesDao.initialize
-    Roles.initialize
-    MassageTypeEnum.initialize
-    ReservationTypeEnum.initialize
+    Masseurs.initialize
+    Reservations.initialize
     Users.initialize
+    Roles.initialize
   }
 
   /**

@@ -10,7 +10,7 @@ import com.mohiva.play.silhouette.core.services.AuthInfoService
 import com.mohiva.play.silhouette.core.utils.PasswordHasher
 import forms.SignUpForm
 import models.AdminUser
-import models.services.AdminService
+import models.silhouette.services.AdminService
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future

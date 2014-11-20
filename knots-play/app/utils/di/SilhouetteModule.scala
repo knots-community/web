@@ -10,7 +10,7 @@ import com.mohiva.play.silhouette.core.providers.oauth2._
 import com.mohiva.play.silhouette.core.services._
 import com.mohiva.play.silhouette.core.utils._
 import com.mohiva.play.silhouette.core.{Environment, EventBus}
-import models.{PasswordInfoDao, OAuth2InfoDao, OAuth1InfoDao}
+import models.silhouette.{PasswordInfoDao}
 import net.codingwell.scalaguice.ScalaModule
 import play.api.Play
 import play.api.Play.current
@@ -21,15 +21,13 @@ import play.api.Play.current
 class SilhouetteModule extends AbstractModule with ScalaModule {
 
   import models.AdminUser
-  import models.services.AdminService
+  import models.silhouette.services.AdminService
 
   /**
    * Configures the module.
    */
   def configure() {
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDao]
-    bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDao]
-    bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDao]
     bind[CacheLayer].to[PlayCacheLayer]
     bind[HTTPLayer].to[PlayHTTPLayer]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
