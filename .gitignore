@@ -15,3 +15,7 @@ server.pid
 *.eml
 /dist/
 .cache
+
+*.sbt
+
+knots-play/projectFilesBackup/.idea
