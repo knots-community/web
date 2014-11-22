@@ -24,7 +24,6 @@ import play.api.libs.functional.syntax._
 class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedCookieAuthenticator])
   extends Silhouette[AdminUser, CachedCookieAuthenticator] {
 
-
   /**
    * A play framework form.
    */
@@ -64,7 +63,8 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
 
   def signin = UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.AdminController.index))
+      case Some(user) =>
+        Future.successful(Redirect(routes.AdminController.index))
       case None => import forms.SignInForm
         Future.successful(Ok(views.html.admin.signin(SignInForm.form)))
     }
@@ -72,24 +72,19 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
 
   def index = UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.AdminController.listUsers()))
+      case Some(user) =>
+        Future.successful(Redirect(routes.AdminController.listUsers()))
       case None => import forms.SignInForm
         Future.successful(Ok(views.html.admin.signin(SignInForm.form)))
     }
   }
 
-  def listUsers = UserAwareAction.async { implicit request =>
-    val futureUsers = Future {
-      Users.getAll
-    }
-    futureUsers.map(users => Ok(views.html.admin.users.list(request.identity, users)))
+  def listUsers = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.admin.users.list(Some(request.identity), Users.getAll)))
   }
 
-  def listMasseurs = UserAwareAction.async { implicit request =>
-    val futureMasseurs = Future {
-      Masseurs.getAllMasseurs
-    }
-    futureMasseurs.map { masseurList => Ok(views.html.admin.masseur.list(request.identity, masseurList))}
+  def listMasseurs = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.admin.masseur.list(Some(request.identity), Masseurs.getAllMasseurs)))
   }
 
   def addMasseur = SecuredAction.async { implicit request =>
@@ -97,60 +92,66 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
     Future.successful(Ok(views.html.admin.masseur.add(Some(request.identity), form)))
   }
 
-  def saveMasseur = SecuredAction { implicit request =>
+  def saveMasseur = SecuredAction.async { implicit request =>
     val masseurForm = addMasseurForm.bindFromRequest()
     if (masseurForm.hasErrors) {
       import play.Logger
-      Logger.error(masseurForm.data.toString());
-      Logger.error(masseurForm.errors.toString());
+      Logger.error(masseurForm.data.toString())
+      Logger.error(masseurForm.errors.toString())
     }
     masseurForm.fold(
       hasErrors = { form =>
         import play.api.mvc.Flash
-        Redirect(routes.AdminController.addMasseur()).flashing(Flash(form.data))
+        Future.successful(Redirect(routes.AdminController.addMasseur()).flashing(Flash(form.data)))
       },
       success = { newMasseur =>
         Masseurs.addMasseur(newMasseur)
-        Redirect(routes.AdminController.listMasseurs())
+        Future.successful(Redirect(routes.AdminController.listMasseurs()))
       }
     )
   }
 
-  def updateMasseur(id: Long) = SecuredAction { implicit request =>
+  def updateMasseur(id: Long) = SecuredAction.async { implicit request =>
     addMasseurForm.bindFromRequest().fold(
       hasErrors = { form => import play.api.mvc.Flash
-        Redirect(routes.AdminController.editMasseur(id)).flashing(Flash(form.data))
+        Future.successful(Redirect(routes.AdminController.editMasseur(id)).flashing(Flash(form.data)))
       },
       success = { updatedMasseur =>
         Masseurs.addMasseur(updatedMasseur.copy(id = Some(id)))
-        Redirect(routes.AdminController.listMasseurs())
+        Future.successful(Redirect(routes.AdminController.listMasseurs()))
       }
     )
   }
 
-  def editMasseur(masseurId: Long) = SecuredAction { implicit request =>
-    val m: MasseurProfile = Masseurs.find(masseurId)
-    val form = addMasseurForm.fill(m)
-    Ok(views.html.admin.masseur.edit(Some(request.identity), form, masseurId))
+  def editMasseur(masseurId: Long) = SecuredAction.async { implicit request =>
+    Future.successful {
+      val m: MasseurProfile = Masseurs.find(masseurId)
+      val form = addMasseurForm.fill(m)
+      Ok(views.html.admin.masseur.edit(Some(request.identity), form, masseurId))
+    }
   }
 
-  def deleteMasseur(masseurId: Long) = SecuredAction { implicit request =>
-    Masseurs.delete(masseurId)
-    Redirect(routes.AdminController.listMasseurs())
+  def deleteMasseur(masseurId: Long) = SecuredAction.async { implicit request =>
+    Future.successful {
+      Masseurs.delete(masseurId)
+      Redirect(routes.AdminController.listMasseurs())
+    }
   }
 
-  def showMasseur(masseurId: Long) = SecuredAction { implicit request =>
-    val masseur = Masseurs.find(masseurId)
-    Ok(views.html.admin.masseur.view(Some(request.identity), masseur))
+  def showMasseur(masseurId: Long) = SecuredAction.async { implicit request =>
+    Future.successful {
+      val masseur = Masseurs.find(masseurId)
+      Ok(views.html.admin.masseur.view(Some(request.identity), masseur))
+    }
   }
 
-  def calendar = UserAwareAction.async { implicit request =>
-    Future.successful(Ok(views.html.admin.calendar(request.identity)))
+  def calendar = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.admin.calendar(Some(request.identity))))
   }
 
   def schedule = Action { implicit request =>
-    val start = request.queryString.get("start").flatMap(_.headOption) getOrElse("invalid")
-    val end = request.queryString.get("end").flatMap(_.headOption) getOrElse("invalid")
+    val start = request.queryString.get("start").flatMap(_.headOption) getOrElse "invalid"
+    val end = request.queryString.get("end").flatMap(_.headOption) getOrElse "invalid"
     val startDate = DateTime.parse(start)
     val endDate = DateTime.parse(end)
     val slots = Reservations.findSchedule(startDate, endDate)
@@ -158,35 +159,38 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
     Ok(res).as(JSON)
   }
 
-  def markMasseurAvailable = Action(parse.json) { implicit request =>
-    request.body.validate[MasseurOrder].fold(
-      (errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors)))
-        ), (
+  def markMasseurAvailable = Action.async(parse.json) { implicit request =>
+    Future.successful {
+      request.body.validate[MasseurOrder].fold(
+        errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
         mo => {
           val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
           val end = start.withTime(23, 0, 0, 0)
           Reservations.generateTimeSlots(start, end, mo.masseurId, 0)
           Ok(Json.obj("status" -> "OK")).as(JSON)
         }
-        ))
+      )
+    }
   }
 
-  def markMasseurUnvailable = Action(parse.json) { implicit request =>
-    request.body.validate[MasseurOrder].fold(
-      (errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors)))
-        ), (
+  def markMasseurUnvailable = Action.async(parse.json) { implicit request =>
+    Future.successful {
+      request.body.validate[MasseurOrder].fold(
+        errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
         mo => {
           val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
           val end = start.withTime(23, 0, 0, 0)
           Reservations.removeTimeSlots(start, end, mo.masseurId)
           Ok(Json.obj("status" -> "OK")).as(JSON)
         }
-        ))
+      )
+    }
   }
 
-  def listMasseursJson = SecuredAction { implicit request =>
-    val res = Json.toJson(Masseurs.getAllMasseurs)
-    Ok(Json.obj("status" -> "OK", "masseurs" -> res))
+  def listMasseursJson = SecuredAction.async { implicit request =>
+    Future.successful(Json.toJson(Masseurs.getAllMasseurs)).map {
+      result => Ok(Json.obj("status" -> "OK", "masseurs" -> result))
+    }
   }
 
   case class MasseurOrder(date: String, masseurId: Long)

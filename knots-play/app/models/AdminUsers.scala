@@ -15,7 +15,7 @@ case class AdminUser(id: Option[Long], loginInfo: LoginInfo, firstName: String, 
                      email: String, userId: Option[Long]) extends Identity {
 
   implicit def admin2User(admin: AdminUser): User = {
-    return User(admin.id, admin.firstName, admin.lastName, admin.email, 1)
+    User(admin.id, admin.firstName, admin.lastName, admin.email, 1)
   }
 
 }
@@ -23,7 +23,7 @@ case class AdminUser(id: Option[Long], loginInfo: LoginInfo, firstName: String, 
 object AdminUsers extends Dao {
 
   implicit def admin2AdminUser(admin: AdminUser): Admin = {
-    return Admin(admin.id, admin.userId)
+    Admin(admin.id, admin.userId)
   }
 
   def save(admin: AdminUser) = DB.withSession { implicit session =>
@@ -35,8 +35,7 @@ object AdminUsers extends Dao {
           import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
           throw new AuthenticationException("User already exists!")
         case None =>
-          newUserId = Some(((users returning users.map(_.id)).insert(User(admin.id, admin.firstName, admin.lastName, admin.email, 1))))
-          newUserId
+          newUserId = Some((users returning users.map(_.id)).insert(User(admin.id, admin.firstName, admin.lastName, admin.email, 1)))
       }
 
       import models.RoleType._
