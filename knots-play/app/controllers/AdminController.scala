@@ -105,8 +105,10 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
         Future.successful(Redirect(routes.AdminController.addMasseur()).flashing(Flash(form.data)))
       },
       success = { newMasseur =>
-        Masseurs.addMasseur(newMasseur)
-        Future.successful(Redirect(routes.AdminController.listMasseurs()))
+        Future.successful {
+          Masseurs.addMasseur(newMasseur)
+          Redirect(routes.AdminController.listMasseurs())
+        }
       }
     )
   }
@@ -117,8 +119,10 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
         Future.successful(Redirect(routes.AdminController.editMasseur(id)).flashing(Flash(form.data)))
       },
       success = { updatedMasseur =>
-        Masseurs.addMasseur(updatedMasseur.copy(id = Some(id)))
-        Future.successful(Redirect(routes.AdminController.listMasseurs()))
+        Future.successful {
+          Masseurs.addMasseur(updatedMasseur.copy(id = Some(id)))
+          Redirect(routes.AdminController.listMasseurs())
+        }
       }
     )
   }
@@ -160,31 +164,31 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
   }
 
   def markMasseurAvailable = Action.async(parse.json) { implicit request =>
-    Future.successful {
-      request.body.validate[MasseurOrder].fold(
-        errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
-        mo => {
+    request.body.validate[MasseurOrder].fold(
+      errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
+      mo => {
+        Future.successful {
           val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
           val end = start.withTime(23, 0, 0, 0)
           Reservations.generateTimeSlots(start, end, mo.masseurId, 0)
           Ok(Json.obj("status" -> "OK")).as(JSON)
         }
-      )
-    }
+      }
+    )
   }
 
   def markMasseurUnvailable = Action.async(parse.json) { implicit request =>
-    Future.successful {
-      request.body.validate[MasseurOrder].fold(
-        errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
-        mo => {
+    request.body.validate[MasseurOrder].fold(
+      errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
+      mo => {
+        Future.successful {
           val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
           val end = start.withTime(23, 0, 0, 0)
           Reservations.removeTimeSlots(start, end, mo.masseurId)
           Ok(Json.obj("status" -> "OK")).as(JSON)
         }
-      )
-    }
+      }
+    )
   }
 
   def listMasseursJson = SecuredAction.async { implicit request =>

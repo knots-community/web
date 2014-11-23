@@ -47,24 +47,23 @@ class CompaniesController @Inject()(implicit val env: Environment[AdminUser, Cac
 
   def save = SecuredAction.async { implicit request =>
     val form = companyForm.bindFromRequest()
-    val s = form.errors.toString()
     if (form.hasErrors) {
       import play.Logger
       Logger.error(form.data.toString())
       Logger.error(form.errors.toString())
     }
-    Future.successful {
-      form.fold(
-        hasErrors = { form =>
-          import play.api.mvc.Flash
-          Redirect(routes.CompaniesController.add()).flashing(Flash(form.data))
-        },
-        success = { c =>
+    form.fold(
+      hasErrors = { form =>
+        import play.api.mvc.Flash
+        Redirect(routes.CompaniesController.add()).flashing(Flash(form.data))
+      },
+      success = { c =>
+        Future.successful {
           CompaniesDao.add(c)
           Redirect(routes.CompaniesController.list())
         }
-      )
-    }
+      }
+    )
   }
 
   def update(id: Long) = SecuredAction.async { implicit request =>
