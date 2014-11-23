@@ -20,7 +20,7 @@ object Masseurs extends Dao {
   def getAllMasseurs = DB withSession { implicit session =>
     val q: List[(Masseur, User)] = (for {m <- masseurs
                                            u <- users
-                                           if (u.id === m.userId)} yield (m, u)).list
+                                           if u.id === m.userId} yield (m, u)).list
     q.map({ case (m, u) => new MasseurProfile(m.id, u.id, u.firstName, u.lastName, u.email, m.sex, m.isActive)
     })
   }
