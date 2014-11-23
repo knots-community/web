@@ -63,6 +63,7 @@ GET         /admin/metrics                     com.kenshoo.play.metrics.MetricsC
 
 POST        /deploy                            @controllers.ApplicationController.deploy
 
+POST        /requestdemo                       @controllers.ApplicationController.requestDemo()
 #TODO:
 
 GET         /admin/masseurs/list/json          @controllers.AdminController.listMasseursJson

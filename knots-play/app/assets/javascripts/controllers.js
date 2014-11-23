@@ -21,6 +21,11 @@ angular.module('Knots')
 /** Controls the index page */
     .controller('HomeCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
         $rootScope.pageTitle = 'Welcome';
+
+        function requestDemo() {
+            "use strict";
+
+        }
     }])
 
 /** Controls the header */
