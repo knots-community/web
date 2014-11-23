@@ -2,6 +2,7 @@ package utils.db
 
 import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick._
 
 /**
  * Created by anton on 11/17/14.

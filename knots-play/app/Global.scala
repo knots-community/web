@@ -3,7 +3,6 @@ import com.kenshoo.play.metrics.MetricsFilter
 import com.mohiva.play.silhouette.core.SecuredSettings
 import controllers.routes
 import models._
-import models.implicits.MassageTypeEnum
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Results._
 import play.api.mvc._

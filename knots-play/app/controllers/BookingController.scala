@@ -1,8 +1,8 @@
 package controllers
 
-import models.Reservations.SlotEntry
+import models.TimeSlots.SlotEntry
 import models.db.TableDefinitions.Company
-import models.{Masseurs, Users, CompaniesDao, Reservations}
+import models._
 import models.js.{Booking, LoginCredentials}
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, DateTime}
@@ -86,7 +86,7 @@ class BookingController extends Controller with Auth {
         val user = Users.findById(request.userId).get
         val company = CompaniesDao.findById(user.companyId)
         val masseur = Masseurs.find(bookingInfo.masseurId)
-        val startTime = Reservations.findSlotTime(bookingInfo.slotId)
+        val startTime = TimeSlots.findSlotTime(bookingInfo.slotId)
 
         Reservations.makeReservation(user.id.get, bookingInfo.masseurId, 1, bookingInfo.slotId)
         Ok(Json.obj("status" -> "OK", "bookingInfo" -> BookingInfo(company.name, company.address, startTime.toDateTimeISO.toString, masseur.firstName + " " + masseur.lastName))).as(JSON)
@@ -95,7 +95,7 @@ class BookingController extends Controller with Auth {
 
   implicit val companyJson = Json.format[Company]
 
-  def getCompanyInfo = SecuredAction { implicit request =>
+  def getUserCompanyInfo = SecuredAction { implicit request =>
     val userId = request.userId;
     val user = Users.findById(userId).get
     val company = CompaniesDao.findById(user.companyId)

@@ -122,7 +122,7 @@ angular.module('Knots')
 
         return {
             queryCompaynyInfoByKey: function(key) {
-                return playRoutes.controllers.ApplicationController.getCompanyInfo().post(key)
+                return playRoutes.controllers.ApplicationController.getCompanyInfo().get(key)
                     .success(function (result) {
                         companyInfo = result.company;
                     })
@@ -132,7 +132,7 @@ angular.module('Knots')
             },
             queryCompanyInfo: function () {
                 $log.info(playRoutes);
-                return playRoutes.controllers.BookingController.getCompanyInfo().get()
+                return playRoutes.controllers.BookingController.getUserCompanyInfo().get()
                     .success(function (result) {
                         companyInfo = result.company;
                     })

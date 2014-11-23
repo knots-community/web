@@ -1,18 +1,14 @@
 package models
 
-import models.Reservations._
 import models.db.Dao
-import models.db.TableDefinitions.{TimeSlot, Event}
+import models.db.TableDefinitions.{Event, TimeSlot}
 import org.joda.time.DateTime
-import play.api.db.slick._
-import utils.db.DateTimeConversion._
-import utils.db.PostgressFunctions._
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
-import scala.slick.jdbc.{GetResult, StaticQuery => Q}
-import scala.slick.jdbc.GetResult
-import Q.interpolation
+import utils.db.DateTimeConversion._
+
+import scala.slick.jdbc.{GetResult}
 
 /**
  * Created by anton on 11/17/14.
@@ -35,15 +31,16 @@ object TimeSlots extends Dao {
     timeSlots.filter(tt => tt.masseurId === masseurId && tt.startTime >= start && tt.startTime <= end).delete > 0
   }
 
-  case class SlotEntry(slotId: Long, startTime: String, masseurId: Long, masseurName: String)
-  implicit val getSlotEntryResult = GetResult(r => SlotEntry(r.<<, r.<<, r.<<, r.<<))
+  case class SlotEntry(slotId: Long, startTime: DateTime, masseurId: Long, masseurName: String)
 
-  def findEventTimeSlots(event: Event): List[SlotEntry] = DB withSession { implicit session =>
-    val startString = event.start.toString
-    val endString = event.end.toString
+  def findEventTimeSlots(event: Event, futureOnly: Boolean = true): List[SlotEntry] = DB withSession { implicit session =>
+    val query = for {
+      ts <- timeSlots if ts.eventId === event.id
+      masseur <- masseurs if masseur.id === ts.masseurId
+      u <- users if masseur.userId === u.id
+    } yield (ts.id, ts.startTime, masseur.id, u.firstName + " " + u.lastName)
 
-    val q = sql"""select time_slots."id", time_slots."startTime", masseurs."id", users."firstName" || ' ' || users."lastName" FROM time_slots, masseurs, users WHERE (time_slots."startTime" >= TIMESTAMP '#$startString') AND (time_slots."startTime" < TIMESTAMP '#$endString') and (time_slots."companyId" = '#$companyId') and (time_slots."masseurId" = masseurs."id") and (masseurs."userId" = users."id") AND (time_slots."status" = 0) ORDER BY (masseurs."id", time_slots."startTime")""".as[SlotEntry]
-    q.list
+    query.list.map(x => SlotEntry(x._1, x._2, x._3, x._4))
   }
 
 }
