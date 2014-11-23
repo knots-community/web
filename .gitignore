@@ -16,6 +16,4 @@ server.pid
 /dist/
 .cache
 
-*.sbt
-
 knots-play/projectFilesBackup/.idea
