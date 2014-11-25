@@ -55,7 +55,7 @@ class CompaniesController @Inject()(implicit val env: Environment[AdminUser, Cac
     form.fold(
       hasErrors = { form =>
         import play.api.mvc.Flash
-        Redirect(routes.CompaniesController.add()).flashing(Flash(form.data))
+        Future.successful(Redirect(routes.CompaniesController.add()).flashing(Flash(form.data)))
       },
       success = { c =>
         Future.successful {

@@ -165,7 +165,7 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
 
   def markMasseurAvailable = Action.async(parse.json) { implicit request =>
     request.body.validate[MasseurOrder].fold(
-      errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
+      errors => Future.successful(BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors)))), //return type requires Future[Result]
       mo => {
         Future.successful {
           val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
@@ -179,7 +179,7 @@ class AdminController @Inject()(implicit val env: Environment[AdminUser, CachedC
 
   def markMasseurUnvailable = Action.async(parse.json) { implicit request =>
     request.body.validate[MasseurOrder].fold(
-      errors => BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors))),
+      errors => Future.successful(BadRequest(Json.obj("status" -> "fail", "message" -> JsError.toFlatJson(errors)))), //same here
       mo => {
         Future.successful {
           val start = DateTime.parse(mo.date).withTime(8, 0, 0, 0)
