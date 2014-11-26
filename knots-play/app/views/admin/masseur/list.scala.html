@@ -12,7 +12,7 @@
                             <i class="fa fa-search search-icon"></i>
                         </div>
 
-                        <a href=@routes.AdminController.addMasseur class="btn btn-primary pull-right">
+                        <a href=@routes.MasseurController.addMasseur class="btn btn-primary pull-right">
                             <i class="fa fa-plus-circle fa-lg"></i> Add energizer
                         </a>
                     </div>
@@ -46,19 +46,19 @@
                                         2013/09/22 19:00
                                     </td>
                                     <td style="width : 15 % ;">
-                                        <a href="@routes.AdminController.showMasseur(u.id.get)" class="table-link">
+                                        <a href="@routes.MasseurController.showMasseur(u.id.get)" class="table-link">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
-                                        <a href="@routes.AdminController.editMasseur(u.id.get)" class="table-link">
+                                        <a href="@routes.MasseurController.editMasseur(u.id.get)" class="table-link">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
-                                        <a href="@routes.AdminController.deleteMasseur(u.id.get)" class="table-link danger">
+                                        <a href="@routes.MasseurController.deleteMasseur(u.id.get)" class="table-link danger">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>

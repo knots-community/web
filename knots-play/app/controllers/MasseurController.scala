@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.core.{Silhouette, Environment}
 import models.{MasseurProfile, Masseurs, AdminUser}
 import play.api.data.Form
 import play.api.data.Forms._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -16,7 +17,19 @@ import scala.concurrent.Future
 class MasseurController @Inject()(implicit val env: Environment[AdminUser, CachedCookieAuthenticator])
   extends Silhouette[AdminUser, CachedCookieAuthenticator] {
 
-
+  val addMasseurForm = Form(
+    mapping(
+      "id" -> optional(longNumber),
+      "userId" -> optional(longNumber),
+      "firstName" -> nonEmptyText(1),
+      "lastName" -> nonEmptyText(1),
+      "email" -> email,
+      "sex" -> nonEmptyText()
+    )((id, userId, firstName, lastName, email, sex) => {
+      MasseurProfile(id, userId, firstName, lastName, email, sex)
+    })
+      ((mp: MasseurProfile) => Some(mp.id, mp.userId, mp.firstName, mp.lastName, mp.email, mp.sex))
+  )
 
 
   def listMasseurs = UserAwareAction.async { implicit request =>

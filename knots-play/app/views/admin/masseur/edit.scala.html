@@ -13,7 +13,7 @@
                 </header>
 
                 <div class="main-box-body clearfix">
-                @helper.form(action = routes.AdminController.updateMasseur(id)) {
+                @helper.form(action = routes.MasseurController.updateMasseur(id)) {
                     @form.globalError.map { error =>
                         <div class="alert alert-danger fade in">
                             <strong>@error.message</strong>

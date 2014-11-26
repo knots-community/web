@@ -1,4 +1,4 @@
-@(user: Option[models.AdminUser], events: List[models.EventInfo])
+@(user: Option[models.AdminUser], currentPage: Page[(models.db.TableDefinitions.Event, models.db.TableDefinitions.Company)])
 @admin.main("Event List", user) {
     <div class="row">
         <div class="col-lg-12">
@@ -29,35 +29,39 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @for(e <- events) {
+                            @for(item <- currentPage.items) {
+                                @item match {
+                                    case (event, company) => {
                                 <tr>
                                     <td>
-                                    @e.companyName
+                                        @company.name
                                     </td>
                                     <td class="text-center">
-                                    @e.date
+                                    @event.start
                                     </td>
                                     <td style="width : 15 % ;">
-                                        <a href="@routes.EventsController.find(e)" class="table-link">
+                                        <a href="@routes.EventsController.view(event.id.getOrElse(0))" class="table-link">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
-                                        <a href="@routes.EventsController.edit(e)" class="table-link">
+                                        <a href="@routes.EventsController.edit(event.id.getOrElse(0))" class="table-link">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
-                                        <a href="@routes.EventsController.delete(e)" class="table-link danger">
+                                        <a href="@routes.EventsController.delete(event.id.getOrElse(0))" class="table-link danger">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
                                     </td>
-                                </tr>`
+                                </tr>
+                                }
+                            }
                             }
                         </table>
                     </div>

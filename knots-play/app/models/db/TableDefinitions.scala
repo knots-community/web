@@ -111,8 +111,9 @@ object TableDefinitions {
     def * = (id.?, masseurId, startTime, endTime, status, eventId) <> (TimeSlot.tupled, TimeSlot.unapply)
   }
 
-  case class Event(id: Option[Long], start: DateTime, end: DateTime, companyId: Long, eventType: String)
+  case class Event(id: Option[Long], date: DateTime, start: DateTime, end: DateTime, companyId: Long, eventType: String)
   case class Events(tag: Tag) extends RichTable[Event](tag, "event") {
+    def date = column[DateTime]("event_date", O.NotNull)
     def start = column[DateTime]("start", O.NotNull)
     def end = column[DateTime]("end", O.NotNull)
     def companyId = column[Long]("company_id", O.NotNull)
@@ -120,7 +121,7 @@ object TableDefinitions {
 
     def companyFk = foreignKey("company_fk", companyId, TableQuery[Companies])(_.id, onUpdate = ForeignKeyAction.Cascade)
 
-    def * = (id.?, start, end, companyId, eventType) <> (Event.tupled, Event.unapply)
+    def * = (id.?, date, start, end, companyId, eventType) <> (Event.tupled, Event.unapply)
   }
 
   case class ReservationType(id: Option[Long], name: String, description: Option[String])

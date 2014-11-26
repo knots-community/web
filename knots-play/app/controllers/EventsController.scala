@@ -3,15 +3,14 @@ package controllers
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
-import com.mohiva.play.silhouette.core.{Silhouette, Environment}
-import models.db.TableDefinitions.{Masseur, Company}
+import com.mohiva.play.silhouette.core.{Environment, Silhouette}
 import models._
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
-import org.joda.time.{LocalTime, LocalDate, DateTime}
+import models.db.TableDefinitions.Event
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.{LocalDate, LocalTime}
+import play.Logger
 import play.api.data.Form
 import play.api.data.Forms._
-
-import scala.concurrent.Future
 
 /**
  * Created by anton on 10/23/14.
@@ -23,14 +22,15 @@ class EventsController @Inject()(implicit val env: Environment[AdminUser, Cached
   val eventForm = Form(
     mapping(
       "companyId" -> longNumber,
-      "date" -> nonEmptyText,
-      "startTime" -> nonEmptyText,
-      "endTime" -> nonEmptyText,
+      "date" -> jodaDate,
+      "startTime" -> jodaDate,
+      "endTime" -> jodaDate,
+      "eventType" -> nonEmptyText,
       "masseurs" -> seq(longNumber)
-    )((companyId, date, startTime, endTime, masseurs) => {
-      Events(companyId, date, startTime, endTime, masseurs)
+    )((companyId, date, startTime, endTime, eventType, masseurs) => {
+      (Event(Some(companyId), date, startTime, endTime, companyId, eventType), masseurs)
     })
-      ((e: Event) => Some(e.companyId, e.date, e.start, e.end, e.masseurs))
+      ((e: Event, m: Seq[Long]) => Some(e.companyId, e.date, e.start, e.end, e.eventType, m))
   )
 
   def list = SecuredAction { implicit request =>
@@ -42,7 +42,7 @@ class EventsController @Inject()(implicit val env: Environment[AdminUser, Cached
     val form = eventForm.bindFromRequest()
     val s = form.errors.toString()
     if (form.hasErrors) {
-      import play.Logger
+
       Logger.error(form.data.toString());
       Logger.error(form.errors.toString());
     }
@@ -75,15 +75,15 @@ class EventsController @Inject()(implicit val env: Environment[AdminUser, Cached
     Ok(views.html.admin.events.add(Some(request.identity), form, companies, masseurs))
   }
 
-  def edit = SecuredAction { implicit request =>
+  def edit(id: Long) = SecuredAction { implicit request =>
     Redirect(routes.EventsController.list())
   }
 
-  def delete = SecuredAction { implicit request =>
+  def delete(id: Long) = SecuredAction { implicit request =>
     Redirect(routes.EventsController.list())
   }
 
-  def find = SecuredAction { implicit request =>
+  def view(id: Long) = SecuredAction { implicit request =>
     Redirect(routes.EventsController.list())
   }
 }

@@ -1,16 +1,12 @@
 package models
 
-import com.oracle.jrockit.jfr.EventInfo
-import models.Reservations._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.db.Dao
-import models.db.TableDefinitions.{Event, Masseurs, Company}
+import models.db.TableDefinitions.Event
 import org.joda.time.DateTime
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
-import com.github.tototoshi.slick.PostgresJodaSupport._
-import scala.slick.jdbc.{GetResult, StaticQuery => Q}
-import Q.interpolation
 import utils.db.PostgressFunctions._
 
 /**
@@ -28,8 +24,8 @@ object Events extends Dao {
     //    q.list
   }
 
-  def create(companyId: Long, start: DateTime, end: DateTime, eventType: String = "massage") : Long = DB withSession { implicit session =>
-    (events returning events.map(_.id)) += Event(None, start, end, companyId, eventType)
+  def create(companyId: Long, start: DateTime, date: DateTime, end: DateTime, eventType: String = "massage") : Long = DB withSession { implicit session =>
+    (events returning events.map(_.id)) += Event(None, date, start, end, companyId, eventType)
   }
 
   def delete(eventId: Long) : Boolean = DB withSession { implicit session =>
