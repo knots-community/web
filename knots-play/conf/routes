@@ -5,7 +5,7 @@
 # Home page
 GET         /                                  @controllers.ApplicationController.index
 
-GET         /jsroutes.js                        @controllers.ApplicationController.jsRoutes()
+GET         /jsroutes.js                       @controllers.ApplicationController.jsRoutes()
 
 # Authentication
 POST        /login                             @controllers.ApplicationController.signin
@@ -67,3 +67,4 @@ POST        /deploy                            @controllers.ApplicationControlle
 GET         /admin/masseurs/list/json          @controllers.AdminController.listMasseursJson
 
 GET         /*any                              @controllers.ApplicationController.main(any)
+POST        /requestDemo                       @controllers.ApplicationController.requestDemo

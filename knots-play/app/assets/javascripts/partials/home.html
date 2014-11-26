@@ -1,9 +1,12 @@
 <div class="header-description">
-    <h2>Energizing The Work Space!</h2>
+    <h2>Energizing the Work Space</h2>
     <br>
+
     <form>
-        <input class="input-lg" placeholder="Email Address" ng-model="requestDemoEmail"> <button class="btn btn-orange btn-header btn-lg" ng-click="requestDemo">REQUEST A DEMO</button>
+        <input class="input-lg" placeholder="Email Address" ng-model="requestDemoEmail">
+        <button class="btn btn-orange btn-header btn-lg" ng-click="requestDemo(requestDemoEmail)">REQUEST A DEMO</button>
     </form>
+    <alert class="margin=80px 0px;" ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 
 </div> <!-- /.header-description -->
 
@@ -11,10 +14,11 @@
     <p>Knots is a service platform that manages the scheduling of company perks.</p>
 </div>
 
-<div class="contact">
+<div class="get-in-touch">
     <h3>Get in touch:</h3>
+
     <p>
         <a href="mailto:team@tryknots.com" class="color=black">team@tryknots.com</a>
     </p>
-</form>
+    </form>
 </div>

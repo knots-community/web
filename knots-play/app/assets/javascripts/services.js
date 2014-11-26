@@ -144,5 +144,14 @@ angular.module('Knots')
                 return companyInfo;
             }
         };
+    })
+    .factory('utilService', function($http, $log, playRoutes) {
+        "use strict";
+
+        return {
+          requestDemo: function(email) {
+              return playRoutes.controllers.ApplicationController.requestDemo().post(email);
+          }
+        };
     });
 

@@ -3,16 +3,20 @@ package controllers
 import models.{CompaniesDao, Users}
 import models.db.TableDefinitions.{Company, User}
 import models.js.{Signup, LoginCredentials}
-import play.api.Routes
+import play.api.{libs, Routes}
 import play.api.cache.Cached
 import play.api.libs.functional.syntax._
+import play.api.libs.json
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller, Cookie}
 import play.api.cache._
+import utils.Emailer
 import utils.auth.{Auth, AuthUtils, TokenService}
 import play.api.Play.current
 import sys.process._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 
 class ApplicationController extends Controller with Auth {
@@ -48,6 +52,9 @@ class ApplicationController extends Controller with Auth {
         }
     }
   }
+  implicit val companyNameJson = Json.format[CompanyName]
+  implicit val companyJson = Json.format[Company]
+  implicit val demoRequestJson = Json.format[DemoRequest]
 
   def index = Cached("index") {
     Action {
@@ -97,11 +104,6 @@ class ApplicationController extends Controller with Auth {
       })
   }
 
-  case class CompanyName(companyKey: String)
-
-  implicit val companyNameJson = Json.format[CompanyName]
-  implicit val companyJson = Json.format[Company]
-
   def getCompanyInfo = Action(parse.json) { implicit request =>
     request.body.validate[CompanyName].fold(
     errors => {
@@ -140,4 +142,18 @@ class ApplicationController extends Controller with Auth {
   def main(page: String) = Action { request =>
     Ok(views.html.main())
   }
+
+  def requestDemo = Action(parse.json) { request =>
+    request.body.validate[DemoRequest].fold(
+    (errors => BadRequest(Json.obj("status" -> "fail"))),
+    { demoRequest => Emailer.sendEmail("team@tryknots.com", "Demo requested!", "Someone has interested in demo! Contact them at " + demoRequest.email)
+      Ok(Json.obj("status" -> "OK"))
+    })
+  }
+
+  case class DemoRequest(email: String)
+
+  case class CompanyName(companyKey: String)
+
+
 }

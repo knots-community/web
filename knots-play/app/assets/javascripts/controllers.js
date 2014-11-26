@@ -19,14 +19,27 @@ angular.module('Knots')
     })
 
 /** Controls the index page */
-    .controller('HomeCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
+    .controller('HomeCtrl', function ($scope, $rootScope, utilService) {
+        "use strict";
+
         $rootScope.pageTitle = 'Welcome';
 
-        function requestDemo() {
-            "use strict";
+        $scope.alerts = [
+        ];
 
-        }
-    }])
+        $scope.requestDemo = function(demoEmail) {
+            utilService.requestDemo({'email' : demoEmail})
+                .success(function() {
+                    $scope.alerts.push({msg: "We'll be in touch soon!", type: 'success'});
+
+                });
+        };
+
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
+
+    })
 
 /** Controls the header */
     .controller('HeaderCtrl', function ($scope, $rootScope, userService, $location, $modal) {
